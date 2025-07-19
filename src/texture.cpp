@@ -55,8 +55,8 @@ SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass,
         SDL_GPUTransferBufferCreateInfo info{};
         info.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
         info.size = width * height * 4;
-        SDL_GPUTransferBuffer* buffer = SDL_CreateGPUTransferBuffer(device, &info);
-        if (!buffer)
+        transferBuffer = SDL_CreateGPUTransferBuffer(device, &info);
+        if (!transferBuffer)
         {
             SDL_Log("Failed to create transfer buffer: %s, %s", path.data(), SDL_GetError());
             stbi_image_free(srcData);
