@@ -22,11 +22,16 @@ add_executable(minicraft++ WIN32
     lib/imgui/imgui_impl_sdlgpu3.cpp
     lib/imgui/imgui_tables.cpp
     lib/imgui/imgui_widgets.cpp
+    src/debug_group.cpp
     src/main.cpp
+    src/renderer.cpp
+    src/shader.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 23)
 target_include_directories(minicraft++ PRIVATE lib/imgui)
-target_link_libraries(minicraft++ PRIVATE SDL3::SDL3 glm nlohmann_json)
+target_link_libraries(minicraft++ PRIVATE SDL3::SDL3)
+target_link_libraries(minicraft++ PRIVATE glm)
+target_link_libraries(minicraft++ PRIVATE nlohmann_json)
 
 function(add_shader FILE)
     set(DEPENDS ${ARGN})
