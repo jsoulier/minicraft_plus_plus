@@ -14,6 +14,7 @@ set(GLM_BUILD_LIBRARY OFF)
 add_subdirectory(lib/SDL)
 add_subdirectory(lib/glm)
 add_subdirectory(lib/json)
+add_subdirectory(lib/tinyobjloader)
 add_executable(minicraft++ WIN32
     lib/imgui/imgui.cpp
     lib/imgui/imgui_demo.cpp
@@ -22,16 +23,21 @@ add_executable(minicraft++ WIN32
     lib/imgui/imgui_impl_sdlgpu3.cpp
     lib/imgui/imgui_tables.cpp
     lib/imgui/imgui_widgets.cpp
+    lib/stb/stb.c
     src/debug_group.cpp
     src/main.cpp
+    src/obj_model.cpp
     src/renderer.cpp
     src/shader.cpp
+    src/texture.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 23)
 target_include_directories(minicraft++ PRIVATE lib/imgui)
+target_include_directories(minicraft++ PRIVATE lib/stb)
 target_link_libraries(minicraft++ PRIVATE SDL3::SDL3)
 target_link_libraries(minicraft++ PRIVATE glm)
 target_link_libraries(minicraft++ PRIVATE nlohmann_json)
+target_link_libraries(minicraft++ PRIVATE tinyobjloader)
 
 function(add_shader FILE)
     set(DEPENDS ${ARGN})
