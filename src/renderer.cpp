@@ -1,10 +1,21 @@
 #include <SDL3/SDL.h>
 
-#include "upload_buffer.hpp"
-#include "shader.hpp"
+#include <cstdint>
+
+#include "camera.hpp"
+#include "debug_group.hpp"
+#include "obj_model.hpp"
 #include "renderer.hpp"
+#include "shader.hpp"
+#include "time.hpp"
+#include "transform.hpp"
+#include "upload_buffer.hpp"
 
 static SDL_GPUDevice* device;
+static SDL_GPUCommandBuffer* commandBuffer;
+static SDL_GPUTexture* swapchainTexture;
+static uint32_t swapchainWidth;
+static uint32_t swapchainHeight;
 
 static bool CreateDevice()
 {
@@ -42,16 +53,49 @@ bool MppRendererInit(SDL_Window* window)
         SDL_Log("Failed to create device");
         return false;
     }
+    if (!SDL_ClaimWindowForGPUDevice(device, window))
+    {
+        SDL_Log("Failed to claim window: %s", SDL_GetError());
+        return false;
+    }
     return true;
 }
 
 void MppRendererQuit(SDL_Window* window)
 {
-    // SDL_ReleaseWindowFromGPUDevice(device, window);
+    SDL_ReleaseWindowFromGPUDevice(device, window);
     SDL_DestroyGPUDevice(device);
 }
 
-void MppRendererSubmit(SDL_Window* window)
+void MppRendererBeginFrame(SDL_Window* window)
+{
+    SDL_WaitForGPUSwapchain(device, window);
+    commandBuffer = SDL_AcquireGPUCommandBuffer(device);
+    if (!commandBuffer)
+    {
+        SDL_Log("Failed to acquire command buffer: %s", SDL_GetError());
+        return;
+    }
+    if (!SDL_AcquireGPUSwapchainTexture(commandBuffer, window, &swapchainTexture, &swapchainWidth, &swapchainHeight))
+    {
+        SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
+        SDL_CancelGPUCommandBuffer(commandBuffer);
+        return;
+    }
+    if (!swapchainTexture || !swapchainWidth || !swapchainHeight)
+    {
+        /* not an error. happens on minimize */
+        SDL_CancelGPUCommandBuffer(commandBuffer);
+        return;
+    }
+}
+
+void MppRendererUpdate(const MppTransform& target, const MppTime& time)
 {
 
+}
+
+void MppRendererEndFrame(SDL_Window* window)
+{
+    SDL_SubmitGPUCommandBuffer(commandBuffer);
 }

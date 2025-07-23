@@ -2,19 +2,15 @@
 
 #include "debug_group.hpp"
 
+#ifndef NDEBUG
 MppDebugGroup::MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name)
-#ifndef NDEBUG
     : commandBuffer{commandBuffer}
-#endif
 {
-#ifndef NDEBUG
     SDL_PushGPUDebugGroup(commandBuffer, name);
-#endif
 }
 
 MppDebugGroup::~MppDebugGroup()
 {
-#ifndef NDEBUG
     SDL_PopGPUDebugGroup(commandBuffer);
-#endif
 }
+#endif

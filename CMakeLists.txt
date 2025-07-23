@@ -24,12 +24,14 @@ add_executable(minicraft++ WIN32
     lib/imgui/imgui_tables.cpp
     lib/imgui/imgui_widgets.cpp
     lib/stb/stb.c
+    src/camera.cpp
     src/debug_group.cpp
     src/main.cpp
     src/obj_model.cpp
     src/renderer.cpp
     src/shader.cpp
     src/texture.cpp
+    src/time.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 23)
 target_include_directories(minicraft++ PRIVATE lib/imgui)

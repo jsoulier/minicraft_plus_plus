@@ -8,12 +8,12 @@
 #define MPP_DEBUG_GROUP(commandBuffer)
 #endif
 
+#ifndef NDEBUG
 struct MppDebugGroup
 {
     MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name);
     ~MppDebugGroup();
 
-#ifndef NDEBUG
     SDL_GPUCommandBuffer* commandBuffer;
-#endif
 };
+#endif

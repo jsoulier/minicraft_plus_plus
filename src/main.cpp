@@ -33,7 +33,8 @@ void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
-    MppRendererSubmit(window);
+    MppRendererBeginFrame(window);
+    MppRendererEndFrame(window);
     return SDL_APP_CONTINUE;
 }
 
