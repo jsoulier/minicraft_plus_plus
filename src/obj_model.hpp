@@ -16,8 +16,8 @@ public:
     static SDL_GPUIndexElementSize GetIndexElementSize();
 
 private:
-    SDL_GPUBuffer* vertexBuffer;
-    SDL_GPUBuffer* indexBuffer;
-    SDL_GPUTexture* paletteTexture;
-    uint16_t indexCount;
+    SDL_GPUBuffer* VertexBuffer;
+    SDL_GPUBuffer* IndexBuffer;
+    SDL_GPUTexture* PaletteTexture;
+    uint16_t IndexCount;
 };

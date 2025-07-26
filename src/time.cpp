@@ -5,26 +5,26 @@
 #include "time.hpp"
 
 MppTime::MppTime(uint64_t savedTime)
-    : savedTime{savedTime}
+    : SavedTime{savedTime}
 {
-    startTime = SDL_GetTicksNS();
+    StartTime = SDL_GetTicksNS();
     Tick();
 }
 
 void MppTime::Tick()
 {
-    time2 = SDL_GetTicksNS();
-    deltaTime = time2 - time1;
-    time1 = time2;
-    currentTime = savedTime + time2 - startTime;
+    Time2 = SDL_GetTicksNS();
+    DeltaTime = Time2 - Time1;
+    Time1 = Time2;
+    CurrentTime = SavedTime + Time2 - StartTime;
 }
 
 uint64_t MppTime::GetCurrentTime() const
 {
-    return currentTime;
+    return CurrentTime;
 }
 
 uint64_t MppTime::GetDeltaTime() const
 {
-    return deltaTime;
+    return DeltaTime;
 }

@@ -124,21 +124,21 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
         return false;
     }
     uint32_t vertexCount = 0;
-    indexCount = 0;
+    IndexCount = 0;
     std::unordered_map<Vertex, uint16_t> vertexToIndex;
     for (uint16_t i = 0; i < maxIndexCount; i++)
     {
         tinyobj::index_t index = shape.mesh.indices[i];
         Vertex vertex = CreateVertex(attrib, index);
-        auto [it, inserted] = vertexToIndex.try_emplace(vertex, indexCount);
+        auto [it, inserted] = vertexToIndex.try_emplace(vertex, IndexCount);
         if (inserted)
         {
             vertexData[vertexCount] = vertex;
-            indexData[indexCount++] = vertexCount++;
+            indexData[IndexCount++] = vertexCount++;
         }
         else
         {
-            indexData[indexCount++] = it->second;
+            indexData[IndexCount++] = it->second;
         }
     }
     SDL_UnmapGPUTransferBuffer(device, vertexTransferBuffer);
@@ -147,11 +147,11 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
         SDL_GPUBufferCreateInfo info{};
         info.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
         info.size = vertexCount * sizeof(Vertex);
-        vertexBuffer = SDL_CreateGPUBuffer(device, &info);
+        VertexBuffer = SDL_CreateGPUBuffer(device, &info);
         info.usage = SDL_GPU_BUFFERUSAGE_INDEX;
-        info.size = indexCount * sizeof(uint16_t);
-        indexBuffer = SDL_CreateGPUBuffer(device, &info);
-        if (!vertexBuffer || !indexBuffer)
+        info.size = IndexCount * sizeof(uint16_t);
+        IndexBuffer = SDL_CreateGPUBuffer(device, &info);
+        if (!VertexBuffer || !IndexBuffer)
         {
             SDL_Log("Failed to create buffer(s): %s, %s", name.data(), SDL_GetError());
             return false;
@@ -161,18 +161,18 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
         SDL_GPUTransferBufferLocation location{};
         SDL_GPUBufferRegion region{};
         location.transfer_buffer = vertexTransferBuffer;
-        region.buffer = vertexBuffer;
+        region.buffer = VertexBuffer;
         region.size = vertexCount * sizeof(Vertex);
         SDL_UploadToGPUBuffer(copyPass, &location, &region, false);
         location.transfer_buffer = indexTransferBuffer;
-        region.buffer = indexBuffer;
-        region.size = indexCount * sizeof(uint16_t);
+        region.buffer = IndexBuffer;
+        region.size = IndexCount * sizeof(uint16_t);
         SDL_UploadToGPUBuffer(copyPass, &location, &region, false);
     }
     SDL_ReleaseGPUTransferBuffer(device, vertexTransferBuffer);
     SDL_ReleaseGPUTransferBuffer(device, indexTransferBuffer);
-    paletteTexture = MppLoadTexture(device, copyPass, pngPath);
-    if (!paletteTexture)
+    PaletteTexture = MppLoadTexture(device, copyPass, pngPath);
+    if (!PaletteTexture)
     {
         SDL_Log("Failed to load texture: %s", name.data());
         return false;
@@ -182,32 +182,32 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
 
 void MppObjModel::Destroy(SDL_GPUDevice* device)
 {
-    SDL_ReleaseGPUBuffer(device, vertexBuffer);
-    SDL_ReleaseGPUBuffer(device, indexBuffer);
-    SDL_ReleaseGPUTexture(device, paletteTexture);
-    vertexBuffer = nullptr;
-    indexBuffer = nullptr;
-    paletteTexture = nullptr;
+    SDL_ReleaseGPUBuffer(device, VertexBuffer);
+    SDL_ReleaseGPUBuffer(device, IndexBuffer);
+    SDL_ReleaseGPUTexture(device, PaletteTexture);
+    VertexBuffer = nullptr;
+    IndexBuffer = nullptr;
+    PaletteTexture = nullptr;
 }
 
 SDL_GPUBufferBinding MppObjModel::GetVertexBufferBinding() const
 {
-    return SDL_GPUBufferBinding{vertexBuffer};
+    return SDL_GPUBufferBinding{VertexBuffer};
 }
 
 SDL_GPUBufferBinding MppObjModel::GetIndexBufferBinding() const
 {
-    return SDL_GPUBufferBinding{indexBuffer};
+    return SDL_GPUBufferBinding{IndexBuffer};
 }
 
 SDL_GPUTexture* MppObjModel::GetPaletteTexture() const
 {
-    return paletteTexture;
+    return PaletteTexture;
 }
 
 uint16_t MppObjModel::GetIndexCount() const
 {
-    return indexCount;
+    return IndexCount;
 }
 
 SDL_GPUIndexElementSize MppObjModel::GetIndexElementSize()

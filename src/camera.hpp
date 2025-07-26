@@ -15,13 +15,14 @@ struct MppCameraSettings
 {
     MppCameraSettings();
 
-    MppCameraMode mode;
-    float pitch;
-    float yaw;
-    float fov;
-    float near;
-    float far;
-    float speed;
+    MppCameraMode Mode;
+    float Pitch;
+    float Yaw;
+    float Fov;
+    float Near;
+    float Far;
+    float Distance;
+    float Speed;
 };
 
 class MppCamera
@@ -35,17 +36,18 @@ public:
     const glm::mat4& GetProjMatrix() const;
 
 private:
-    MppCameraMode mode;
-    glm::vec3 position;
-    float pitch;
-    float yaw;
-    float width;
-    float height;
-    float fov;
-    float near;
-    float far;
-    float speed;
-    glm::mat4 viewProjMatrix;
-    glm::mat4 viewMatrix;
-    glm::mat4 projMatrix;
+    MppCameraMode Mode;
+    glm::vec3 Position;
+    float Pitch;
+    float Yaw;
+    float Width;
+    float Height;
+    float Fov;
+    float Near;
+    float Far;
+    float Distance;
+    float Speed;
+    glm::mat4 ViewProjMatrix;
+    glm::mat4 ViewMatrix;
+    glm::mat4 ProjMatrix;
 };

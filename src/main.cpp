@@ -4,13 +4,18 @@
 
 #include "renderer.hpp"
 
+static constexpr const char* kAppName = "Minicraft Plus Plus";
+static constexpr const char* kWindowTitle = "Minicraft++";
+static constexpr int kWindowWidth = 960;
+static constexpr int kWindowHeight = 720;
+
 static SDL_Window* window;
 
 SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 {
-    SDL_SetAppMetadata("Minicraft Plus Plus", nullptr, nullptr);
+    SDL_SetAppMetadata(kAppName, nullptr, nullptr);
     SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
-    window = SDL_CreateWindow("Minicraft++", 960, 720, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow(kWindowTitle, kWindowWidth, kWindowHeight, SDL_WINDOW_RESIZABLE);
     if (!window)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());

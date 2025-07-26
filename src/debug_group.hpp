@@ -14,6 +14,6 @@ struct MppDebugGroup
     MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name);
     ~MppDebugGroup();
 
-    SDL_GPUCommandBuffer* commandBuffer;
+    SDL_GPUCommandBuffer* CommandBuffer;
 };
 #endif

@@ -1,51 +1,67 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <cmath>
 
 #include "camera.hpp"
+#include "time.hpp"
 #include "transform.hpp"
 
+static constexpr glm::vec3 kUp{0.0f, 1.0f, 0.0f};
+
 MppCameraSettings::MppCameraSettings()
-    : mode{MppCameraMode::Perspective}
-    , pitch{0.0f}
-    , yaw{0.0f}
-    , fov{glm::radians(60.0f)}
-    , near{0.01f}
-    , far{1000.0f}
-    , speed{1.0f} {}
+    : Mode{MppCameraMode::Perspective}
+    , Pitch{glm::radians(0.0f)}
+    , Yaw{glm::radians(0.0f)}
+    , Fov{glm::radians(60.0f)}
+    , Near{0.01f}
+    , Far{1000.0f}
+    , Distance{100.0f}
+    , Speed{1.0f} {}
 
 MppCamera::MppCamera(const MppCameraSettings& settings)
-    : mode{settings.mode}
-    , pitch{settings.pitch}
-    , yaw{settings.yaw}
-    , width{1.0f}
-    , height{1.0f}
-    , fov{settings.yaw}
-    , near{settings.near}
-    , far{settings.far}
-    , speed{settings.speed} {}
+    : Mode{settings.Mode}
+    , Pitch{settings.Pitch}
+    , Yaw{settings.Yaw}
+    , Width{1.0f}
+    , Height{1.0f}
+    , Fov{settings.Yaw}
+    , Near{settings.Near}
+    , Far{settings.Far}
+    , Distance{settings.Distance}
+    , Speed{settings.Speed} {}
 
 void MppCamera::Update(const MppTransform& target, const MppTime& time)
 {
-
+    glm::vec3 forward;
+    forward.x = std::cosf(Yaw) * std::cosf(Pitch);
+    forward.y = std::sinf(Pitch);
+    forward.z = std::sinf(Yaw) * std::cosf(Pitch);
+    glm::vec3 destination = target.Position - forward * Distance;
+    Position = glm::mix(Position, destination, Speed * time.GetDeltaTime());
+    ViewMatrix = glm::lookAt(Position, Position + forward, kUp);
+    ProjMatrix = glm::perspective(Fov, Width / Height, Near, Far);
+    ViewProjMatrix = ProjMatrix * ViewMatrix;
 }
 
 void MppCamera::SetViewport(float width, float height)
 {
-    this->width = width;
-    this->height = height;
+    Width = std::max(width, 1.0f);
+    Height = std::max(height, 1.0f);
 }
 
 const glm::mat4& MppCamera::GetViewProjMatrix() const
 {
-    return viewProjMatrix;
+    return ViewProjMatrix;
 }
 
 const glm::mat4& MppCamera::GetViewMatrix() const
 {
-    return viewMatrix;
+    return ViewMatrix;
 }
 
 const glm::mat4& MppCamera::GetProjMatrix() const
 {
-    return projMatrix;
+    return ProjMatrix;
 }

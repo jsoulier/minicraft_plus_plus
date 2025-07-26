@@ -4,13 +4,13 @@
 
 #ifndef NDEBUG
 MppDebugGroup::MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name)
-    : commandBuffer{commandBuffer}
+    : CommandBuffer{commandBuffer}
 {
-    SDL_PushGPUDebugGroup(commandBuffer, name);
+    SDL_PushGPUDebugGroup(CommandBuffer, name);
 }
 
 MppDebugGroup::~MppDebugGroup()
 {
-    SDL_PopGPUDebugGroup(commandBuffer);
+    SDL_PopGPUDebugGroup(CommandBuffer);
 }
 #endif
