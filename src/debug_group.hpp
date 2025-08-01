@@ -3,9 +3,9 @@
 #include <SDL3/SDL.h>
 
 #ifndef NDEBUG
-#define MPP_DEBUG_GROUP(commandBuffer) MppDebugGroup debugGroup(commandBuffer, __func__)
+#define MPP_DEBUG_GROUP(...) MppDebugGroup debugGroup(__VA_ARGS__, __func__)
 #else
-#define MPP_DEBUG_GROUP(commandBuffer)
+#define MPP_DEBUG_GROUP(...)
 #endif
 
 #ifndef NDEBUG

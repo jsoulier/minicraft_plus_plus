@@ -3,8 +3,7 @@
 #include "debug_group.hpp"
 
 #ifndef NDEBUG
-MppDebugGroup::MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name)
-    : CommandBuffer{commandBuffer}
+MppDebugGroup::MppDebugGroup(SDL_GPUCommandBuffer* commandBuffer, const char* name) : CommandBuffer{commandBuffer}
 {
     SDL_PushGPUDebugGroup(CommandBuffer, name);
 }

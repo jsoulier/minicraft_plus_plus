@@ -1,0 +1,116 @@
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
+#pragma clang diagnostic ignored "-Wmissing-braces"
+
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+template<typename T, size_t Num>
+struct spvUnsafeArray
+{
+    T elements[Num ? Num : 1];
+    
+    thread T& operator [] (size_t pos) thread
+    {
+        return elements[pos];
+    }
+    constexpr const thread T& operator [] (size_t pos) const thread
+    {
+        return elements[pos];
+    }
+    
+    device T& operator [] (size_t pos) device
+    {
+        return elements[pos];
+    }
+    constexpr const device T& operator [] (size_t pos) const device
+    {
+        return elements[pos];
+    }
+    
+    constexpr const constant T& operator [] (size_t pos) const constant
+    {
+        return elements[pos];
+    }
+    
+    threadgroup T& operator [] (size_t pos) threadgroup
+    {
+        return elements[pos];
+    }
+    constexpr const threadgroup T& operator [] (size_t pos) const threadgroup
+    {
+        return elements[pos];
+    }
+};
+
+struct uniformViewProjMatrix
+{
+    float4x4 viewProjMatrix;
+};
+
+constant spvUnsafeArray<float3, 6> _92 = spvUnsafeArray<float3, 6>({ float3(-1.0, 0.0, 0.0), float3(1.0, 0.0, 0.0), float3(0.0, -1.0, 0.0), float3(0.0, 1.0, 0.0), float3(0.0, 0.0, -1.0), float3(0.0, 0.0, 1.0) });
+
+struct main0_out
+{
+    float3 outNormal [[user(locn0)]];
+    float2 outTexcoord [[user(locn1)]];
+    float4 gl_Position [[position]];
+};
+
+struct main0_in
+{
+    uint inVertex [[attribute(0)]];
+    float3 inPosition [[attribute(1)]];
+    float inRotation [[attribute(2)]];
+};
+
+static inline __attribute__((always_inline))
+float3x3 GetRotationMatrix(thread const float& angle)
+{
+    float c = cos(angle);
+    float s = sin(angle);
+    return float3x3(float3(c, 0.0, s), float3(0.0, 1.0, 0.0), float3(-s, 0.0, c));
+}
+
+static inline __attribute__((always_inline))
+float3 GetPosition(thread const uint& vertex0)
+{
+    float3 magnitude;
+    magnitude.x = float((vertex0 >> uint(0)) & 63u);
+    magnitude.y = float((vertex0 >> uint(6)) & 1u);
+    magnitude.z = float((vertex0 >> uint(7)) & 63u);
+    float3 direction;
+    direction.x = float((vertex0 >> uint(13)) & 1u);
+    direction.y = float((vertex0 >> uint(14)) & 63u);
+    direction.z = float((vertex0 >> uint(20)) & 1u);
+    return (float3(1.0) - (direction * 2.0)) * magnitude;
+}
+
+static inline __attribute__((always_inline))
+float3 GetNormal(thread const uint& vertex0)
+{
+    return _92[(vertex0 >> uint(21)) & 7u];
+}
+
+static inline __attribute__((always_inline))
+float2 GetTexcoord(thread const uint& vertex0)
+{
+    return float2(float((vertex0 >> uint(24)) & 255u) / 256.0, 0.5);
+}
+
+vertex main0_out main0(main0_in in [[stage_in]], constant uniformViewProjMatrix& _172 [[buffer(0)]])
+{
+    main0_out out = {};
+    float param = in.inRotation;
+    float3x3 rotationMatrix = GetRotationMatrix(param);
+    uint param_1 = in.inVertex;
+    float3 position = in.inPosition + (rotationMatrix * GetPosition(param_1));
+    uint param_2 = in.inVertex;
+    out.outNormal = rotationMatrix * GetNormal(param_2);
+    uint param_3 = in.inVertex;
+    out.outTexcoord = GetTexcoord(param_3);
+    out.gl_Position = _172.viewProjMatrix * float4(position, 1.0);
+    return out;
+}
+

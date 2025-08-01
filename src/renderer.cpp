@@ -5,13 +5,21 @@
 #include "camera.hpp"
 #include "debug_group.hpp"
 #include "obj_model.hpp"
+#include "pipeline.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "time.hpp"
 #include "transform.hpp"
 #include "upload_buffer.hpp"
 
+enum GraphicsPipeline
+{
+    GraphicsPipelineObjModel,
+    GraphicsPipelineCount,
+};
+
 static SDL_GPUDevice* device;
+static SDL_GPUGraphicsPipeline*  graphicsPipelines[GraphicsPipelineCount];
 static SDL_GPUCommandBuffer* commandBuffer;
 static SDL_GPUTexture* swapchainTexture;
 static uint32_t swapchainWidth;
@@ -46,6 +54,20 @@ static bool CreateDevice()
     return true;
 }
 
+static bool CreatePipelines(SDL_Window* window)
+{
+    graphicsPipelines[GraphicsPipelineObjModel] = MppCreateObjModelPipeline(device, window);
+    for (int i = GraphicsPipelineCount - 1; i >= 0; i--)
+    {
+        if (!graphicsPipelines[i])
+        {
+            SDL_Log("Failed to create graphics pipeline: %d, %s", i, SDL_GetError());
+            return false;
+        }
+    }
+    return true;
+}
+
 bool MppRendererInit(SDL_Window* window)
 {
     if (!CreateDevice())
@@ -58,11 +80,20 @@ bool MppRendererInit(SDL_Window* window)
         SDL_Log("Failed to claim window: %s", SDL_GetError());
         return false;
     }
+    if (!CreatePipelines(window))
+    {
+        SDL_Log("Failed to create pipeline(s)");
+        return false;
+    }
     return true;
 }
 
 void MppRendererQuit(SDL_Window* window)
 {
+    for (int i = 0; i < GraphicsPipelineCount; i++)
+    {
+        SDL_ReleaseGPUGraphicsPipeline(device, graphicsPipelines[i]);
+    }
     SDL_ReleaseWindowFromGPUDevice(device, window);
     SDL_DestroyGPUDevice(device);
 }
@@ -95,7 +126,7 @@ void MppRendererUpdate(const MppTransform& target, const MppTime& time)
 
 }
 
-void MppRendererEndFrame(SDL_Window* window)
+void MppRendererEndFrame()
 {
     SDL_SubmitGPUCommandBuffer(commandBuffer);
 }

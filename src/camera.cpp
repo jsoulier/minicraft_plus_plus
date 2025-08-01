@@ -1,14 +1,17 @@
+#include <SDL3/SDL.h>
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <cmath>
+#include <limits>
 
 #include "camera.hpp"
 #include "time.hpp"
 #include "transform.hpp"
 
 static constexpr glm::vec3 kUp{0.0f, 1.0f, 0.0f};
+static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
 
 MppCameraSettings::MppCameraSettings()
     : Mode{MppCameraMode::Perspective}
@@ -49,6 +52,10 @@ void MppCamera::SetViewport(float width, float height)
 {
     Width = std::max(width, 1.0f);
     Height = std::max(height, 1.0f);
+    if (width < kEpsilon || height < kEpsilon)
+    {
+        SDL_Log("Bad viewport: %f, %f", width, height);
+    }
 }
 
 const glm::mat4& MppCamera::GetViewProjMatrix() const

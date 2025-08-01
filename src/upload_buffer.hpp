@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <utility>
@@ -60,7 +59,7 @@ public:
         if (!Data && TransferBuffer)
         {
             BufferSize = 0;
-            assert(!TransferBufferSize);
+            SDL_assert(!TransferBufferSize);
             Data = static_cast<T*>(SDL_MapGPUTransferBuffer(device, TransferBuffer, true));
             if (!Data)
             {
@@ -68,7 +67,7 @@ public:
                 return;
             }
         }
-        assert(TransferBufferSize <= TransferBufferCapacity);
+        SDL_assert(TransferBufferSize <= TransferBufferCapacity);
         if (TransferBufferSize == TransferBufferCapacity)
         {
             uint32_t capacity = std::max(Traits::kStartingCapacity, TransferBufferSize * Traits::kGrowthRate);
@@ -98,7 +97,7 @@ public:
             TransferBuffer = transferBuffer;
             Data = data;
         }
-        assert(Data);
+        SDL_assert(Data);
         Data[TransferBufferSize++] = T{std::forward<Args>(args)...};
     }
 

@@ -28,6 +28,7 @@ add_executable(minicraft++ WIN32
     src/debug_group.cpp
     src/main.cpp
     src/obj_model.cpp
+    src/pipeline.cpp
     src/renderer.cpp
     src/shader.cpp
     src/texture.cpp
@@ -43,11 +44,11 @@ target_link_libraries(minicraft++ PRIVATE tinyobjloader)
 
 function(add_shader FILE)
     set(DEPENDS ${ARGN})
-    set(GLSL ${CMAKE_SOURCE_DIR}/shaders/${FILE})
-    set(SPV ${CMAKE_SOURCE_DIR}/shaders/bin/${FILE}.spv)
-    set(DXIL ${CMAKE_SOURCE_DIR}/shaders/bin/${FILE}.dxil)
-    set(MSL ${CMAKE_SOURCE_DIR}/shaders/bin/${FILE}.msl)
-    set(JSON ${CMAKE_SOURCE_DIR}/shaders/bin/${FILE}.json)
+    set(GLSL ${CMAKE_SOURCE_DIR}/res/shaders/${FILE})
+    set(SPV ${CMAKE_SOURCE_DIR}/res/shaders/bin/${FILE}.spv)
+    set(DXIL ${CMAKE_SOURCE_DIR}/res/shaders/bin/${FILE}.dxil)
+    set(MSL ${CMAKE_SOURCE_DIR}/res/shaders/bin/${FILE}.msl)
+    set(JSON ${CMAKE_SOURCE_DIR}/res/shaders/bin/${FILE}.json)
     function(compile PROGRAM SOURCE OUTPUT)
         add_custom_command(
             OUTPUT ${OUTPUT}
@@ -64,7 +65,7 @@ function(add_shader FILE)
     endfunction()
     if (MSVC)
         set(SHADERCROSS lib/SDL_shadercross/msvc/shadercross.exe)
-        compile(glslc ${GLSL} ${SPV})
+        compile(glslc ${GLSL} ${SPV} -g)
         compile(${SHADERCROSS} ${SPV} ${DXIL})
         compile(${SHADERCROSS} ${SPV} ${MSL})
         compile(${SHADERCROSS} ${SPV} ${JSON})
@@ -92,6 +93,8 @@ function(add_shader FILE)
     endif()
     package(${JSON})
 endfunction()
+add_shader(obj_model.vert)
+add_shader(obj_model.frag)
 
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)

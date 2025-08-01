@@ -9,4 +9,4 @@ bool MppRendererInit(SDL_Window* window);
 void MppRendererQuit(SDL_Window* window);
 void MppRendererBeginFrame(SDL_Window* window);
 void MppRendererUpdate(const MppTransform& target, const MppTime& time);
-void MppRendererEndFrame(SDL_Window* window);
+void MppRendererEndFrame();

@@ -1,25 +1,10 @@
 #include <SDL3/SDL.h>
 #include <stb_image.h>
 
-#include <cassert>
 #include <cstring>
 #include <string_view>
 
 #include "texture.hpp"
-
-SDL_GPUTextureFormat MppGetDepthTextureFormat(SDL_GPUDevice* device)
-{
-    static constexpr SDL_GPUTextureType Type = SDL_GPU_TEXTURETYPE_2D;
-    static constexpr SDL_GPUTextureUsageFlags Usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
-    if (SDL_GPUTextureSupportsFormat(device, SDL_GPU_TEXTUREFORMAT_D24_UNORM, Type, Usage))
-    {
-        return SDL_GPU_TEXTUREFORMAT_D24_UNORM;
-    }
-    else
-    {
-        return SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
-    }
-}
 
 SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const std::string_view& path)
 {
@@ -119,6 +104,20 @@ SDL_GPUTexture* MppCreateColorTexture(SDL_GPUDevice* device, SDL_Window* window,
         return nullptr;
     }
     return texture;
+}
+
+SDL_GPUTextureFormat MppGetDepthTextureFormat(SDL_GPUDevice* device)
+{
+    static constexpr SDL_GPUTextureType Type = SDL_GPU_TEXTURETYPE_2D;
+    static constexpr SDL_GPUTextureUsageFlags Usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
+    if (SDL_GPUTextureSupportsFormat(device, SDL_GPU_TEXTUREFORMAT_D24_UNORM, Type, Usage))
+    {
+        return SDL_GPU_TEXTUREFORMAT_D24_UNORM;
+    }
+    else
+    {
+        return SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
+    }
 }
 
 SDL_GPUTexture* MppCreateDepthTexture(SDL_GPUDevice* device, int width, int height, SDL_GPUTextureUsageFlags usage)

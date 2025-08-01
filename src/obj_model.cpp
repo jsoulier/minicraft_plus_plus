@@ -1,7 +1,6 @@
 #include <SDL3/SDL.h>
 #include <tiny_obj_loader.h>
 
-#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <format>
@@ -27,15 +26,15 @@ using Vertex = uint32_t;
 
 static Vertex CreateVertex(const tinyobj::attrib_t& attrib, const tinyobj::index_t& index)
 {
-    static constexpr int PositionScale = 10;
-    static constexpr int TexcoordScale = 256;
-    int positionX = attrib.vertices[index.vertex_index * 3 + 0] * PositionScale;
-    int positionY = attrib.vertices[index.vertex_index * 3 + 1] * PositionScale;
-    int positionZ = attrib.vertices[index.vertex_index * 3 + 2] * PositionScale;
+    static constexpr int kPositionScale = 10;
+    static constexpr int kTexcoordScale = 256;
+    int positionX = attrib.vertices[index.vertex_index * 3 + 0] * kPositionScale;
+    int positionY = attrib.vertices[index.vertex_index * 3 + 1] * kPositionScale;
+    int positionZ = attrib.vertices[index.vertex_index * 3 + 2] * kPositionScale;
     int normalX = attrib.normals[index.normal_index * 3 + 0];
     int normalY = attrib.normals[index.normal_index * 3 + 1];
     int normalZ = attrib.normals[index.normal_index * 3 + 2];
-    int texcoordX = attrib.texcoords[index.texcoord_index * 2 + 0] * TexcoordScale;
+    uint32_t texcoordX = attrib.texcoords[index.texcoord_index * 2 + 0] * kTexcoordScale;
     uint32_t magnitudeX = std::abs(positionX);
     uint32_t directionX = positionX < 0 ? 1 : 0;
     uint32_t magnitudeY = std::abs(positionY);
@@ -69,22 +68,22 @@ static Vertex CreateVertex(const tinyobj::attrib_t& attrib, const tinyobj::index
     }
     else
     {
-        assert(false);
+        SDL_assert(false);
     }
-    assert(magnitudeX < 64);
-    assert(magnitudeY < 64);
-    assert(magnitudeZ < 64);
-    assert(texcoordX < 256);
-    Vertex voxel{};
-    voxel |= (magnitudeX & 0x3F) << 0;
-    voxel |= (directionX & 0x01) << 6;
-    voxel |= (magnitudeY & 0x3F) << 7;
-    voxel |= (directionY & 0x01) << 13;
-    voxel |= (magnitudeZ & 0x3F) << 14;
-    voxel |= (directionZ & 0x01) << 20;
-    voxel |= (normal & 0x07) << 21;
-    voxel |= (texcoordX & 0xFF) << 24;
-    return voxel;
+    SDL_assert(magnitudeX < 64);
+    SDL_assert(magnitudeY < 64);
+    SDL_assert(magnitudeZ < 64);
+    SDL_assert(texcoordX < 256);
+    Vertex vertex{};
+    vertex |= (magnitudeX & 0x3F) << 0;
+    vertex |= (directionX & 0x01) << 6;
+    vertex |= (magnitudeY & 0x3F) << 7;
+    vertex |= (directionY & 0x01) << 13;
+    vertex |= (magnitudeZ & 0x3F) << 14;
+    vertex |= (directionZ & 0x01) << 20;
+    vertex |= (normal & 0x07) << 21;
+    vertex |= (texcoordX & 0xFF) << 24;
+    return vertex;
 }
 
 bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const std::string_view& name)
@@ -100,7 +99,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
     const tinyobj::attrib_t& attrib = reader.GetAttrib();
     const tinyobj::shape_t& shape = reader.GetShapes()[0];
     uint32_t maxIndexCount = shape.mesh.num_face_vertices.size() * 3;
-    assert(maxIndexCount <= std::numeric_limits<uint16_t>::max());
+    SDL_assert(maxIndexCount <= std::numeric_limits<uint16_t>::max());
     SDL_GPUTransferBuffer* vertexTransferBuffer;
     SDL_GPUTransferBuffer* indexTransferBuffer;
     {
@@ -130,7 +129,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
     {
         tinyobj::index_t index = shape.mesh.indices[i];
         Vertex vertex = CreateVertex(attrib, index);
-        auto [it, inserted] = vertexToIndex.try_emplace(vertex, IndexCount);
+        auto [it, inserted] = vertexToIndex.try_emplace(vertex, vertexCount);
         if (inserted)
         {
             vertexData[vertexCount] = vertex;
