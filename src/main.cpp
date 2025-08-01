@@ -3,6 +3,7 @@
 
 #include "renderer.hpp"
 #include "time.hpp"
+#include "transform.hpp"
 
 static constexpr const char* kAppName = "Minicraft Plus Plus";
 static constexpr const char* kWindowTitle = "Minicraft++";
@@ -28,6 +29,7 @@ int main(int argc, char** argv)
     bool running = true;
     while (running)
     {
+        time.Tick();
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -39,6 +41,8 @@ int main(int argc, char** argv)
             }
         }
         MppRendererBeginFrame(window);
+        MppRendererUpdate({} /* TODO: player transform */, time);
+        /* TODO: update world */
         MppRendererEndFrame();
     }
     MppRendererQuit(window);

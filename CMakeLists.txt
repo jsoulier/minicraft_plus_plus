@@ -27,6 +27,7 @@ add_executable(minicraft++ WIN32
     src/camera.cpp
     src/debug_group.cpp
     src/main.cpp
+    src/model.cpp
     src/obj_model.cpp
     src/pipeline.cpp
     src/renderer.cpp
@@ -95,6 +96,13 @@ function(add_shader FILE)
 endfunction()
 add_shader(obj_model.vert)
 add_shader(obj_model.frag)
+
+function(add_model NAME)
+    configure_file(res/models/${NAME}.obj ${BINARY_DIR} COPYONLY)
+    configure_file(res/models/${NAME}.png ${BINARY_DIR} COPYONLY)
+    configure_file(res/models/${NAME}.vox ${BINARY_DIR} COPYONLY)
+endfunction()
+add_model(default)
 
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)

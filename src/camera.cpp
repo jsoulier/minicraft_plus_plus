@@ -13,27 +13,17 @@
 static constexpr glm::vec3 kUp{0.0f, 1.0f, 0.0f};
 static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
 
-MppCameraSettings::MppCameraSettings()
+MppCamera::MppCamera()
     : Mode{MppCameraMode::Perspective}
     , Pitch{glm::radians(0.0f)}
     , Yaw{glm::radians(0.0f)}
+    , Width{1.0f}
+    , Height{1.0f}
     , Fov{glm::radians(60.0f)}
-    , Near{0.01f}
+    , Near{0.1f}
     , Far{1000.0f}
     , Distance{100.0f}
     , Speed{1.0f} {}
-
-MppCamera::MppCamera(const MppCameraSettings& settings)
-    : Mode{settings.Mode}
-    , Pitch{settings.Pitch}
-    , Yaw{settings.Yaw}
-    , Width{1.0f}
-    , Height{1.0f}
-    , Fov{settings.Yaw}
-    , Near{settings.Near}
-    , Far{settings.Far}
-    , Distance{settings.Distance}
-    , Speed{settings.Speed} {}
 
 void MppCamera::Update(const MppTransform& target, const MppTime& time)
 {
@@ -48,6 +38,11 @@ void MppCamera::Update(const MppTransform& target, const MppTime& time)
     ViewProjMatrix = ProjMatrix * ViewMatrix;
 }
 
+void MppCamera::SetMode(MppCameraMode mode)
+{
+    Mode = mode;
+}
+
 void MppCamera::SetViewport(float width, float height)
 {
     Width = std::max(width, 1.0f);
@@ -56,6 +51,41 @@ void MppCamera::SetViewport(float width, float height)
     {
         SDL_Log("Bad viewport: %f, %f", width, height);
     }
+}
+
+void MppCamera::SetPitch(float pitch)
+{
+    Pitch = pitch;
+}
+
+void MppCamera::SetYaw(float yaw)
+{
+    Yaw = yaw;
+}
+
+void MppCamera::SetFov(float fov)
+{
+    Fov = fov;
+}
+
+void MppCamera::SetNear(float near)
+{
+    Near = near;
+}
+
+void MppCamera::SetFar(float far)
+{
+    Far = far;
+}
+
+void MppCamera::SetDistance(float distance)
+{
+    Distance = distance;
+}
+
+void MppCamera::SetSpeed(float speed)
+{
+    Speed = speed;
 }
 
 const glm::mat4& MppCamera::GetViewProjMatrix() const

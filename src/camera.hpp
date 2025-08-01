@@ -11,26 +11,20 @@ enum class MppCameraMode
     Ortho,
 };
 
-struct MppCameraSettings
-{
-    MppCameraSettings();
-
-    MppCameraMode Mode;
-    float Pitch;
-    float Yaw;
-    float Fov;
-    float Near;
-    float Far;
-    float Distance;
-    float Speed;
-};
-
 class MppCamera
 {
 public:
-    MppCamera(const MppCameraSettings& settings = {});
+    MppCamera();
     void Update(const MppTransform& target, const MppTime& time);
+    void SetMode(MppCameraMode mode);
     void SetViewport(float width, float height);
+    void SetPitch(float pitch);
+    void SetYaw(float yaw);
+    void SetFov(float fov);
+    void SetNear(float near);
+    void SetFar(float far);
+    void SetDistance(float distance);
+    void SetSpeed(float speed);
     const glm::mat4& GetViewProjMatrix() const;
     const glm::mat4& GetViewMatrix() const;
     const glm::mat4& GetProjMatrix() const;
