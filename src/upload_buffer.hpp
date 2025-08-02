@@ -169,14 +169,14 @@ public:
         return Buffer;
     }
 
-    uint32_t GetBufferSize() const
+    SDL_GPUBufferBinding GetBufferBinding() const
     {
-        return BufferSize;
+        return SDL_GPUBufferBinding{Buffer};
     }
 
-    uint32_t GetTransferBufferSize() const
+    uint32_t GetSize() const
     {
-        return TransferBufferSize;
+        return BufferSize;
     }
 
 private:

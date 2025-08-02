@@ -27,7 +27,7 @@ using Vertex = uint32_t;
 static Vertex CreateVertex(const tinyobj::attrib_t& attrib, const tinyobj::index_t& index)
 {
     static constexpr int kPositionScale = 10;
-    static constexpr int kTexcoordScale = 256;
+    static constexpr int kTexcoordScale = 255;
     int positionX = attrib.vertices[index.vertex_index * 3 + 0] * kPositionScale;
     int positionY = attrib.vertices[index.vertex_index * 3 + 1] * kPositionScale;
     int positionZ = attrib.vertices[index.vertex_index * 3 + 2] * kPositionScale;

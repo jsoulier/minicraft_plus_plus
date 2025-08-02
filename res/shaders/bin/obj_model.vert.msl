@@ -78,11 +78,11 @@ float3 GetPosition(thread const uint& vertex0)
 {
     float3 magnitude;
     magnitude.x = float((vertex0 >> uint(0)) & 63u);
-    magnitude.y = float((vertex0 >> uint(6)) & 1u);
-    magnitude.z = float((vertex0 >> uint(7)) & 63u);
     float3 direction;
-    direction.x = float((vertex0 >> uint(13)) & 1u);
-    direction.y = float((vertex0 >> uint(14)) & 63u);
+    direction.x = float((vertex0 >> uint(6)) & 1u);
+    magnitude.y = float((vertex0 >> uint(7)) & 63u);
+    direction.y = float((vertex0 >> uint(13)) & 1u);
+    magnitude.z = float((vertex0 >> uint(14)) & 63u);
     direction.z = float((vertex0 >> uint(20)) & 1u);
     return (float3(1.0) - (direction * 2.0)) * magnitude;
 }
@@ -96,7 +96,7 @@ float3 GetNormal(thread const uint& vertex0)
 static inline __attribute__((always_inline))
 float2 GetTexcoord(thread const uint& vertex0)
 {
-    return float2(float((vertex0 >> uint(24)) & 255u) / 256.0, 0.5);
+    return float2(float((vertex0 >> uint(24)) & 255u) / 255.0, 0.5);
 }
 
 vertex main0_out main0(main0_in in [[stage_in]], constant uniformViewProjMatrix& _172 [[buffer(0)]])

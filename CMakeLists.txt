@@ -34,6 +34,7 @@ add_executable(minicraft++ WIN32
     src/shader.cpp
     src/texture.cpp
     src/time.cpp
+    src/vox_model.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 23)
 target_include_directories(minicraft++ PRIVATE lib/imgui)

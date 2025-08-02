@@ -14,11 +14,11 @@ vec3 GetPosition(uint vertex)
 {
     vec3 magnitude;
     vec3 direction;
-    magnitude.x = float((vertex >>  0) & 0x3Fu);
-    magnitude.y = float((vertex >>  6) & 0x1u);
-    magnitude.z = float((vertex >>  7) & 0x3Fu);
-    direction.x = float((vertex >> 13) & 0x1u);
-    direction.y = float((vertex >> 14) & 0x3Fu);
+    magnitude.x = float((vertex >> 0) & 0x3Fu);
+    direction.x = float((vertex >> 6) & 0x1u);
+    magnitude.y = float((vertex >> 7) & 0x3Fu);
+    direction.y = float((vertex >> 13) & 0x1u);
+    magnitude.z = float((vertex >> 14) & 0x3Fu);
     direction.z = float((vertex >> 20) & 0x1u);
     return (1.0f - 2.0f * direction) * magnitude;
 }
@@ -40,7 +40,7 @@ vec3 GetNormal(uint vertex)
 
 vec2 GetTexcoord(uint vertex)
 {
-    return vec2(float((vertex >> 24) & 0xFFu) / 256.0f, 0.5f);
+    return vec2(float((vertex >> 24) & 0xFFu) / 255.0f, 0.5f);
 }
 
 mat3 GetRotationMatrix(float angle)

@@ -15,15 +15,19 @@ static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
 
 MppCamera::MppCamera()
     : Mode{MppCameraMode::Perspective}
-    , Pitch{glm::radians(0.0f)}
-    , Yaw{glm::radians(0.0f)}
+    , Position{}
+    , Pitch{glm::radians(-45.0f)}
+    , Yaw{glm::radians(-90.0f)}
     , Width{1.0f}
     , Height{1.0f}
     , Fov{glm::radians(60.0f)}
     , Near{0.1f}
     , Far{1000.0f}
     , Distance{100.0f}
-    , Speed{1.0f} {}
+    , Speed{1.0f}
+    , ViewProjMatrix{}
+    , ViewMatrix{}
+    , ProjMatrix{} {}
 
 void MppCamera::Update(const MppTransform& target, const MppTime& time)
 {
@@ -32,7 +36,7 @@ void MppCamera::Update(const MppTransform& target, const MppTime& time)
     forward.y = std::sinf(Pitch);
     forward.z = std::sinf(Yaw) * std::cosf(Pitch);
     glm::vec3 destination = target.Position - forward * Distance;
-    Position = glm::mix(Position, destination, Speed * time.GetDeltaTime());
+    Position = glm::mix(Position, destination, Speed /* TODO: time.GetDeltaTime() */);
     ViewMatrix = glm::lookAt(Position, Position + forward, kUp);
     ProjMatrix = glm::perspective(Fov, Width / Height, Near, Far);
     ViewProjMatrix = ProjMatrix * ViewMatrix;

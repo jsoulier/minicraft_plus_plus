@@ -43,6 +43,10 @@ int main(int argc, char** argv)
         MppRendererBeginFrame(window);
         MppRendererUpdate({} /* TODO: player transform */, time);
         /* TODO: update world */
+        MppRendererDraw(MppModelDefault, MppTransform{glm::vec3{0.0f, 0.0f, -16.0f}, 0.0f});
+        MppRendererDraw(MppModelDefault, MppTransform{glm::vec3{32.0f, 0.0f, -16.0f}, 0.0f});
+        MppRendererDraw(MppModelDefault, MppTransform{glm::vec3{-32.0f, 0.0f, -16.0f}, 0.0f});
+        MppRendererDraw(MppModelDefault, MppTransform{glm::vec3{0.0f, -16.0f, 16.0f}, 0.0f});
         MppRendererEndFrame();
     }
     MppRendererQuit(window);
