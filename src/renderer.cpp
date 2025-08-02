@@ -61,7 +61,7 @@ static MppVertexUploadBuffer<MppTransform> modelInstances[MppModelCount];
 static bool CreateDevice()
 {
     SDL_PropertiesID properties = SDL_CreateProperties();
-    // SDL_SetBooleanProperty(properties, SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN, true);
+    SDL_SetBooleanProperty(properties, SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN, true);
 #ifndef NDEBUG
     SDL_SetBooleanProperty(properties, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, true);
     SDL_SetBooleanProperty(properties, SDL_PROP_GPU_DEVICE_CREATE_VERBOSE_BOOLEAN, true);

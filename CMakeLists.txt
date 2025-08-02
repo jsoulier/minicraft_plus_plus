@@ -26,10 +26,13 @@ add_executable(minicraft++ WIN32
     lib/stb/stb.c
     src/camera.cpp
     src/debug_group.cpp
+    src/entity.cpp
     src/main.cpp
+    src/mob_entity.cpp
     src/model.cpp
     src/obj_model.cpp
     src/pipeline.cpp
+    src/player_entity.cpp
     src/renderer.cpp
     src/shader.cpp
     src/texture.cpp
