@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 
 #include "window.hpp"
+#include "log.hpp"
 
 static constexpr const char* kTitle = "Minicraft++";
 static constexpr int kWidth = 960;
@@ -10,13 +11,13 @@ bool MppWindow::Init()
 {
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
-        SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
+        MppLog("Failed to initialize SDL: %s", SDL_GetError());
         return false;
     }
     Window = SDL_CreateWindow(kTitle, kWidth, kHeight, SDL_WINDOW_RESIZABLE);
     if (!Window)
     {
-        SDL_Log("Failed to create window: %s", SDL_GetError());
+        MppLog("Failed to create window: %s", SDL_GetError());
         return false;
     }
     return true;

@@ -1,9 +1,8 @@
-#include <SDL3/SDL.h>
-
 #include <memory>
 
 #include "entity.hpp"
 #include "id.hpp"
+#include "log.hpp"
 #include "mob_entity.hpp"
 #include "model.hpp"
 #include "player_entity.hpp"
@@ -26,7 +25,7 @@ std::shared_ptr<MppEntity> MppEntity::Create(MppEntityType type, void* args)
     }
     if (!entity)
     {
-        SDL_Log("Failed to create entity: %d", type);
+        MppLog("Failed to create entity: %d", type);
         return {};
     }
     entity->Type = type;

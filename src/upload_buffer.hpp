@@ -7,6 +7,9 @@
 #include <cstdint>
 #include <utility>
 
+#include "assert.hpp"
+#include "log.hpp"
+
 struct MppUploadBufferTraits
 {
     static constexpr uint32_t kStartingCapacity = 10;
@@ -59,15 +62,15 @@ public:
         if (!Data && TransferBuffer)
         {
             BufferSize = 0;
-            SDL_assert(!TransferBufferSize);
+            MppAssert(!TransferBufferSize);
             Data = static_cast<T*>(SDL_MapGPUTransferBuffer(device, TransferBuffer, true));
             if (!Data)
             {
-                SDL_Log("Failed to map transfer buffer: %s", SDL_GetError());
+                MppLog("Failed to map transfer buffer: %s", SDL_GetError());
                 return;
             }
         }
-        SDL_assert(TransferBufferSize <= TransferBufferCapacity);
+        MppAssert(TransferBufferSize <= TransferBufferCapacity);
         if (TransferBufferSize == TransferBufferCapacity)
         {
             uint32_t capacity = std::max(Traits::kStartingCapacity, TransferBufferSize * Traits::kGrowthRate);
@@ -77,13 +80,13 @@ public:
             SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(device, &info);
             if (!transferBuffer)
             {
-                SDL_Log("Failed to create transfer buffer: %s", SDL_GetError());
+                MppLog("Failed to create transfer buffer: %s", SDL_GetError());
                 return;
             }
             T* data = static_cast<T*>(SDL_MapGPUTransferBuffer(device, transferBuffer, false));
             if (!data)
             {
-                SDL_Log("Failed to map transfer buffer: %s", SDL_GetError());
+                MppLog("Failed to map transfer buffer: %s", SDL_GetError());
                 SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
                 return;
             }
@@ -97,7 +100,7 @@ public:
             TransferBuffer = transferBuffer;
             Data = data;
         }
-        SDL_assert(Data);
+        MppAssert(Data);
         Data[TransferBufferSize++] = T{std::forward<Args>(args)...};
     }
 
@@ -126,7 +129,7 @@ public:
             Buffer = SDL_CreateGPUBuffer(device, &info);
             if (!Buffer)
             {
-                SDL_Log("Failed to create buffer: %s", SDL_GetError());
+                MppLog("Failed to create buffer: %s", SDL_GetError());
                 return;
             }
             BufferCapacity = TransferBufferCapacity;
@@ -145,7 +148,7 @@ public:
         SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(commandBuffer);
         if (!copyPass)
         {
-            SDL_Log("Failed to begin copy pass: %s", SDL_GetError());
+            MppLog("Failed to begin copy pass: %s", SDL_GetError());
             return;
         }
         Upload(device, copyPass);
@@ -157,7 +160,7 @@ public:
         SDL_GPUCommandBuffer* commandBuffer = SDL_AcquireGPUCommandBuffer(device);
         if (!commandBuffer)
         {
-            SDL_Log("Failed to acquire command buffer: %s", SDL_GetError());
+            MppLog("Failed to acquire command buffer: %s", SDL_GetError());
             return;
         }
         Upload(device, commandBuffer);

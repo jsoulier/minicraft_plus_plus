@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 class MppTicks;
-class MppTransform;
+struct MppTransform;
 
 enum class MppCameraMode
 {

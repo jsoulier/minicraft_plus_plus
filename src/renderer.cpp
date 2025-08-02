@@ -4,6 +4,7 @@
 
 #include "camera.hpp"
 #include "debug_group.hpp"
+#include "log.hpp"
 #include "model.hpp"
 #include "obj_model.hpp"
 #include "pipeline.hpp"
@@ -20,17 +21,17 @@ bool MppRenderer::Init(MppWindow& window)
 {
     if (!CreateDevice())
     {
-        SDL_Log("Failed to create device");
+        MppLog("Failed to create device");
         return false;
     }
     if (!SDL_ClaimWindowForGPUDevice(Device, window.GetHandle()))
     {
-        SDL_Log("Failed to claim window: %s", SDL_GetError());
+        MppLog("Failed to claim window: %s", SDL_GetError());
         return false;
     }
     if (!CreateResources(window))
     {
-        SDL_Log("Failed to create resources: %s", SDL_GetError());
+        MppLog("Failed to create resources: %s", SDL_GetError());
         return false;
     }
     return true;
@@ -71,14 +72,14 @@ void MppRenderer::BeginFrame(MppWindow& window)
     CommandBuffer = SDL_AcquireGPUCommandBuffer(Device);
     if (!CommandBuffer)
     {
-        SDL_Log("Failed to acquire command buffer: %s", SDL_GetError());
+        MppLog("Failed to acquire command buffer: %s", SDL_GetError());
         return;
     }
     uint32_t width;
     uint32_t height;
     if (!SDL_AcquireGPUSwapchainTexture(CommandBuffer, window.GetHandle(), &SwapchainTexture, &width, &height))
     {
-        SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
+        MppLog("Failed to acquire swapchain texture: %s", SDL_GetError());
         SDL_CancelGPUCommandBuffer(CommandBuffer);
         CommandBuffer = nullptr;
         return;
@@ -92,7 +93,7 @@ void MppRenderer::BeginFrame(MppWindow& window)
     }
     if ((PovWidth != width || PovHeight != height) && !Resize(width, height))
     {
-        SDL_Log("Failed to resize textures");
+        MppLog("Failed to resize textures");
         SDL_SubmitGPUCommandBuffer(CommandBuffer);
         CommandBuffer = nullptr;
         return;
@@ -113,13 +114,13 @@ void MppRenderer::EndFrame()
 {
     if (!CommandBuffer)
     {
-        SDL_Log("Skipping frame");
+        MppLog("Skipping frame");
         return;
     }
     SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(CommandBuffer);
     if (!copyPass)
     {
-        SDL_Log("Failed to begin copy pass: %s", SDL_GetError());
+        MppLog("Failed to begin copy pass: %s", SDL_GetError());
         return;
     }
     for (int i = 0; i < MppModelCount; i++)
@@ -154,7 +155,7 @@ bool MppRenderer::CreateDevice()
     Device = SDL_CreateGPUDeviceWithProperties(properties);
     if (!Device)
     {
-        SDL_Log("Failed to create device: %s", SDL_GetError());
+        MppLog("Failed to create device: %s", SDL_GetError());
         return false;
     }
     return true;
@@ -165,13 +166,13 @@ bool MppRenderer::CreateResources(MppWindow& window)
     SDL_GPUCommandBuffer* commandBuffer = SDL_AcquireGPUCommandBuffer(Device);
     if (!commandBuffer)
     {
-        SDL_Log("Failed to acquire command buffer: %s", SDL_GetError());
+        MppLog("Failed to acquire command buffer: %s", SDL_GetError());
         return false;
     }
     SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(commandBuffer);
     if (!copyPass)
     {
-        SDL_Log("Failed to begin copy pass: %s", SDL_GetError());
+        MppLog("Failed to begin copy pass: %s", SDL_GetError());
         return false;
     }
     GraphicsPipelines[GraphicsPipelineObjModel] = MppCreateObjModelPipeline(Device, window);
@@ -180,7 +181,7 @@ bool MppRenderer::CreateResources(MppWindow& window)
     {
         if (!GraphicsPipelines[i])
         {
-            SDL_Log("Failed to create graphics pipeline: %d, %s", i, SDL_GetError());
+            MppLog("Failed to create graphics pipeline: %d, %s", i, SDL_GetError());
             return false;
         }
     }
@@ -188,7 +189,7 @@ bool MppRenderer::CreateResources(MppWindow& window)
     {
         if (!ComputePipelines[i])
         {
-            SDL_Log("Failed to create compute pipeline: %d, %s", i, SDL_GetError());
+            MppLog("Failed to create compute pipeline: %d, %s", i, SDL_GetError());
             return false;
         }
     }
@@ -205,7 +206,7 @@ bool MppRenderer::CreateResources(MppWindow& window)
         {
             if (!Samplers[i])
             {
-                SDL_Log("Failed to create sampler: %d, %s", i, SDL_GetError());
+                MppLog("Failed to create sampler: %d, %s", i, SDL_GetError());
                 return false;
             }
         }
@@ -214,12 +215,12 @@ bool MppRenderer::CreateResources(MppWindow& window)
     {
         if (!ObjModels[i].Load(Device, copyPass, MppModelToString(i)))
         {
-            SDL_Log("Failed to load obj model: %s", SDL_GetError());
+            MppLog("Failed to load obj model: %s", SDL_GetError());
             return false;
         }
         if (!VoxModels[i].Load(Device, copyPass, MppModelToString(i)))
         {
-            SDL_Log("Failed to load vox model: %s", SDL_GetError());
+            MppLog("Failed to load vox model: %s", SDL_GetError());
             return false;
         }
     }
@@ -240,7 +241,7 @@ bool MppRenderer::Resize(uint32_t width, uint32_t height)
     {
         if (!Textures[i])
         {
-            SDL_Log("Failed to create texture: %d", i);
+            MppLog("Failed to create texture: %d", i);
             return false;
         }
     }
@@ -268,7 +269,7 @@ void MppRenderer::DrawModels()
     SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(CommandBuffer, &colorInfo, 1, &depthInfo);
     if (!renderPass)
     {
-        SDL_Log("Failed to begin render pass: %s", SDL_GetError());
+        MppLog("Failed to begin render pass: %s", SDL_GetError());
         return;
     }
     SDL_BindGPUGraphicsPipeline(renderPass, GraphicsPipelines[GraphicsPipelineObjModel]);

@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "log.hpp"
 #include "pipeline.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -15,7 +16,7 @@ SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, MppWin
     SDL_GPUShader* vertShader = MppLoadShader(device, "obj_model.vert");
     if (!fragShader || !vertShader)
     {
-        SDL_Log("Failed to load shader(s)");
+        MppLog("Failed to load shader(s)");
         return nullptr;
     }
     SDL_GPUColorTargetDescription targets[1]{};
@@ -61,7 +62,7 @@ SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, MppWin
     SDL_GPUGraphicsPipeline* pipeline = SDL_CreateGPUGraphicsPipeline(device, &info);
     if (!pipeline)
     {
-        SDL_Log("Failed to create graphics pipeline: %s", SDL_GetError());
+        MppLog("Failed to create graphics pipeline: %s", SDL_GetError());
         return nullptr;
     }
     SDL_ReleaseGPUShader(device, fragShader);

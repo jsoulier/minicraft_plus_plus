@@ -11,8 +11,8 @@
 #include "vox_model.hpp"
 
 class MppTicks;
-class MppTransform;
 class MppWindow;
+struct MppTransform;
 
 class MppRenderer
 {

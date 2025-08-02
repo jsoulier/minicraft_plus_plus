@@ -9,6 +9,8 @@
 #include <string_view>
 #include <unordered_map>
 
+#include "assert.hpp"
+#include "log.hpp"
 #include "obj_model.hpp"
 #include "texture.hpp"
 
@@ -68,12 +70,12 @@ static Vertex CreateVertex(const tinyobj::attrib_t& attrib, const tinyobj::index
     }
     else
     {
-        SDL_assert(false);
+        MppAssert(false);
     }
-    SDL_assert(magnitudeX < 64);
-    SDL_assert(magnitudeY < 64);
-    SDL_assert(magnitudeZ < 64);
-    SDL_assert(texcoordX < 256);
+    MppAssert(magnitudeX < 64);
+    MppAssert(magnitudeY < 64);
+    MppAssert(magnitudeZ < 64);
+    MppAssert(texcoordX < 256);
     Vertex vertex{};
     vertex |= (magnitudeX & 0x3F) << 0;
     vertex |= (directionX & 0x01) << 6;
@@ -93,13 +95,13 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
     tinyobj::ObjReader reader;
     if (!reader.ParseFromFile(objPath))
     {
-        SDL_Log("Failed to parse obj: %s", name.data());
+        MppLog("Failed to parse obj: %s", name.data());
         return false;
     }
     const tinyobj::attrib_t& attrib = reader.GetAttrib();
     const tinyobj::shape_t& shape = reader.GetShapes()[0];
     uint32_t maxIndexCount = shape.mesh.num_face_vertices.size() * 3;
-    SDL_assert(maxIndexCount <= std::numeric_limits<uint16_t>::max());
+    MppAssert(maxIndexCount <= std::numeric_limits<uint16_t>::max());
     SDL_GPUTransferBuffer* vertexTransferBuffer;
     SDL_GPUTransferBuffer* indexTransferBuffer;
     {
@@ -111,7 +113,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
         indexTransferBuffer = SDL_CreateGPUTransferBuffer(device, &info);
         if (!vertexTransferBuffer || !indexTransferBuffer)
         {
-            SDL_Log("Failed to create transfer buffer(s): %s, %s", name.data(), SDL_GetError());
+            MppLog("Failed to create transfer buffer(s): %s, %s", name.data(), SDL_GetError());
             return false;
         }
     }
@@ -119,7 +121,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
     uint16_t* indexData = static_cast<uint16_t*>(SDL_MapGPUTransferBuffer(device, indexTransferBuffer, false));
     if (!vertexData || !indexData)
     {
-        SDL_Log("Failed to map transfer buffer(s): %s, %s", name.data(), SDL_GetError());
+        MppLog("Failed to map transfer buffer(s): %s, %s", name.data(), SDL_GetError());
         return false;
     }
     uint32_t vertexCount = 0;
@@ -152,7 +154,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
         IndexBuffer = SDL_CreateGPUBuffer(device, &info);
         if (!VertexBuffer || !IndexBuffer)
         {
-            SDL_Log("Failed to create buffer(s): %s, %s", name.data(), SDL_GetError());
+            MppLog("Failed to create buffer(s): %s, %s", name.data(), SDL_GetError());
             return false;
         }
     }
@@ -173,7 +175,7 @@ bool MppObjModel::Load(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const s
     PaletteTexture = MppLoadTexture(device, copyPass, pngPath);
     if (!PaletteTexture)
     {
-        SDL_Log("Failed to load texture: %s", name.data());
+        MppLog("Failed to load texture: %s", name.data());
         return false;
     }
     return true;

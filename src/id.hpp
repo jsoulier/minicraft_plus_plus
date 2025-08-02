@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cassert>
 #include <cstdint>
 #include <limits>
+
+#include "assert.hpp"
 
 class MppIdFactory;
 
@@ -50,7 +51,7 @@ public:
     {
         static uint64_t type = 1;
         Type = type++;
-        assert(Type < std::numeric_limits<uint16_t>::max());
+        MppAssert(Type < std::numeric_limits<uint16_t>::max());
     }
 
     constexpr MppId Create(int64_t version)

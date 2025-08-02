@@ -4,6 +4,7 @@
 #include <cstring>
 #include <string_view>
 
+#include "log.hpp"
 #include "texture.hpp"
 
 SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass, const std::string_view& path)
@@ -14,7 +15,7 @@ SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass,
     void* srcData = stbi_load(path.data(), &width, &height, &channels, 4);
     if (!srcData)
     {
-        SDL_Log("Failed to load image: %s, %s", path.data(), stbi_failure_reason());
+        MppLog("Failed to load image: %s, %s", path.data(), stbi_failure_reason());
         return nullptr;
     }
     SDL_GPUTexture* texture;
@@ -31,7 +32,7 @@ SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass,
         texture = SDL_CreateGPUTexture(device, &info);
         if (!texture)
         {
-            SDL_Log("Failed to create texture: %s, %s", path.data(), SDL_GetError());
+            MppLog("Failed to create texture: %s, %s", path.data(), SDL_GetError());
             stbi_image_free(srcData);
             return nullptr;
         }
@@ -43,7 +44,7 @@ SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass,
         transferBuffer = SDL_CreateGPUTransferBuffer(device, &info);
         if (!transferBuffer)
         {
-            SDL_Log("Failed to create transfer buffer: %s, %s", path.data(), SDL_GetError());
+            MppLog("Failed to create transfer buffer: %s, %s", path.data(), SDL_GetError());
             stbi_image_free(srcData);
             SDL_ReleaseGPUTexture(device, texture);
             return nullptr;
@@ -52,7 +53,7 @@ SDL_GPUTexture* MppLoadTexture(SDL_GPUDevice* device, SDL_GPUCopyPass* copyPass,
     void* dstData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
     if (!dstData)
     {
-        SDL_Log("Failed to map transfer buffer: %s, %s", path.data(), SDL_GetError());
+        MppLog("Failed to map transfer buffer: %s, %s", path.data(), SDL_GetError());
         stbi_image_free(srcData);
         SDL_ReleaseGPUTexture(device, texture);
         return nullptr;
@@ -86,7 +87,7 @@ SDL_GPUTexture* MppCreateColorTexture(SDL_GPUDevice* device, SDL_Window* window,
     info.props = SDL_CreateProperties();
     if (!info.props)
     {
-        SDL_Log("Failed to create properties: %s", SDL_GetError());
+        MppLog("Failed to create properties: %s", SDL_GetError());
         return nullptr;
     }
     SDL_SetFloatProperty(info.props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_R_FLOAT, 0.0f);
@@ -100,7 +101,7 @@ SDL_GPUTexture* MppCreateColorTexture(SDL_GPUDevice* device, SDL_Window* window,
 #endif
     if (!texture)
     {
-        SDL_Log("Failed to create texture: %s", SDL_GetError());
+        MppLog("Failed to create texture: %s", SDL_GetError());
         return nullptr;
     }
     return texture;
@@ -134,7 +135,7 @@ SDL_GPUTexture* MppCreateDepthTexture(SDL_GPUDevice* device, int width, int heig
     info.props = SDL_CreateProperties();
     if (!info.props)
     {
-        SDL_Log("Failed to create properties: %s", SDL_GetError());
+        MppLog("Failed to create properties: %s", SDL_GetError());
         return nullptr;
     }
     SDL_SetFloatProperty(info.props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_DEPTH_FLOAT, 1.0f);
@@ -146,7 +147,7 @@ SDL_GPUTexture* MppCreateDepthTexture(SDL_GPUDevice* device, int width, int heig
 #endif
     if (!texture)
     {
-        SDL_Log("Failed to create texture: %s", SDL_GetError());
+        MppLog("Failed to create texture: %s", SDL_GetError());
         return nullptr;
     }
     return texture;

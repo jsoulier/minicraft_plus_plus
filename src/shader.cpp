@@ -1,7 +1,6 @@
 #include <SDL3/SDL.h>
 #include <nlohmann/json.hpp>
 
-#include <cassert>
 #include <cstdint>
 #include <exception>
 #include <format>
@@ -10,6 +9,8 @@
 #include <string>
 #include <string_view>
 
+#include "assert.hpp"
+#include "log.hpp"
 #include "shader.hpp"
 
 static void* Load(SDL_GPUDevice* device, const std::string_view& name)
@@ -37,20 +38,20 @@ static void* Load(SDL_GPUDevice* device, const std::string_view& name)
     }
     else
     {
-        assert(false);
+        MppAssert(false);
     }
     std::string shaderPath = std::format("{}.{}", name, fileExtension);
     std::ifstream shaderFile(shaderPath, std::ios::binary);
     if (shaderFile.fail())
     {
-        SDL_Log("Failed to open shader: %s", shaderPath.data());
+        MppLog("Failed to open shader: %s", shaderPath.data());
         return nullptr;
     }
     std::string jsonPath = std::format("{}.json", name);
     std::ifstream jsonFile(jsonPath, std::ios::binary);
     if (jsonFile.fail())
     {
-        SDL_Log("Failed to open json: %s", jsonPath.data());
+        MppLog("Failed to open json: %s", jsonPath.data());
         return nullptr;
     }
     std::string shaderData(std::istreambuf_iterator<char>(shaderFile), {});
@@ -61,7 +62,7 @@ static void* Load(SDL_GPUDevice* device, const std::string_view& name)
     }
     catch (const std::exception& exception)
     {
-        SDL_Log("Failed to parse json: %s, %s", jsonPath.data(), exception.what());
+        MppLog("Failed to parse json: %s, %s", jsonPath.data(), exception.what());
         return nullptr;
     }
     void* shader = nullptr;
@@ -106,7 +107,7 @@ static void* Load(SDL_GPUDevice* device, const std::string_view& name)
     }
     if (!shader)
     {
-        SDL_Log("Failed to create shader: %s, %s", name.data(), SDL_GetError());
+        MppLog("Failed to create shader: %s, %s", name.data(), SDL_GetError());
         return nullptr;
     }
     return shader;

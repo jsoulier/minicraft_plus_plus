@@ -28,7 +28,7 @@ public:
     MppId GetId() const;
     MppModel GetModel() const;
 
-private:
+protected:
     MppEntityType Type;
     MppTransform Transform;
     MppId Id;

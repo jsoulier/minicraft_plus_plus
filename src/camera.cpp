@@ -1,4 +1,3 @@
-#include <SDL3/SDL.h>
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,6 +6,7 @@
 #include <limits>
 
 #include "camera.hpp"
+#include "log.hpp"
 #include "ticks.hpp"
 #include "transform.hpp"
 
@@ -17,7 +17,7 @@ MppCamera::MppCamera()
     : Mode{MppCameraMode::Perspective}
     , Position{}
     , Pitch{glm::radians(-45.0f)}
-    , Yaw{glm::radians(-90.0f)}
+    , Yaw{glm::radians(90.0f)}
     , Width{1.0f}
     , Height{1.0f}
     , Fov{glm::radians(60.0f)}
@@ -53,7 +53,7 @@ void MppCamera::SetViewport(float width, float height)
     Height = std::max(height, 1.0f);
     if (width < kEpsilon || height < kEpsilon)
     {
-        SDL_Log("Bad viewport: %f, %f", width, height);
+        MppLog("Bad viewport: %f, %f", width, height);
     }
 }
 

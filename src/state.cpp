@@ -1,5 +1,8 @@
 #include <SDL3/SDL.h>
 
+#include "entity.hpp"
+#include "input.hpp"
+#include "log.hpp"
 #include "renderer.hpp"
 #include "state.hpp"
 #include "ticks.hpp"
@@ -12,6 +15,8 @@ static MppWindow window;
 static MppRenderer renderer;
 static MppTicks ticks;
 static MppState state;
+static MppInputType inputType = MppInputType::KeyboardMouse;
+static std::shared_ptr<MppEntity> player;
 
 bool MppStateInit()
 {
@@ -19,16 +24,17 @@ bool MppStateInit()
     SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
     if (!window.Init())
     {
-        SDL_Log("Failed to initialize window");
+        MppLog("Failed to initialize window");
         return false;
     }
     if (!renderer.Init(window))
     {
-        SDL_Log("Failed to initialize renderer");
+        MppLog("Failed to initialize renderer");
         return false;
     }
     ticks = MppTicks{0};
     state = MppState::Init;
+    player = MppEntity::Create(MppEntityType::Player);
     return true;
 }
 
@@ -45,12 +51,13 @@ static MppState Init()
 
 static MppState Play()
 {
-    renderer.Update({} /* TODO: player transform */, ticks);
-    /* TODO: update world */
+    player->Update(ticks);
+    renderer.Update(player->GetTransform(), ticks);
     renderer.Draw(MppModelDefault, MppTransform{glm::vec3{ 0.0f,   0.0f, -16.0f}, 0.0f});
     renderer.Draw(MppModelDefault, MppTransform{glm::vec3{ 32.0f,  0.0f, -16.0f}, 0.0f});
     renderer.Draw(MppModelDefault, MppTransform{glm::vec3{-32.0f,  0.0f, -16.0f}, 0.0f});
     renderer.Draw(MppModelDefault, MppTransform{glm::vec3{ 0.0f, -16.0f,  16.0f}, 0.3f});
+    renderer.Draw(MppModelDefault, player->GetTransform());
     return MppState::Play;
 }
 
@@ -86,4 +93,32 @@ bool MppStateTick()
     }
     renderer.EndFrame();
     return true;
+}
+
+MppState MppStateGet()
+{
+    return state;
+}
+
+MppInputType MppStateGetInputType()
+{
+    return inputType;
+}
+
+float MppStateGetInput(MppInput input)
+{
+    /* TODO: */
+    const bool* keys = SDL_GetKeyboardState(nullptr);
+    switch (input)
+    {
+    case MppInput::MoveNorth:
+        return keys[SDL_SCANCODE_W];
+    case MppInput::MoveSouth:
+        return keys[SDL_SCANCODE_S];
+    case MppInput::MoveEast:
+        return keys[SDL_SCANCODE_D];
+    case MppInput::MoveWest:
+        return keys[SDL_SCANCODE_A];
+    }
+    return 0.0f;
 }
