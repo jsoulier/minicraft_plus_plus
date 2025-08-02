@@ -2,10 +2,11 @@
 
 #include <cstdint>
 
-class MppTime
+class MppTicks
 {
 public:
-    MppTime(uint64_t savedTime);
+    MppTicks() = default;
+    MppTicks(uint64_t savedTime);
     void Tick();
     uint64_t GetCurrentTime() const;
     uint64_t GetDeltaTime() const;

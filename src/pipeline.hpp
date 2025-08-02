@@ -2,4 +2,6 @@
 
 #include <SDL3/SDL.h>
 
-SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, SDL_Window* window);
+class MppWindow;
+
+SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, MppWindow& window);

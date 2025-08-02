@@ -5,5 +5,5 @@
 class MppMobEntity : public MppEntity
 {
 public:
-    void Update(const MppTime& time) override;
+    void Update(const MppTicks& ticks) override;
 };

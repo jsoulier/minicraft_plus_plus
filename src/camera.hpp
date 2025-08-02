@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-class MppTime;
+class MppTicks;
 class MppTransform;
 
 enum class MppCameraMode
@@ -15,7 +15,7 @@ class MppCamera
 {
 public:
     MppCamera();
-    void Update(const MppTransform& target, const MppTime& time);
+    void Update(const MppTransform& transform, const MppTicks& ticks);
     void SetMode(MppCameraMode mode);
     void SetViewport(float width, float height);
     void SetPitch(float pitch);

@@ -35,9 +35,11 @@ add_executable(minicraft++ WIN32
     src/player_entity.cpp
     src/renderer.cpp
     src/shader.cpp
+    src/state.cpp
     src/texture.cpp
-    src/time.cpp
+    src/ticks.cpp
     src/vox_model.cpp
+    src/window.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 23)
 target_include_directories(minicraft++ PRIVATE lib/imgui)
@@ -47,6 +49,7 @@ target_link_libraries(minicraft++ PRIVATE glm)
 target_link_libraries(minicraft++ PRIVATE nlohmann_json)
 target_link_libraries(minicraft++ PRIVATE tinyobjloader)
 
+find_package(Vulkan)
 function(add_shader FILE)
     set(DEPENDS ${ARGN})
     set(GLSL ${CMAKE_SOURCE_DIR}/res/shaders/${FILE})
@@ -68,9 +71,9 @@ function(add_shader FILE)
         add_custom_target(${NAME} DEPENDS ${OUTPUT})
         add_dependencies(minicraft++ ${NAME})
     endfunction()
-    if (MSVC)
+    if (MSVC AND ${Vulkan_glslc_FOUND})
         set(SHADERCROSS lib/SDL_shadercross/msvc/shadercross.exe)
-        compile(glslc ${GLSL} ${SPV} -g)
+        compile(${Vulkan_GLSLC_EXECUTABLE} ${GLSL} ${SPV} -g)
         compile(${SHADERCROSS} ${SPV} ${DXIL})
         compile(${SHADERCROSS} ${SPV} ${MSL})
         compile(${SHADERCROSS} ${SPV} ${JSON})
@@ -98,8 +101,9 @@ function(add_shader FILE)
     endif()
     package(${JSON})
 endfunction()
-add_shader(obj_model.vert)
 add_shader(obj_model.frag)
+add_shader(obj_model.vert)
+add_shader(sampler.comp)
 
 function(add_model NAME)
     configure_file(res/models/${NAME}.obj ${BINARY_DIR} COPYONLY)

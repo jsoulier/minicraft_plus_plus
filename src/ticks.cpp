@@ -2,16 +2,16 @@
 
 #include <cstdint>
 
-#include "time.hpp"
+#include "ticks.hpp"
 
-MppTime::MppTime(uint64_t savedTime)
+MppTicks::MppTicks(uint64_t savedTime)
     : SavedTime{savedTime}
 {
     StartTime = SDL_GetTicksNS();
     Tick();
 }
 
-void MppTime::Tick()
+void MppTicks::Tick()
 {
     Time2 = SDL_GetTicksNS();
     DeltaTime = Time2 - Time1;
@@ -19,12 +19,12 @@ void MppTime::Tick()
     CurrentTime = SavedTime + Time2 - StartTime;
 }
 
-uint64_t MppTime::GetCurrentTime() const
+uint64_t MppTicks::GetCurrentTime() const
 {
     return CurrentTime;
 }
 
-uint64_t MppTime::GetDeltaTime() const
+uint64_t MppTicks::GetDeltaTime() const
 {
     return DeltaTime;
 }

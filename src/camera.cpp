@@ -7,7 +7,7 @@
 #include <limits>
 
 #include "camera.hpp"
-#include "time.hpp"
+#include "ticks.hpp"
 #include "transform.hpp"
 
 static constexpr glm::vec3 kUp{0.0f, 1.0f, 0.0f};
@@ -29,14 +29,14 @@ MppCamera::MppCamera()
     , ViewMatrix{}
     , ProjMatrix{} {}
 
-void MppCamera::Update(const MppTransform& target, const MppTime& time)
+void MppCamera::Update(const MppTransform& transform, const MppTicks& ticks)
 {
     glm::vec3 forward;
     forward.x = std::cosf(Yaw) * std::cosf(Pitch);
     forward.y = std::sinf(Pitch);
     forward.z = std::sinf(Yaw) * std::cosf(Pitch);
-    glm::vec3 destination = target.Position - forward * Distance;
-    Position = glm::mix(Position, destination, Speed /* TODO: time.GetDeltaTime() */);
+    glm::vec3 destination = transform.Position - forward * Distance;
+    Position = glm::mix(Position, destination, Speed /* TODO: ticks.GetDeltaTime() */);
     ViewMatrix = glm::lookAt(Position, Position + forward, kUp);
     ProjMatrix = glm::perspective(Fov, Width / Height, Near, Far);
     ViewProjMatrix = ProjMatrix * ViewMatrix;

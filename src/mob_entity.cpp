@@ -1,6 +1,6 @@
 #include "mob_entity.hpp"
-#include "time.hpp"
+#include "ticks.hpp"
 
-void MppMobEntity::Update(const MppTime& time)
+void MppMobEntity::Update(const MppTicks& ticks)
 {
 }

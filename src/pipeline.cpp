@@ -7,8 +7,9 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "transform.hpp"
+#include "window.hpp"
 
-SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, SDL_Window* window)
+SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, MppWindow& window)
 {
     SDL_GPUShader* fragShader = MppLoadShader(device, "obj_model.frag");
     SDL_GPUShader* vertShader = MppLoadShader(device, "obj_model.vert");
@@ -20,7 +21,7 @@ SDL_GPUGraphicsPipeline* MppCreateObjModelPipeline(SDL_GPUDevice* device, SDL_Wi
     SDL_GPUColorTargetDescription targets[1]{};
     SDL_GPUVertexBufferDescription buffers[2]{};
     SDL_GPUVertexAttribute attribs[3]{};
-    targets[0].format = SDL_GetGPUSwapchainTextureFormat(device, window);
+    targets[0].format = SDL_GetGPUSwapchainTextureFormat(device, window.GetHandle());
     buffers[0].slot = 0;
     buffers[0].pitch = sizeof(uint32_t);
     buffers[0].input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;

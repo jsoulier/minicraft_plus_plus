@@ -6,7 +6,7 @@
 #include "model.hpp"
 #include "transform.hpp"
 
-class MppTime;
+class MppTicks;
 
 enum class MppEntityType
 {
@@ -21,7 +21,7 @@ protected:
 
 public:
     static std::shared_ptr<MppEntity> Create(MppEntityType type, void* args = nullptr);
-    virtual void Update(const MppTime& time) = 0;
+    virtual void Update(const MppTicks& ticks) = 0;
     void SetId(MppId id);
     MppEntityType GetType() const;
     const MppTransform& GetTransform() const;
