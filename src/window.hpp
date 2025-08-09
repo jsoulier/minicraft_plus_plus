@@ -4,19 +4,17 @@
 #include <cstdint>
 #include <string_view>
 
-using MppColor = uint64_t;
+static constexpr int kBlack = 0;
+static constexpr int kGray = 444;
+static constexpr int kRed = 900;
+static constexpr int kGreen = 90;
+static constexpr int kBlue = 9;
+static constexpr int kYellow = 990;
+static constexpr int kCyan = 99;
+static constexpr int kMagenta = 909;
+static constexpr int kWhite = 999;
 
-static constexpr MppColor kBlack = 0;
-static constexpr MppColor kGray = 444;
-static constexpr MppColor kRed = 900;
-static constexpr MppColor kGreen = 90;
-static constexpr MppColor kBlue = 9;
-static constexpr MppColor kYellow = 990;
-static constexpr MppColor kCyan = 99;
-static constexpr MppColor kMagenta = 909;
-static constexpr MppColor kWhite = 999;
-
-enum MppSpriteSize : uint64_t
+enum MppSpriteSize
 {
     MppSpriteSize2,
     MppSpriteSize4,
@@ -38,32 +36,32 @@ enum MppSpriteSize : uint64_t
 using MppSprite = uint64_t;
 
 constexpr MppSprite MppCreateSprite(
-    MppColor color1,
-    MppColor color2,
-    MppColor color3,
-    MppColor color4,
-    MppColor color5,
+    int colour1,
+    int colour2,
+    int colour3,
+    int colour4,
+    int colour5,
     uint64_t x,
     uint64_t y,
     MppSpriteSize size)
 {
-    assert(color1 < 1024);
-    assert(color2 < 1024);
-    assert(color3 < 1024);
-    assert(color4 < 1024);
-    assert(color5 < 1024);
+    assert(colour1 < 1024);
+    assert(colour2 < 1024);
+    assert(colour3 < 1024);
+    assert(colour4 < 1024);
+    assert(colour5 < 1024);
     assert(x < 64);
     assert(y < 64);
     assert(size < MppSpriteSizeCount);
     MppSprite sprite = 0;
-    sprite |= color1 << 0;
-    sprite |= color2 << 10;
-    sprite |= color3 << 20;
-    sprite |= color4 << 30;
-    sprite |= color5 << 40;
+    sprite |= static_cast<uint64_t>(colour1) << 0;
+    sprite |= static_cast<uint64_t>(colour2) << 10;
+    sprite |= static_cast<uint64_t>(colour3) << 20;
+    sprite |= static_cast<uint64_t>(colour4) << 30;
+    sprite |= static_cast<uint64_t>(colour5) << 40;
     sprite |= x << 50;
     sprite |= y << 56;
-    sprite |= size << 62;
+    sprite |= static_cast<uint64_t>(size) << 62;
     return sprite;
 }
 
@@ -72,4 +70,5 @@ void MppDestroyWindow();
 void MppClearWindow();
 void MppPresentWindow();
 void MppDraw(MppSprite sprite, float x, float y);
-void MppDraw(const std::string_view& text, float x, float y, MppColor color, int size);
+void MppDraw(const std::string_view& text, float x, float y, int colour, int size);
+void MppDraw(const std::string_view& name, int colour1, int colour2, int colour3, int colour4, int colour5);

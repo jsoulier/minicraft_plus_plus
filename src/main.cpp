@@ -26,7 +26,8 @@ int main(int argc, char** argv)
             }
         }
         MppClearWindow();
-        MppDraw("fps = 1 billion", 128, 32, kGreen, 4);
+        MppDraw("inventory.png", kBlue, kBlack, kWhite, 0, 0);
+        MppDraw("hotbar.png", kBlue, kBlack, kWhite, 0, 0);
         MppPresentWindow();
     }
     MppDestroyWindow();

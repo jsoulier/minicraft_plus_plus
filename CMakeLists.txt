@@ -101,5 +101,7 @@ endfunction()
 
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)
-configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
 configure_file(res/fonts/raster_forge.ttf ${BINARY_DIR} COPYONLY)
+configure_file(res/textures/hotbar.png ${BINARY_DIR} COPYONLY)
+configure_file(res/textures/inventory.png ${BINARY_DIR} COPYONLY)
+configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
