@@ -12,6 +12,7 @@ make_directory(${BINARY_DIR})
 
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)
+configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
 
 add_subdirectory(lib/FastNoiseLite)
 add_subdirectory(lib/SDL)
@@ -19,8 +20,24 @@ add_subdirectory(lib/box2d)
 add_subdirectory(lib/savepoint)
 
 add_executable(minicraft++ WIN32
-    src/main.cpp
+    src/ai_controller.cpp
+    src/app.cpp
+    src/color.cpp
+    src/controller.cpp
+    src/entity.cpp
+    src/humanoid_entity.cpp
+    src/item.cpp
+    src/item_entity.cpp
+    src/mob_entity.cpp
+    src/player_controller.cpp
+    src/player_entity.cpp
+    src/renderer.cpp
+    src/slime_entity.cpp
+    src/sprite.cpp
+    src/tile.cpp
+    src/world.cpp
 )
+set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)
 target_link_libraries(minicraft++ PRIVATE
     FastNoiseLite::FastNoiseLite
     SDL3::SDL3
