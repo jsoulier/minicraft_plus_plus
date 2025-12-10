@@ -6,5 +6,5 @@
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
 {
-    SetController(std::make_shared<MppPlayerController>());
+    SetController(std::make_shared<MppPlayerController>(*this));
 }

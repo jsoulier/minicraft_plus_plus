@@ -10,7 +10,7 @@ class MppMobEntity : public MppEntity
 {
 public:
     MppMobEntity();
-    void Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks) override;
+    void Update(const std::shared_ptr<MppLevel>& level, MppRenderer& renderer, float dt, float ticks) override;
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);

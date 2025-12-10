@@ -5,5 +5,5 @@
 class MppPlayerController : public MppController
 {
 public:
-
+    MppPlayerController(MppMobEntity& entity);
 };

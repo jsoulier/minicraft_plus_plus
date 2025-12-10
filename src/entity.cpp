@@ -16,10 +16,20 @@ void MppEntity::Visit(SavepointVisitor& visitor)
 
 void MppEntity::SetX(float x)
 {
-
+    X = x;
 }
 
 void MppEntity::SetY(float y)
 {
+    Y = y;
+}
 
+float MppEntity::GetX() const
+{
+    return X;
+}
+
+float MppEntity::GetY() const
+{
+    return Y;
 }

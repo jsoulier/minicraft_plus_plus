@@ -16,7 +16,17 @@ MppSprite::MppSprite()
 {
 }
 
-MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int inSize)
+MppSprite::MppSprite(char c, int color)
+    : MppSprite(color, 0, 0, 0, 0, c % 16 + 16, c / 16, 8)
+{
+}
+
+MppSprite::MppSprite(int color)
+    : MppSprite(color, 0, 0, 0, 0, 0, 0, 16)
+{
+}
+
+MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int s)
     : Value{}
 {
     enum Size
@@ -27,7 +37,7 @@ MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int i
     static_assert(kSizes[Size8] == 8);
     static_assert(kSizes[Size16] == 16);
     Size size;
-    switch (inSize)
+    switch (s)
     {
     case 8:
         size = Size8;
@@ -55,18 +65,6 @@ MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int i
     Value |= static_cast<uint64_t>(x) << 50;
     Value |= static_cast<uint64_t>(y) << 56;
     Value |= static_cast<uint64_t>(size) << 62;
-}
-
-MppSprite MppSprite::Character(char character, int color)
-{
-    int x = character % 16 + 16;
-    int y = character / 16;
-    return MppSprite(color, 0, 0, 0, 0, x, y, 8);
-}
-
-MppSprite MppSprite::Debug(int color)
-{
-    return MppSprite(color, 0, 0, 0, 0, 0, 0, 16);
 }
 
 size_t MppSprite::GetPaletteKey() const

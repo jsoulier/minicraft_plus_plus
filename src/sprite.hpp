@@ -9,9 +9,9 @@ class MppSprite
 {
 public:
     MppSprite();
+    MppSprite(char character, int color);
+    MppSprite(int color);
     MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int size);
-    static MppSprite Character(char character, int color);
-    static MppSprite Debug(int color);
     size_t GetPaletteKey() const;
     size_t GetSurfaceKey() const;
     size_t GetTextureKey() const;

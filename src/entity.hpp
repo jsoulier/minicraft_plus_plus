@@ -2,19 +2,23 @@
 
 #include <savepoint.hpp>
 
-class MppWorld;
+#include <memory>
+
+class MppLevel;
 class MppRenderer;
 
 class MppEntity : public SavepointBase
 {
-    friend class MppWorld;
+    friend class MppLevel;
 
 public:
     MppEntity();
-    virtual void Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks) = 0;
+    virtual void Update(const std::shared_ptr<MppLevel>& level, MppRenderer& renderer, float dt, float ticks) = 0;
     virtual void Visit(SavepointVisitor& visitor) override;
     void SetX(float x);
     void SetY(float y);
+    float GetX() const;
+    float GetY() const;
 
 private:
     SavepointID ID;
