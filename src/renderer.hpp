@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "camera.hpp"
 #include "color.hpp"
 #include "sprite.hpp"
 
@@ -29,7 +30,9 @@ public:
     MppRenderer();
     bool Init();
     void Quit();
-    void Update();
+    void Update(float dt);
+    void SetCamera(float x, float y);
+    const MppCamera& GetCamera() const;
     void Draw(MppSprite sprite, float x, float y, Layer layer);
 
 private:
@@ -51,6 +54,5 @@ private:
     std::unordered_map<size_t, SDL_Surface*> SpriteSurfaces;
     std::unordered_map<size_t, SDL_Texture*> SpriteTextures;
     std::array<std::vector<Sprite>, LayerCount> Sprites;
-    float CameraX;
-    float CameraY;
+    MppCamera Camera;
 };

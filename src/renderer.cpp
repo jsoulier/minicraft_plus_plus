@@ -20,9 +20,8 @@ MppRenderer::MppRenderer()
     : Window{nullptr}
     , Renderer{nullptr}
     , Spritesheet{nullptr}
-    , CameraX{0.0f}
-    , CameraY{0.0f}
 {
+    Camera.SetSize(kWidth, kHeight);
 }
 
 bool MppRenderer::Init()
@@ -73,7 +72,7 @@ void MppRenderer::Quit()
     Window = nullptr;
 }
 
-void MppRenderer::Update()
+void MppRenderer::Update(float dt)
 {
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
     SDL_RenderClear(Renderer);
@@ -88,6 +87,17 @@ void MppRenderer::Update()
         sprites.clear();
     }
     SDL_RenderPresent(Renderer);
+    Camera.Update(dt);
+}
+
+void MppRenderer::SetCamera(float x, float y)
+{
+    Camera.SetPosition(x, y);
+}
+
+const MppCamera& MppRenderer::GetCamera() const
+{
+    return Camera;
 }
 
 void MppRenderer::Draw(MppSprite sprite, float x, float y, Layer layer)
@@ -164,8 +174,8 @@ void MppRenderer::Draw(const Sprite& sprite)
         return;
     }
     SDL_FRect rect;
-    rect.x = sprite.X - size / 2 - CameraX;
-    rect.y = sprite.Y - size / 2 - CameraY;
+    rect.x = sprite.X - size / 2 - Camera.X;
+    rect.y = sprite.Y - size / 2 - Camera.Y;
     rect.w = size;
     rect.h = size;
     SDL_RenderTexture(Renderer, textureIt->second, nullptr, &rect);

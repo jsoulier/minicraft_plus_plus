@@ -21,6 +21,7 @@ add_subdirectory(lib/savepoint)
 
 add_executable(minicraft++ WIN32
     src/ai_controller.cpp
+    src/camera.cpp
     src/color.cpp
     src/controller.cpp
     src/entity.cpp

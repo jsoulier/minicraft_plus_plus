@@ -11,44 +11,44 @@ MppLevel::MppLevel()
 
 void MppLevel::Generate()
 {
+    for (int x = 0; x < kWidth; x++)
+    for (int y = 0; y < kWidth; y++)
+    {
+        Tiles[x][y] = Generate(x, y);
+    }
 }
 
 void MppLevel::Load(Savepoint& savepoint, int level)
 {
-    savepoint.Read([&](SavepointBase* base, SavepointID id)
+    savepoint.Read([this](SavepointBase* base, SavepointID id)
     {
         MppEntity* entity = dynamic_cast<MppEntity*>(base);
-        if (!entity)
+        if (entity)
+        {
+            entity->ID = id;
+            AddEntity(std::shared_ptr<MppEntity>(entity));
+        }
+        else
         {
             SDL_Log("Bad entity");
-            return;
         }
-        entity->ID = id;
-        AddEntity(std::shared_ptr<MppEntity>(entity));
     }, level);
-    savepoint.Read([&](SavepointVisitor& visitor, int x, int y)
+    savepoint.Read([this](SavepointVisitor& visitor, int x, int y)
     {
-        MppTile tile;
-        visitor(tile);
-        SetTile(tile, x, y);
+        if (IsValid(x, y))
+        {
+            visitor(Tiles[x][y]);
+        }
     }, level);
+}
+
+void MppLevel::Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks)
+{
 }
 
 void MppLevel::AddEntity(const std::shared_ptr<MppEntity>& entity)
 {
     Entities.push_back(entity);
-}
-
-void MppLevel::SetTile(MppTile tile, int x, int y)
-{
-    if (IsValid(x, y))
-    {
-        Tiles[x][y] = tile;
-    }
-    else
-    {
-        SDL_Log("Bad tile position: %d, %d", x, y);
-    }
 }
 
 const MppTile& MppLevel::GetTile(int x, int y) const

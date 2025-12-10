@@ -27,7 +27,7 @@ MppSprite::MppSprite(int color)
 }
 
 MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int s)
-    : Value{}
+    : Value{0}
 {
     enum Size
     {

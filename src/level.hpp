@@ -9,6 +9,9 @@
 #include "entity.hpp"
 #include "tile.hpp"
 
+class MppRenderer;
+class MppWorld;
+
 class MppLevel
 {
 public:
@@ -17,8 +20,8 @@ public:
     MppLevel();
     void Generate();
     void Load(Savepoint& savepoint, int level);
+    void Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks);
     void AddEntity(const std::shared_ptr<MppEntity>& entity);
-    void SetTile(MppTile tile, int x, int y);
     const MppTile& GetTile(int x, int y) const;
     bool IsValid(int x, int y) const;
 
