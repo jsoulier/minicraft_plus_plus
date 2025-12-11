@@ -48,3 +48,18 @@ target_link_libraries(minicraft++ PRIVATE
     box2d::box2d
     savepoint::savepoint
 )
+target_precompile_headers(minicraft++ PRIVATE
+    <algorithm>
+    <array>
+    <cmath>
+    <cstddef>
+    <cstdint>
+    <filesystem>
+    <format>
+    <limits>
+    <memory>
+    <string>
+    <string_view>
+    <unordered_map>
+    <vector>
+)

@@ -54,10 +54,10 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
+    world.Update(renderer, 0.0f, 0.0f);
     renderer.Draw(MppSprite(kMppColorRed), 16, 32, MppRenderer::LayerDebug);
     renderer.Draw(MppSprite('A', kMppColorGreen), 32, 32, MppRenderer::LayerDebug);
     renderer.Draw(MppSprite('P', kMppColorBlue), 48, 32, MppRenderer::LayerDebug);
-    world.Update(renderer, 0.0f, 0.0f);
     renderer.Update(0.0f);
     return SDL_APP_CONTINUE;
 }
@@ -79,7 +79,8 @@ SDL_AppResult SDLCALL SDL_AppEvent(void* appstate, SDL_Event* event)
 
 void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
-    savepoint.Save();
+    // TODO: save
+    // savepoint.Save();
     world.Quit();
     savepoint.Close();
     renderer.Quit();

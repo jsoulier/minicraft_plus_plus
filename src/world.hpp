@@ -25,7 +25,9 @@ public:
     bool Init(Savepoint& savepoint, SavepointStatus status);
     void Quit();
     void Update(MppRenderer& renderer, float dt, float ticks);
+    void SetLevel(int level);
 
 private:
     std::array<std::shared_ptr<MppLevel>, LevelCount> Levels;
+    int LevelIndex;
 };

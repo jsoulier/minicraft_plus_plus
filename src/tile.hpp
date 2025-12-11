@@ -4,13 +4,13 @@
 
 enum MppTileType
 {
-    MppTileTypeInvalid,
+    MppTileTypeGrass,
     MppTileTypeDirt,
     MppTileTypeStone,
     MppTileTypeTree,
     MppTileTypeSand,
-    MppTileTypeGrass,
     MppTileTypeCount,
+    MppTileTypeInvalid = MppTileTypeCount,
 };
 
 class MppLevel;

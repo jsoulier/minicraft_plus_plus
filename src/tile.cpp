@@ -3,6 +3,7 @@
 
 #include "level.hpp"
 #include "renderer.hpp"
+#include "sprite.hpp"
 #include "tile.hpp"
 
 enum TileSpriteType

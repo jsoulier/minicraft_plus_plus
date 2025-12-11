@@ -10,6 +10,7 @@
 #include "world.hpp"
 
 MppWorld::MppWorld()
+    : LevelIndex{-1}
 {
 }
 
@@ -24,15 +25,20 @@ bool MppWorld::Init(Savepoint& savepoint, SavepointStatus status)
     case SavepointStatus::Existing:
         for (int level = 0; level < LevelCount; level++)
         {
-            Levels[level]->Load(savepoint, level);
+            Levels[level]->Load(*this, savepoint, level);
         }
         break;
     case SavepointStatus::New:
         for (int level = 0; level < LevelCount; level++)
         {
-            Levels[level]->Generate();
+            Levels[level]->Generate(*this, level);
         }
         break;
+    }
+    if (LevelIndex == -1)
+    {
+        SDL_Log("Missing player");
+        return false;
     }
     return true;
 }
@@ -43,4 +49,10 @@ void MppWorld::Quit()
 
 void MppWorld::Update(MppRenderer& renderer, float dt, float ticks)
 {
+    Levels[LevelIndex]->Update(*this, renderer, dt, ticks);
+}
+
+void MppWorld::SetLevel(int level)
+{
+    LevelIndex = level;
 }

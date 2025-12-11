@@ -18,8 +18,8 @@ MppCamera::MppCamera()
 
 void MppCamera::SetPosition(float x, float y)
 {
-    X = x;
-    Y = y;
+    X = x - Width / 2;
+    Y = y - Height / 2;
 }
 
 void MppCamera::SetSize(float width, float height)

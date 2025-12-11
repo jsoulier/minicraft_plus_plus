@@ -15,18 +15,18 @@ class MppWorld;
 class MppLevel
 {
 public:
-    static constexpr int kWidth = 256;
+    static constexpr int kWidth = 128;
 
     MppLevel();
-    void Generate();
-    void Load(Savepoint& savepoint, int level);
+    virtual void Generate(MppWorld& world, int level);
+    void Load(MppWorld& world, Savepoint& savepoint, int level);
     void Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks);
     void AddEntity(const std::shared_ptr<MppEntity>& entity);
     const MppTile& GetTile(int x, int y) const;
     bool IsValid(int x, int y) const;
 
 protected:
-    virtual MppTileType Generate(int x, int y) const = 0;
+    virtual MppTileType Generate(float x, float y) const = 0;
 
 private:
     std::array<std::array<MppTile, kWidth>, kWidth> Tiles;

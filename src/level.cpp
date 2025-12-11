@@ -3,13 +3,18 @@
 
 #include <memory>
 
+#include "camera.hpp"
+#include "entity.hpp"
 #include "level.hpp"
+#include "player_entity.hpp"
+#include "renderer.hpp"
+#include "world.hpp"
 
 MppLevel::MppLevel()
 {
 }
 
-void MppLevel::Generate()
+void MppLevel::Generate(MppWorld& world, int level)
 {
     for (int x = 0; x < kWidth; x++)
     for (int y = 0; y < kWidth; y++)
@@ -18,14 +23,19 @@ void MppLevel::Generate()
     }
 }
 
-void MppLevel::Load(Savepoint& savepoint, int level)
+void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
 {
-    savepoint.Read([this](SavepointBase* base, SavepointID id)
+    int logs = 0;
+    savepoint.Read([&](SavepointBase* base, SavepointID id)
     {
         MppEntity* entity = dynamic_cast<MppEntity*>(base);
         if (entity)
         {
             entity->ID = id;
+            if (dynamic_cast<MppPlayerEntity*>(entity))
+            {
+                world.SetLevel(level);
+            }
             AddEntity(std::shared_ptr<MppEntity>(entity));
         }
         else
@@ -33,17 +43,46 @@ void MppLevel::Load(Savepoint& savepoint, int level)
             SDL_Log("Bad entity");
         }
     }, level);
-    savepoint.Read([this](SavepointVisitor& visitor, int x, int y)
+    savepoint.Read([&](SavepointVisitor& visitor, int x, int y)
     {
         if (IsValid(x, y))
         {
             visitor(Tiles[x][y]);
         }
+        else if (logs++ < 100)
+        {
+            SDL_Log("Bad tile: %d, %d", x, y);
+        }
     }, level);
+    for (int x = 0; x < kWidth; x++)
+    for (int y = 0; y < kWidth; y++)
+    {
+        if (Tiles[x][y].IsValid())
+        {
+            continue;
+        }
+        if (logs++ < 100)
+        {
+            SDL_Log("Bad tile: %d, %d", x, y);
+        }
+        Tiles[x][y] = Generate(x, y);
+    }
 }
 
 void MppLevel::Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks)
 {
+    const MppCamera& camera = renderer.GetCamera();
+    SDL_assert(IsValid(camera.TileX1, camera.TileY1));
+    SDL_assert(IsValid(camera.TileX2, camera.TileY2));
+    for (int x = camera.TileX1; x <= camera.TileX2; x++)
+    for (int y = camera.TileY1; y <= camera.TileY2; y++)
+    {
+        Tiles[x][y].Update(*this, renderer, x, y, dt, ticks);
+    }
+    for (std::shared_ptr<MppEntity>& entity : Entities)
+    {
+        entity->Update(*this, renderer, dt, ticks);
+    }
 }
 
 void MppLevel::AddEntity(const std::shared_ptr<MppEntity>& entity)
