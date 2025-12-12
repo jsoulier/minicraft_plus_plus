@@ -12,7 +12,10 @@ public:
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);
+    virtual float GetSpeed() const;
 
 private:
+    void Move(float dt, float ticks);
+
     std::shared_ptr<MppController> Controller;
 };

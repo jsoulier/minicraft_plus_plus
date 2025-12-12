@@ -30,8 +30,11 @@ void MppCamera::SetSize(float width, float height)
 
 void MppCamera::Update(float dt)
 {
-    TileX1 = std::max(int(X / MppTile::kWidth), 0);
-    TileY1 = std::max(int(Y / MppTile::kWidth), 0);
-    TileX2 = std::min(int((X + Width) / MppTile::kWidth), MppLevel::kWidth - 1);
-    TileY2 = std::min(int((Y + Height) / MppTile::kWidth), MppLevel::kWidth - 1);
+    // TODO: remove clamps when I add camera constraints
+    int min = 0;
+    int max = MppLevel::kWidth - 1;
+    TileX1 = std::clamp(int(X / MppTile::kWidth), min, max);
+    TileY1 = std::clamp(int(Y / MppTile::kWidth), min, max);
+    TileX2 = std::clamp(int((X + Width) / MppTile::kWidth) + 1, min, max);
+    TileY2 = std::clamp(int((Y + Height) / MppTile::kWidth) + 1, min, max);
 }
