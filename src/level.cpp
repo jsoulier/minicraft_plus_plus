@@ -11,6 +11,8 @@
 #include "world.hpp"
 
 MppLevel::MppLevel()
+    : Tiles{}
+    , Entities{}
 {
 }
 

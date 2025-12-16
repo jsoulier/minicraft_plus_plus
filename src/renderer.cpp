@@ -78,13 +78,36 @@ void MppRenderer::Update(float dt)
     SDL_RenderClear(Renderer);
     for (int layer = 0; layer < LayerCount; layer++)
     {
-        std::vector<Sprite>& sprites = Sprites[layer];
-        std::sort(sprites.begin(), sprites.end());
-        for (const Sprite& sprite : sprites)
+        Commands& commands = LayerCommands[layer];
+        std::sort(commands.Sprites.begin(), commands.Sprites.end());
+        for (const Sprite& sprite : commands.Sprites)
         {
             Draw(sprite);
         }
-        sprites.clear();
+        for (const Quad& quad : commands.Quads)
+        {
+            SDL_FRect rect;
+            rect.x = quad.X - Camera.X;
+            rect.y = quad.Y - Camera.Y;
+            rect.w = quad.Width;
+            rect.h = quad.Height;
+            SDL_Color color = MppColorGet(quad.Color);
+            SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+            SDL_RenderFillRect(Renderer, &rect);
+        }
+        for (const Line& line : commands.Lines)
+        {
+            float x1 = line.X1 - Camera.X;
+            float y1 = line.Y1 - Camera.Y;
+            float x2 = line.X2 - Camera.X;
+            float y2 = line.Y2 - Camera.Y;
+            SDL_Color color = MppColorGet(line.Color);
+            SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+            SDL_RenderLine(Renderer, x1, y1, x2, y2);
+        }
+        commands.Sprites.clear();
+        commands.Quads.clear();
+        commands.Lines.clear();
     }
     SDL_RenderPresent(Renderer);
     Camera.Update(dt);
@@ -102,7 +125,17 @@ const MppCamera& MppRenderer::GetCamera() const
 
 void MppRenderer::Draw(MppSprite sprite, float x, float y, Layer layer)
 {
-    Sprites[layer].emplace_back(sprite, x, y);
+    LayerCommands[layer].Sprites.emplace_back(sprite, x, y);
+}
+
+void MppRenderer::DrawRect(int color, float x, float y, float width, float height, Layer layer)
+{
+    LayerCommands[layer].Quads.emplace_back(color, x, y, width, height);
+}
+
+void MppRenderer::DrawLine(int color, float x1, float y1, float x2, float y2, Layer layer)
+{
+    LayerCommands[layer].Lines.emplace_back(color, x1, y1, x2, y2);
 }
 
 bool MppRenderer::Sprite::operator<(const MppRenderer::Sprite& other) const

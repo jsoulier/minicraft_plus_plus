@@ -8,5 +8,4 @@ enum MppPhysicsType
     MppPhysicsTypeMobEntity  = 0x08,
 };
 
-bool MppPhysicsTest(float x1, float y1, int s1, float x2, float y2, int s2);
-bool MppPhysicsTestTile(float x1, float y1, int s1, int x2, int y2);
+bool MppPhysicsTest(float x1, float y1, int w1, int h1, float x2, float y2, int w2, int h2);

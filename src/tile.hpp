@@ -29,10 +29,17 @@ public:
     void Visit(SavepointVisitor& visitor);
     MppTileType GetType() const;
     MppPhysicsType GetPhysicsType() const;
+    int GetPhysicsX(int x) const;
+    int GetPhysicsY(int y) const;
+    int GetPhysicsWidth() const;
+    int GetPhysicsHeight() const;
     bool operator==(const MppTile& other) const;
     bool IsValid() const;
 
 private:
+    void Render(const MppLevel& level, MppRenderer& renderer, int x, int y);
+    void RenderPhysics(MppRenderer& renderer, int x, int y);
+
     MppTileType Type;
 };
 

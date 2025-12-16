@@ -64,9 +64,6 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     uint64_t ticks = time2 / 1e6;
     time1 = time2;
     world.Update(renderer, dt, ticks);
-    renderer.Draw(MppSprite(kMppColorRed), 16, 32, MppRenderer::LayerDebug);
-    renderer.Draw(MppSprite('A', kMppColorGreen), 32, 32, MppRenderer::LayerDebug);
-    renderer.Draw(MppSprite('P', kMppColorBlue), 48, 32, MppRenderer::LayerDebug);
     renderer.Update(dt);
     return SDL_APP_CONTINUE;
 }

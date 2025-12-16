@@ -9,4 +9,10 @@ class MppItemEntity : public MppEntity
 public:
     void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks) override;
     int GetSize() const override;
+    float GetPhysicsWidth() const override;
+    float GetPhysicsHeight() const override;
+    
+protected:
+    int GetPhysicsOffsetX() const override;
+    int GetPhysicsOffsetY() const override;
 };

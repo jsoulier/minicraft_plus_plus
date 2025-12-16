@@ -16,6 +16,7 @@ MppMobEntity::MppMobEntity()
 void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
 {
     Move(level, dt, ticks);
+    MppEntity::Update(level, renderer, dt, ticks);
     renderer.Draw(MppSprite(kMppColorWhite), X, Y, MppRenderer::LayerMobEntity);
 }
 

@@ -22,6 +22,7 @@ add_executable(minicraft++ WIN32
     src/ai_controller.cpp
     src/camera.cpp
     src/color.cpp
+    src/console.cpp
     src/controller.cpp
     src/entity.cpp
     src/humanoid_entity.cpp
@@ -48,6 +49,8 @@ target_link_libraries(minicraft++ PRIVATE
     savepoint::savepoint
 )
 target_precompile_headers(minicraft++ PRIVATE
+    <SDL3/SDL.h>
+    <FastNoiseLite.h>
     <algorithm>
     <array>
     <cmath>
