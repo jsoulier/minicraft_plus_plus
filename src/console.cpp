@@ -20,4 +20,5 @@ private:
 template<typename T>
 Variable(T& value) -> Variable<T>;
 
+VARIABLE(DebugFrustum, false)
 VARIABLE(DebugPhysics, false)

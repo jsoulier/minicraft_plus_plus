@@ -20,7 +20,7 @@ public:
     MppLevel();
     virtual void Generate(MppWorld& world, int level);
     void Load(MppWorld& world, Savepoint& savepoint, int level);
-    void Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks);
+    void Update(MppWorld& world, MppRenderer& renderer, int ticks);
     void AddEntity(const std::shared_ptr<MppEntity>& entity);
     const MppTile& GetTile(int x, int y) const;
     bool IsValid(int x, int y) const;

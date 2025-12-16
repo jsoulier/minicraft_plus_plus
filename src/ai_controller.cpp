@@ -5,6 +5,6 @@ MppAIController::MppAIController(MppMobEntity& entity)
 {
 }
 
-void MppAIController::GetMovement(float& dx, float& dy)
+void MppAIController::Update(MppLevel& level, int ticks)
 {
 }

@@ -18,8 +18,7 @@ static const std::filesystem::path kSavepoint = kPrefPath / "minicraft++.sqlite3
 static MppWorld world;
 static MppRenderer renderer;
 static Savepoint savepoint;
-static uint64_t time1;
-static uint64_t time2;
+static int ticks = 0;
 
 SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 {
@@ -52,19 +51,14 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
         SDL_Log("Failed to initialize world");
         return SDL_APP_FAILURE;
     }
-    time2 = SDL_GetTicksNS();
-    time1 = time2;
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
-    time2 = SDL_GetTicksNS();
-    float dt = (time2 - time1) / 1e6;
-    uint64_t ticks = time2 / 1e6;
-    time1 = time2;
-    world.Update(renderer, dt, ticks);
-    renderer.Update(dt);
+    ticks++;
+    world.Update(renderer, ticks);
+    renderer.Update(ticks);
     return SDL_APP_CONTINUE;
 }
 

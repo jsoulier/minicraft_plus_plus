@@ -243,7 +243,7 @@ MppTile::MppTile(MppTileType type)
 {
 }
 
-void MppTile::Update(MppLevel& level, MppRenderer& renderer, int x, int y, float dt, float ticks)
+void MppTile::Update(MppLevel& level, MppRenderer& renderer, int x, int y, float ticks)
 {
     SDL_assert(IsValid());
     Render(level, renderer, x, y);

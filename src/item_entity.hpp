@@ -7,10 +7,10 @@ class MppItemEntity : public MppEntity
     SAVEPOINT_DERIVED(MppItemEntity)
 
 public:
-    void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks) override;
+    void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
     int GetSize() const override;
-    float GetPhysicsWidth() const override;
-    float GetPhysicsHeight() const override;
+    int GetPhysicsWidth() const override;
+    int GetPhysicsHeight() const override;
     
 protected:
     int GetPhysicsOffsetX() const override;

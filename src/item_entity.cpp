@@ -1,9 +1,9 @@
 #include "item.hpp"
 #include "item_entity.hpp"
 
-void MppItemEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
+void MppItemEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
-    MppEntity::Update(level, renderer, dt, ticks);
+    MppEntity::Update(level, renderer, ticks);
 }
 
 int MppItemEntity::GetSize() const
@@ -11,12 +11,12 @@ int MppItemEntity::GetSize() const
     return MppItem::kWidth;
 }
 
-float MppItemEntity::GetPhysicsWidth() const
+int MppItemEntity::GetPhysicsWidth() const
 {
     return 0;
 }
 
-float MppItemEntity::GetPhysicsHeight() const
+int MppItemEntity::GetPhysicsHeight() const
 {
     return 0;
 }

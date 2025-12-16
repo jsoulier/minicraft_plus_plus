@@ -3,14 +3,14 @@
 struct MppCamera
 {
     MppCamera();
-    void SetPosition(float x, float y, float size);
-    void SetSize(float width, float height);
-    void Update(float dt);
+    void SetPosition(int x, int y, int size);
+    void SetSize(int width, int height);
+    void Update(int dt);
 
-    float X;
-    float Y;
-    float Width;
-    float Height;
+    int X;
+    int Y;
+    int Width;
+    int Height;
     int TileX1;
     int TileX2;
     int TileY1;

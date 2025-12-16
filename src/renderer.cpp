@@ -72,7 +72,7 @@ void MppRenderer::Quit()
     Window = nullptr;
 }
 
-void MppRenderer::Update(float dt)
+void MppRenderer::Update(int dt)
 {
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
     SDL_RenderClear(Renderer);
@@ -97,10 +97,10 @@ void MppRenderer::Update(float dt)
         }
         for (const Line& line : commands.Lines)
         {
-            float x1 = line.X1 - Camera.X;
-            float y1 = line.Y1 - Camera.Y;
-            float x2 = line.X2 - Camera.X;
-            float y2 = line.Y2 - Camera.Y;
+            int x1 = line.X1 - Camera.X;
+            int y1 = line.Y1 - Camera.Y;
+            int x2 = line.X2 - Camera.X;
+            int y2 = line.Y2 - Camera.Y;
             SDL_Color color = MppColorGet(line.Color);
             SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
             SDL_RenderLine(Renderer, x1, y1, x2, y2);
@@ -113,7 +113,7 @@ void MppRenderer::Update(float dt)
     Camera.Update(dt);
 }
 
-void MppRenderer::SetCamera(float x, float y, float size)
+void MppRenderer::SetCamera(int x, int y, int size)
 {
     Camera.SetPosition(x, y, size);
 }
@@ -123,17 +123,17 @@ const MppCamera& MppRenderer::GetCamera() const
     return Camera;
 }
 
-void MppRenderer::Draw(MppSprite sprite, float x, float y, Layer layer)
+void MppRenderer::Draw(MppSprite sprite, int x, int y, Layer layer)
 {
     LayerCommands[layer].Sprites.emplace_back(sprite, x, y);
 }
 
-void MppRenderer::DrawRect(int color, float x, float y, float width, float height, Layer layer)
+void MppRenderer::DrawRect(int color, int x, int y, int width, int height, Layer layer)
 {
     LayerCommands[layer].Quads.emplace_back(color, x, y, width, height);
 }
 
-void MppRenderer::DrawLine(int color, float x1, float y1, float x2, float y2, Layer layer)
+void MppRenderer::DrawLine(int color, int x1, int y1, int x2, int y2, Layer layer)
 {
     LayerCommands[layer].Lines.emplace_back(color, x1, y1, x2, y2);
 }

@@ -2,6 +2,7 @@
 #include <limits>
 
 #include "color.hpp"
+#include "console.hpp"
 #include "controller.hpp"
 #include "level.hpp"
 #include "mob_entity.hpp"
@@ -13,33 +14,22 @@ MppMobEntity::MppMobEntity()
 {
 }
 
-void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
+void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
-    Move(level, dt, ticks);
-    MppEntity::Update(level, renderer, dt, ticks);
-    renderer.Draw(MppSprite(kMppColorWhite), X, Y, MppRenderer::LayerMobEntity);
+    Controller->Update(level, ticks);
+    MppEntity::Update(level, renderer, ticks);
+
+    // TODO: remove
+    int x = GetPhysicsX();
+    int y = GetPhysicsY();
+    int width = GetPhysicsWidth();
+    int height = GetPhysicsHeight();
+    renderer.DrawRect(kMppColorWhite, x, y, width, height, MppRenderer::LayerMobEntity);
 }
 
-void MppMobEntity::Move(MppLevel& level, float dt, float ticks)
+void MppMobEntity::Move(MppLevel& level, int dx, int dy, int ticks)
 {
-    float dx = 0.0f;
-    float dy = 0.0f;
-    Controller->GetMovement(dx, dy);
-    float length = std::hypotf(dx, dy);
-    if (length < std::numeric_limits<float>::epsilon())
-    {
-        return;
-    }
-    float speed = GetSpeed();
-    dx *= speed * dt;
-    dy *= speed * dt;
-    if (length > 1.0f)
-    {
-        dx /= length;
-        dy /= length;
-    }
-    MppEntity::Move(level, dx, 0.0f);
-    MppEntity::Move(level, 0.0f, dy);
+    MppEntity::Move(level, dx, dy);
 }
 
 int MppMobEntity::GetSize() const
@@ -50,9 +40,4 @@ int MppMobEntity::GetSize() const
 void MppMobEntity::SetController(const std::shared_ptr<MppController>& controller)
 {
     Controller = controller;
-}
-
-float MppMobEntity::GetSpeed() const
-{
-    return 0.1f;
 }

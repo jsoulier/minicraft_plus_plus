@@ -7,12 +7,12 @@ MppSlimeEntity::MppSlimeEntity()
     SetController(std::make_shared<MppAIController>(*this));
 }
 
-float MppSlimeEntity::GetPhysicsWidth() const
+int MppSlimeEntity::GetPhysicsWidth() const
 {
     return 0;
 }
 
-float MppSlimeEntity::GetPhysicsHeight() const
+int MppSlimeEntity::GetPhysicsHeight() const
 {
     return 0;
 }

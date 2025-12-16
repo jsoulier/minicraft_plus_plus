@@ -10,8 +10,8 @@ MppPlayerEntity::MppPlayerEntity()
     SetController(std::make_shared<MppPlayerController>(*this));
 }
 
-void MppPlayerEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
+void MppPlayerEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
-    MppHumanoidEntity::Update(level, renderer, dt, ticks);
+    MppHumanoidEntity::Update(level, renderer, ticks);
     renderer.SetCamera(X, Y, GetSize());
 }

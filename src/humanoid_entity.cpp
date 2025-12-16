@@ -5,12 +5,12 @@ MppHumanoidEntity::MppHumanoidEntity()
 {
 }
 
-float MppHumanoidEntity::GetPhysicsWidth() const
+int MppHumanoidEntity::GetPhysicsWidth() const
 {
     return 12;
 }
 
-float MppHumanoidEntity::GetPhysicsHeight() const
+int MppHumanoidEntity::GetPhysicsHeight() const
 {
     return 14;
 }

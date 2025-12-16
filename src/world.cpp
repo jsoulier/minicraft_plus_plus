@@ -47,9 +47,9 @@ void MppWorld::Quit()
 {
 }
 
-void MppWorld::Update(MppRenderer& renderer, float dt, float ticks)
+void MppWorld::Update(MppRenderer& renderer, int ticks)
 {
-    Levels[LevelIndex]->Update(*this, renderer, dt, ticks);
+    Levels[LevelIndex]->Update(*this, renderer, ticks);
 }
 
 void MppWorld::SetLevel(int level)

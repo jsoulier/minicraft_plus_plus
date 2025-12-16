@@ -71,7 +71,7 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
     }
 }
 
-void MppLevel::Update(MppWorld& world, MppRenderer& renderer, float dt, float ticks)
+void MppLevel::Update(MppWorld& world, MppRenderer& renderer, int ticks)
 {
     const MppCamera& camera = renderer.GetCamera();
     SDL_assert(IsValid(camera.TileX1, camera.TileY1));
@@ -79,11 +79,11 @@ void MppLevel::Update(MppWorld& world, MppRenderer& renderer, float dt, float ti
     for (int x = camera.TileX1; x <= camera.TileX2; x++)
     for (int y = camera.TileY1; y <= camera.TileY2; y++)
     {
-        Tiles[x][y].Update(*this, renderer, x, y, dt, ticks);
+        Tiles[x][y].Update(*this, renderer, x, y, ticks);
     }
     for (std::shared_ptr<MppEntity>& entity : Entities)
     {
-        entity->Update(*this, renderer, dt, ticks);
+        entity->Update(*this, renderer, ticks);
     }
 }
 

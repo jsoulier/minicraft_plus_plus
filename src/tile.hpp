@@ -25,7 +25,7 @@ public:
 
     constexpr MppTile() : Type{MppTileTypeInvalid} {}
     MppTile(MppTileType type);
-    void Update(MppLevel& level, MppRenderer& renderer, int x, int y, float dt, float ticks);
+    void Update(MppLevel& level, MppRenderer& renderer, int x, int y, float ticks);
     void Visit(SavepointVisitor& visitor);
     MppTileType GetType() const;
     MppPhysicsType GetPhysicsType() const;

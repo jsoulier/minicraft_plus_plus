@@ -6,5 +6,5 @@ class MppPlayerController : public MppController
 {
 public:
     MppPlayerController(MppMobEntity& entity);
-    void GetMovement(float& dx, float& dy) override;
+    void Update(MppLevel& level, int ticks) override;
 };

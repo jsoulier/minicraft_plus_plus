@@ -11,29 +11,30 @@ class MppEntity : public SavepointBase
 
 public:
     MppEntity();
-    virtual void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks);
+    virtual void Update(MppLevel& level, MppRenderer& renderer, int ticks);
     virtual void Visit(SavepointVisitor& visitor) override;
-    void SetX(float x);
-    void SetY(float y);
-    float GetX() const;
-    float GetY() const;
-    float GetPhysicsX() const;
-    float GetPhysicsY() const;
-    virtual float GetPhysicsWidth() const = 0;
-    virtual float GetPhysicsHeight() const = 0;
+    void SetX(int x);
+    void SetY(int y);
+    int GetX() const;
+    int GetY() const;
+    int GetPhysicsX() const;
+    int GetPhysicsY() const;
+    virtual int GetPhysicsWidth() const = 0;
+    virtual int GetPhysicsHeight() const = 0;
     virtual int GetSize() const = 0;
+    void Move(MppLevel& level, int dx, int dy);
 
 protected:
     virtual int GetPhysicsOffsetX() const = 0;
     virtual int GetPhysicsOffsetY() const = 0;
-    void Move(MppLevel& level, float dx, float dy);
 
 private:
-    bool MoveTest(MppLevel& level);
+    void MoveAxis(MppLevel& level, int dx, int dy);
+    bool MoveAxis(MppLevel& level);
 
 protected:
-    float X;
-    float Y;
+    int X;
+    int Y;
 
 private:
     SavepointID ID;

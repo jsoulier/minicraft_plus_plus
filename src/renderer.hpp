@@ -28,12 +28,12 @@ public:
     MppRenderer();
     bool Init();
     void Quit();
-    void Update(float dt);
-    void SetCamera(float x, float y, float size);
+    void Update(int ticks);
+    void SetCamera(int x, int y, int size);
     const MppCamera& GetCamera() const;
-    void Draw(MppSprite sprite, float x, float y, Layer layer);
-    void DrawRect(int color, float x, float y, float width, float height, Layer layer);
-    void DrawLine(int color, float x1, float y1, float x2, float y2, Layer layer);
+    void Draw(MppSprite sprite, int x, int y, Layer layer);
+    void DrawRect(int color, int x, int y, int width, int height, Layer layer);
+    void DrawLine(int color, int x1, int y1, int x2, int y2, Layer layer);
 
 private:
     struct Sprite
@@ -41,26 +41,26 @@ private:
         bool operator<(const Sprite& other) const;
 
         MppSprite Sprite;
-        float X;
-        float Y;
+        int X;
+        int Y;
     };
 
     struct Quad
     {
         int Color;
-        float X;
-        float Y;
-        float Width;
-        float Height;
+        int X;
+        int Y;
+        int Width;
+        int Height;
     };
 
     struct Line
     {
         int Color;
-        float X1;
-        float Y1;
-        float X2;
-        float Y2;
+        int X1;
+        int Y1;
+        int X2;
+        int Y2;
     };
 
     struct Commands

@@ -8,15 +8,13 @@ class MppMobEntity : public MppEntity
 {
 public:
     MppMobEntity();
-    void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks) override;
+    void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
+    void Move(MppLevel& level, int dx, int dy, int ticks);
     int GetSize() const override;
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);
-    virtual float GetSpeed() const;
 
 private:
-    void Move(MppLevel& level, float dt, float ticks);
-
     std::shared_ptr<MppController> Controller;
 };

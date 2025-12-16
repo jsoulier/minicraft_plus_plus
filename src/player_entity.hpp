@@ -8,5 +8,5 @@ class MppPlayerEntity : public MppHumanoidEntity
 
 public:
     MppPlayerEntity();
-    void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks) override;
+    void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
 };
