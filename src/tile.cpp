@@ -2,6 +2,7 @@
 #include <savepoint.hpp>
 
 #include "level.hpp"
+#include "physics.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
 #include "tile.hpp"
@@ -24,6 +25,7 @@ struct
     int Color3;
     int Color4;
     int Color5;
+    MppPhysicsType PhysicsType;
 }
 static constexpr kTiles[MppTileTypeCount] =
 {
@@ -38,7 +40,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .Color3 = 40,
         .Color4 = 840,
         .Color5 = 0,
-
+        .PhysicsType = MppPhysicsTypeGroundTile,
     },
     /* dirt */
     {
@@ -51,7 +53,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .Color3 = 840,
         .Color4 = 840,
         .Color5 = 0,
-
+        .PhysicsType = MppPhysicsTypeGroundTile,
     },
     /* stone */
     {
@@ -64,6 +66,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .Color3 = 555,
         .Color4 = 0,
         .Color5 = 840,
+        .PhysicsType = MppPhysicsTypeWallTile,
     },
     /* tree */
     {
@@ -76,7 +79,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .Color3 = 960,
         .Color4 = 640,
         .Color5 = 494,
-
+        .PhysicsType = MppPhysicsTypeWallTile,
     },
     /* sand */
     {
@@ -89,7 +92,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .Color3 = 990,
         .Color4 = 840,
         .Color5 = 0,
-
+        .PhysicsType = MppPhysicsTypeGroundTile,
     },
 };
 
@@ -326,6 +329,11 @@ void MppTile::Visit(SavepointVisitor& visitor)
 MppTileType MppTile::GetType() const
 {
     return Type;
+}
+
+MppPhysicsType MppTile::GetPhysicsType() const
+{
+    return kTiles[Type].PhysicsType;
 }
 
 bool MppTile::operator==(const MppTile& other) const

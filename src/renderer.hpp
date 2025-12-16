@@ -20,7 +20,7 @@ public:
         LayerBottomTile,
         LayerTile,
         LayerTopTile,
-        LayerEntity,
+        LayerMobEntity,
         LayerScreen,
         LayerDebugPhysics,
         LayerDebug,
@@ -31,7 +31,7 @@ public:
     bool Init();
     void Quit();
     void Update(float dt);
-    void SetCamera(float x, float y);
+    void SetCamera(float x, float y, float size);
     const MppCamera& GetCamera() const;
     void Draw(MppSprite sprite, float x, float y, Layer layer);
 

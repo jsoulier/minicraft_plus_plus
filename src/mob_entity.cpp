@@ -3,6 +3,7 @@
 
 #include "color.hpp"
 #include "controller.hpp"
+#include "level.hpp"
 #include "mob_entity.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
@@ -14,11 +15,11 @@ MppMobEntity::MppMobEntity()
 
 void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
 {
-    Move(dt, ticks);
-    renderer.Draw(MppSprite(kMppColorWhite), X, Y, MppRenderer::LayerEntity);
+    Move(level, dt, ticks);
+    renderer.Draw(MppSprite(kMppColorWhite), X, Y, MppRenderer::LayerMobEntity);
 }
 
-void MppMobEntity::Move(float dt, float ticks)
+void MppMobEntity::Move(MppLevel& level, float dt, float ticks)
 {
     float dx = 0.0f;
     float dy = 0.0f;
@@ -36,8 +37,13 @@ void MppMobEntity::Move(float dt, float ticks)
         dx /= length;
         dy /= length;
     }
-    X += dx;
-    Y += dy;
+    MppEntity::Move(level, dx, 0.0f);
+    MppEntity::Move(level, 0.0f, dy);
+}
+
+int MppMobEntity::GetSize() const
+{
+    return 16;
 }
 
 void MppMobEntity::SetController(const std::shared_ptr<MppController>& controller)

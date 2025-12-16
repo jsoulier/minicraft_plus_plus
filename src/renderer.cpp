@@ -90,9 +90,9 @@ void MppRenderer::Update(float dt)
     Camera.Update(dt);
 }
 
-void MppRenderer::SetCamera(float x, float y)
+void MppRenderer::SetCamera(float x, float y, float size)
 {
-    Camera.SetPosition(x, y);
+    Camera.SetPosition(x, y, size);
 }
 
 const MppCamera& MppRenderer::GetCamera() const
@@ -174,8 +174,8 @@ void MppRenderer::Draw(const Sprite& sprite)
         return;
     }
     SDL_FRect rect;
-    rect.x = sprite.X - size / 2 - Camera.X;
-    rect.y = sprite.Y - size / 2 - Camera.Y;
+    rect.x = sprite.X - Camera.X;
+    rect.y = sprite.Y - Camera.Y;
     rect.w = size;
     rect.h = size;
     SDL_RenderTexture(Renderer, textureIt->second, nullptr, &rect);

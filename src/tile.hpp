@@ -2,6 +2,8 @@
 
 #include <savepoint.hpp>
 
+#include "physics.hpp"
+
 enum MppTileType
 {
     MppTileTypeGrass,
@@ -26,6 +28,7 @@ public:
     void Update(MppLevel& level, MppRenderer& renderer, int x, int y, float dt, float ticks);
     void Visit(SavepointVisitor& visitor);
     MppTileType GetType() const;
+    MppPhysicsType GetPhysicsType() const;
     bool operator==(const MppTile& other) const;
     bool IsValid() const;
 

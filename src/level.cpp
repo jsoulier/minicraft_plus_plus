@@ -92,14 +92,7 @@ void MppLevel::AddEntity(const std::shared_ptr<MppEntity>& entity)
 
 const MppTile& MppLevel::GetTile(int x, int y) const
 {
-    if (IsValid(x, y))
-    {
-        return Tiles[x][y];
-    }
-    else
-    {
-        return kMppTileInvalid;
-    }
+    return IsValid(x, y) ? Tiles[x][y] : kMppTileInvalid;
 }
 
 bool MppLevel::IsValid(int x, int y) const

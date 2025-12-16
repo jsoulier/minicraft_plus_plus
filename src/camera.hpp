@@ -3,7 +3,7 @@
 struct MppCamera
 {
     MppCamera();
-    void SetPosition(float x, float y);
+    void SetPosition(float x, float y, float size);
     void SetSize(float width, float height);
     void Update(float dt);
 

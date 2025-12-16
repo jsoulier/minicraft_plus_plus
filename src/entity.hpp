@@ -17,8 +17,11 @@ public:
     void SetY(float y);
     float GetX() const;
     float GetY() const;
+    virtual int GetSize() const = 0;
 
 protected:
+    void Move(MppLevel& level, float dx, float dy);
+
     float X;
     float Y;
 

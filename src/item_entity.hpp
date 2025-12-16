@@ -8,4 +8,5 @@ class MppItemEntity : public MppEntity
 
 public:
     void Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks) override;
+    int GetSize() const override;
 };

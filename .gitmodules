@@ -4,6 +4,3 @@
 [submodule "lib/SDL"]
 	path = lib/SDL
 	url = https://github.com/libsdl-org/SDL
-[submodule "lib/box2d"]
-	path = lib/box2d
-	url = https://github.com/erincatto/box2d

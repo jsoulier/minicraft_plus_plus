@@ -13,5 +13,5 @@ MppPlayerEntity::MppPlayerEntity()
 void MppPlayerEntity::Update(MppLevel& level, MppRenderer& renderer, float dt, float ticks)
 {
     MppHumanoidEntity::Update(level, renderer, dt, ticks);
-    renderer.SetCamera(X, Y);
+    renderer.SetCamera(X, Y, GetSize());
 }
