@@ -123,9 +123,9 @@ const MppCamera& MppRenderer::GetCamera() const
     return Camera;
 }
 
-void MppRenderer::Draw(MppSprite sprite, int x, int y, Layer layer)
+void MppRenderer::Draw(MppSprite sprite, int x, int y, bool flip, Layer layer)
 {
-    LayerCommands[layer].Sprites.emplace_back(sprite, x, y);
+    LayerCommands[layer].Sprites.emplace_back(sprite, x, y, flip);
 }
 
 void MppRenderer::DrawRect(int color, int x, int y, int width, int height, Layer layer)
@@ -206,10 +206,18 @@ void MppRenderer::Draw(const Sprite& sprite)
     {
         return;
     }
+    SDL_Texture* texture = textureIt->second;
     SDL_FRect rect;
     rect.x = sprite.X - Camera.X;
     rect.y = sprite.Y - Camera.Y;
     rect.w = size;
     rect.h = size;
-    SDL_RenderTexture(Renderer, textureIt->second, nullptr, &rect);
+    if (sprite.Flip)
+    {
+        SDL_RenderTextureRotated(Renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_VERTICAL);
+    }
+    else
+    {
+        SDL_RenderTexture(Renderer, texture, nullptr, &rect);
+    }
 }

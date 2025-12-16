@@ -1,35 +1,32 @@
-#include <cmath>
-#include <limits>
+#include <SDL3/SDL.h>
 
-#include "color.hpp"
-#include "console.hpp"
+#include <memory>
+
 #include "controller.hpp"
 #include "level.hpp"
 #include "mob_entity.hpp"
-#include "renderer.hpp"
-#include "sprite.hpp"
 
 MppMobEntity::MppMobEntity()
     : MppEntity()
+    , DirectionX{0}
+    , DirectionY{1}
 {
 }
 
 void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
+    SDL_assert(DirectionX || DirectionY);
     Controller->Update(level, ticks);
+    SDL_assert(DirectionX || DirectionY);
     MppEntity::Update(level, renderer, ticks);
-
-    // TODO: remove
-    int x = GetPhysicsX();
-    int y = GetPhysicsY();
-    int width = GetPhysicsWidth();
-    int height = GetPhysicsHeight();
-    renderer.DrawRect(kMppColorWhite, x, y, width, height, MppRenderer::LayerMobEntity);
 }
 
 void MppMobEntity::Move(MppLevel& level, int dx, int dy, int ticks)
 {
+    SDL_assert(dx || dy);
     MppEntity::Move(level, dx, dy);
+    DirectionX = dx;
+    DirectionY = dy;
 }
 
 int MppMobEntity::GetSize() const

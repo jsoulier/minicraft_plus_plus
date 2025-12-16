@@ -18,5 +18,8 @@ void MppPlayerController::Update(MppLevel& level, int ticks)
     dx -= keys[SDL_SCANCODE_A];
     dy += keys[SDL_SCANCODE_S];
     dy -= keys[SDL_SCANCODE_W];
-    Entity.Move(level, dx, dy, ticks);
+    if (dx || dy)
+    {
+        Entity.Move(level, dx, dy, ticks);
+    }
 }

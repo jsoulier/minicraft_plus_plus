@@ -9,4 +9,10 @@ class MppPlayerEntity : public MppHumanoidEntity
 public:
     MppPlayerEntity();
     void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
+
+protected:
+    int GetSpriteBorderColor() const override;
+    int GetSpriteShirtColor() const override;
+    int GetSpritePantColor() const override;
+    int GetSpriteSkinColor() const override;
 };

@@ -1,8 +1,91 @@
+#include <SDL3/SDL.h>
+
+#include "color.hpp"
 #include "humanoid_entity.hpp"
+#include "renderer.hpp"
+#include "sprite.hpp"
+
+struct Frames
+{
+    void GetSprite(int& x, int& y, bool& flip, int dx, int dy, bool tick) const
+    {
+        SDL_assert(dx || dy);
+        flip = false;
+        x = X;
+        y = Y;
+        if (dy)
+        {
+            flip = tick;
+            if (dy > 0)
+            {
+                x += DownOffsetX;
+            }
+            else
+            {
+                x += UpOffsetX;
+            }
+        }
+        else
+        {
+            flip = dx < 0;
+            if (tick)
+            {
+                x += Side1OffsetX;
+            }
+            else
+            {
+                x += Side2OffsetX;
+            }
+        }
+    }
+
+    int X;
+    int Y;
+    int DownOffsetX;
+    int UpOffsetX;
+    int Side1OffsetX;
+    int Side2OffsetX;
+};
+
+static constexpr Frames kFrames{0, 6, 0, 1, 2, 3};
 
 MppHumanoidEntity::MppHumanoidEntity()
     : MppMobEntity()
+    , Flip{false}
 {
+}
+
+void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
+{
+    MppMobEntity::Update(level, renderer, ticks);
+    bool flip = false;
+    int x = 0;
+    int y = 0;
+    kFrames.GetSprite(x, y, flip, DirectionX, DirectionY, Flip);
+    renderer.Draw(
+        MppSprite{
+            GetSpriteBorderColor(),
+            GetSpriteShirtColor(),
+            GetSpritePantColor(),
+            GetSpriteSkinColor(),
+            0,
+            x,
+            y,
+            GetSize(),
+        },
+        X,
+        Y,
+        flip,
+        MppRenderer::LayerMobEntity);
+}
+
+void MppHumanoidEntity::Move(MppLevel& level, int dx, int dy, int ticks)
+{
+    MppMobEntity::Move(level, dx, dy, ticks);
+    if (ticks % GetAnimationSpeed() == 0)
+    {
+        Flip = !Flip;
+    }
 }
 
 int MppHumanoidEntity::GetPhysicsWidth() const
@@ -23,4 +106,9 @@ int MppHumanoidEntity::GetPhysicsOffsetX() const
 int MppHumanoidEntity::GetPhysicsOffsetY() const
 {
     return 1;
+}
+
+int MppHumanoidEntity::GetAnimationSpeed() const
+{
+    return 10;
 }

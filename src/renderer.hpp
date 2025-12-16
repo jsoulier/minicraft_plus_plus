@@ -31,7 +31,7 @@ public:
     void Update(int ticks);
     void SetCamera(int x, int y, int size);
     const MppCamera& GetCamera() const;
-    void Draw(MppSprite sprite, int x, int y, Layer layer);
+    void Draw(MppSprite sprite, int x, int y, bool flip, Layer layer);
     void DrawRect(int color, int x, int y, int width, int height, Layer layer);
     void DrawLine(int color, int x1, int y1, int x2, int y2, Layer layer);
 
@@ -43,6 +43,7 @@ private:
         MppSprite Sprite;
         int X;
         int Y;
+        bool Flip;
     };
 
     struct Quad

@@ -9,11 +9,14 @@ class MppMobEntity : public MppEntity
 public:
     MppMobEntity();
     void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
-    void Move(MppLevel& level, int dx, int dy, int ticks);
+    virtual void Move(MppLevel& level, int dx, int dy, int ticks);
     int GetSize() const override;
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);
+    
+    int DirectionX;
+    int DirectionY;
 
 private:
     std::shared_ptr<MppController> Controller;
