@@ -1,18 +1,18 @@
 #pragma once
 
-#include <savepoint.hpp>
+#include <savepoint_fwd.hpp>
 
 #include "physics.hpp"
 
-enum MppTileType
+enum MppTileID
 {
-    MppTileTypeGrass,
-    MppTileTypeDirt,
-    MppTileTypeStone,
-    MppTileTypeTree,
-    MppTileTypeSand,
-    MppTileTypeCount,
-    MppTileTypeInvalid = MppTileTypeCount,
+    MppTileIDGrass,
+    MppTileIDDirt,
+    MppTileIDStone,
+    MppTileIDTree,
+    MppTileIDSand,
+    MppTileIDCount,
+    MppTileIDInvalid = MppTileIDCount,
 };
 
 class MppLevel;
@@ -23,11 +23,11 @@ class MppTile
 public:
     static constexpr int kWidth = 16;
 
-    constexpr MppTile() : Type{MppTileTypeInvalid} {}
-    MppTile(MppTileType type);
+    constexpr MppTile() : ID{MppTileIDInvalid} {}
+    MppTile(MppTileID id);
     void Update(MppLevel& level, MppRenderer& renderer, int x, int y, float ticks);
     void Visit(SavepointVisitor& visitor);
-    MppTileType GetType() const;
+    MppTileID GetID() const;
     MppPhysicsType GetPhysicsType() const;
     int GetPhysicsX(int x) const;
     int GetPhysicsY(int y) const;
@@ -37,10 +37,10 @@ public:
     bool IsValid() const;
 
 private:
-    void Render(const MppLevel& level, MppRenderer& renderer, int x, int y);
-    void RenderPhysics(MppRenderer& renderer, int x, int y);
+    void Draw(const MppLevel& level, MppRenderer& renderer, int x, int y);
+    void DrawPhysics(MppRenderer& renderer, int x, int y);
 
-    MppTileType Type;
+    MppTileID ID;
 };
 
 static constexpr MppTile kMppTileInvalid{};

@@ -9,7 +9,7 @@ class MppSurfaceLevel : public MppLevel
 public:
     MppSurfaceLevel();
     void Generate(MppWorld& world, int level) override;
-    MppTileType Generate(float x, float y) const override;
+    MppTileID Generate(float x, float y) const override;
 
 private:
     FastNoiseLite Noise;

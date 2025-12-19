@@ -80,27 +80,30 @@ void MppRenderer::Update(int dt)
     {
         Commands& commands = LayerCommands[layer];
         std::sort(commands.Sprites.begin(), commands.Sprites.end());
-        for (const Sprite& sprite : commands.Sprites)
+        for (Sprite& sprite : commands.Sprites)
         {
-            Draw(sprite);
+            Draw(sprite, Layer(layer));
         }
-        for (const Quad& quad : commands.Quads)
+        for (Quad& quad : commands.Quads)
         {
+            UseCamera(quad.X, quad.Y, Layer(layer));
             SDL_FRect rect;
-            rect.x = quad.X - Camera.X;
-            rect.y = quad.Y - Camera.Y;
+            rect.x = quad.X;
+            rect.y = quad.Y;
             rect.w = quad.Width;
             rect.h = quad.Height;
             SDL_Color color = MppColorGet(quad.Color);
             SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
             SDL_RenderFillRect(Renderer, &rect);
         }
-        for (const Line& line : commands.Lines)
+        for (Line& line : commands.Lines)
         {
-            int x1 = line.X1 - Camera.X;
-            int y1 = line.Y1 - Camera.Y;
-            int x2 = line.X2 - Camera.X;
-            int y2 = line.Y2 - Camera.Y;
+            UseCamera(line.X1, line.Y1, Layer(layer));
+            UseCamera(line.X2, line.Y2, Layer(layer));
+            int x1 = line.X1;
+            int y1 = line.Y1;
+            int x2 = line.X2;
+            int y2 = line.Y2;
             SDL_Color color = MppColorGet(line.Color);
             SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
             SDL_RenderLine(Renderer, x1, y1, x2, y2);
@@ -143,7 +146,34 @@ bool MppRenderer::Sprite::operator<(const MppRenderer::Sprite& other) const
     return Sprite < other.Sprite;
 }
 
-void MppRenderer::Draw(const Sprite& sprite)
+void MppRenderer::UseCamera(int& x, int& y, Layer layer)
+{
+    bool useCamera;
+    switch (layer)
+    {
+    case LayerBottomTile:
+    case LayerTile:
+    case LayerTopTile:
+    case LayerMobEntity:
+    case LayerPhysics:
+        useCamera = true;
+        break;
+    case LayerScreen:
+    case LayerScreenContent:
+        useCamera = false;
+        break;
+    default:
+        useCamera = true;
+        SDL_assert(false);
+    }
+    if (useCamera)
+    {
+        x -= Camera.X;
+        y -= Camera.Y;
+    }
+}
+
+void MppRenderer::Draw(Sprite& sprite, Layer layer)
 {
     size_t paletteKey = sprite.Sprite.GetPaletteKey();
     size_t surfaceKey = sprite.Sprite.GetSurfaceKey();
@@ -206,10 +236,11 @@ void MppRenderer::Draw(const Sprite& sprite)
     {
         return;
     }
+    UseCamera(sprite.X, sprite.Y, layer);
     SDL_Texture* texture = textureIt->second;
     SDL_FRect rect;
-    rect.x = sprite.X - Camera.X;
-    rect.y = sprite.Y - Camera.Y;
+    rect.x = sprite.X;
+    rect.y = sprite.Y;
     rect.w = size;
     rect.h = size;
     if (sprite.Flip)

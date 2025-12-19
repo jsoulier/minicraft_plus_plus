@@ -22,27 +22,27 @@ void MppSurfaceLevel::Generate(MppWorld& world, int level)
     world.SetLevel(level);
 }
 
-MppTileType MppSurfaceLevel::Generate(float x, float y) const
+MppTileID MppSurfaceLevel::Generate(float x, float y) const
 {
     float noise = Noise.GetNoise(x, y);
     if (noise > 0.6)
     {
-        return MppTileTypeTree;
+        return MppTileIDTree;
     }
     else if (noise > 0.2)
     {
-        return MppTileTypeGrass;
+        return MppTileIDGrass;
     }
     else if (noise > -0.2)
     {
-        return MppTileTypeDirt;
+        return MppTileIDDirt;
     }
     else if (noise > -0.6)
     {
-        return MppTileTypeStone;
+        return MppTileIDStone;
     }
     else
     {
-        return MppTileTypeSand;
+        return MppTileIDSand;
     }
 }

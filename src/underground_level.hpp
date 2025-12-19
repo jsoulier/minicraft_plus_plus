@@ -5,5 +5,5 @@
 class MppUndergroundLevel : public MppLevel
 {
 public:
-    MppTileType Generate(float x, float y) const override;
+    MppTileID Generate(float x, float y) const override;
 };

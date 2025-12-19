@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <savepoint.hpp>
 
+#include <algorithm>
 #include <memory>
 
 #include "camera.hpp"
@@ -13,6 +14,10 @@
 MppLevel::MppLevel()
     : Tiles{}
     , Entities{}
+    , MinDirtyX{kWidth}
+    , MinDirtyY{kWidth}
+    , MaxDirtyX{0}
+    , MaxDirtyY{0}
 {
 }
 
@@ -71,6 +76,25 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
     }
 }
 
+void MppLevel::Save(Savepoint& savepoint, int level)
+{
+    SDL_assert(IsValid(MinDirtyX, MinDirtyY));
+    SDL_assert(IsValid(MaxDirtyY, MaxDirtyY));
+    for (int x = MinDirtyX; x <= MaxDirtyX; x++)
+    for (int y = MinDirtyY; y <= MaxDirtyY; y++)
+    {
+        // TODO:
+    }
+    for (std::shared_ptr<MppEntity>& entity : Entities)
+    {
+        // TODO:
+    }
+    MinDirtyX = kWidth;
+    MinDirtyY = kWidth;
+    MaxDirtyX = 0;
+    MaxDirtyY = 0;
+}
+
 void MppLevel::Update(MppWorld& world, MppRenderer& renderer, int ticks)
 {
     const MppCamera& camera = renderer.GetCamera();
@@ -85,6 +109,10 @@ void MppLevel::Update(MppWorld& world, MppRenderer& renderer, int ticks)
     {
         entity->Update(*this, renderer, ticks);
     }
+    MinDirtyX = std::min(camera.TileX1, MinDirtyX);
+    MinDirtyY = std::min(camera.TileY1, MinDirtyY);
+    MaxDirtyX = std::max(camera.TileX2, MaxDirtyX);
+    MaxDirtyY = std::max(camera.TileY2, MaxDirtyY);
 }
 
 void MppLevel::AddEntity(const std::shared_ptr<MppEntity>& entity)

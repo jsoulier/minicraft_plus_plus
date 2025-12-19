@@ -22,6 +22,8 @@ public:
         LayerTopTile,
         LayerMobEntity,
         LayerPhysics,
+        LayerScreen,
+        LayerScreenContent,
         LayerCount,
     };
 
@@ -71,7 +73,8 @@ private:
         std::vector<Line> Lines;
     };
 
-    void Draw(const Sprite& sprite);
+    void UseCamera(int& x, int& y, Layer layer);
+    void Draw(Sprite& sprite, Layer layer);
 
     SDL_Window* Window;
     SDL_Renderer* Renderer;

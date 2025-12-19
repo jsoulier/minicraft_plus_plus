@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint.hpp>
+#include <savepoint_fwd.hpp>
 
 #include <array>
 #include <memory>
@@ -20,15 +20,20 @@ public:
     MppLevel();
     virtual void Generate(MppWorld& world, int level);
     void Load(MppWorld& world, Savepoint& savepoint, int level);
+    void Save(Savepoint& savepoint, int level);
     void Update(MppWorld& world, MppRenderer& renderer, int ticks);
     void AddEntity(const std::shared_ptr<MppEntity>& entity);
     const MppTile& GetTile(int x, int y) const;
     bool IsValid(int x, int y) const;
 
 protected:
-    virtual MppTileType Generate(float x, float y) const = 0;
+    virtual MppTileID Generate(float x, float y) const = 0;
 
 private:
     std::array<std::array<MppTile, kWidth>, kWidth> Tiles;
     std::vector<std::shared_ptr<MppEntity>> Entities;
+    int MinDirtyX;
+    int MinDirtyY;
+    int MaxDirtyX;
+    int MaxDirtyY;
 };

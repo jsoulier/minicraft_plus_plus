@@ -21,7 +21,7 @@ struct
     TileSpriteType SpriteType;
     int SpriteY;
     int TopSpriteY;
-    MppTileType BottomTile;
+    MppTileID BottomTile;
     int Color1;
     int Color2;
     int Color3;
@@ -33,14 +33,14 @@ struct
     int PhysicsWidth;
     int PhysicsHeight;
 }
-static constexpr kTiles[MppTileTypeCount] =
+static constexpr kTiles[MppTileIDCount] =
 {
     /* grass */
     {
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
-        .BottomTile = MppTileTypeCount,
+        .BottomTile = MppTileIDCount,
         .Color1 = 62,
         .Color2 = 82,
         .Color3 = 40,
@@ -57,7 +57,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
-        .BottomTile = MppTileTypeCount,
+        .BottomTile = MppTileIDCount,
         .Color1 = kMppColorDirtBrown,
         .Color2 = kMppColorDirtBrown,
         .Color3 = kMppColorDirtBrown,
@@ -74,7 +74,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .SpriteType = TileSpriteType1x2_2x1,
         .SpriteY = 3,
         .TopSpriteY = 4,
-        .BottomTile = MppTileTypeCount,
+        .BottomTile = MppTileIDCount,
         .Color1 = 444,
         .Color2 = 111,
         .Color3 = 555,
@@ -91,7 +91,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .SpriteType = TileSpriteType2x2,
         .SpriteY = 5,
         .TopSpriteY = 0,
-        .BottomTile = MppTileTypeGrass,
+        .BottomTile = MppTileIDGrass,
         .Color1 = 40,
         .Color2 = 82,
         .Color3 = 960,
@@ -108,7 +108,7 @@ static constexpr kTiles[MppTileTypeCount] =
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
-        .BottomTile = MppTileTypeCount,
+        .BottomTile = MppTileIDCount,
         .Color1 = 990,
         .Color2 = 990,
         .Color3 = 990,
@@ -148,18 +148,18 @@ static constexpr int kSprites[] =
     /* 0b1111 */ 0,
 };
 
-static bool Equals1x1(MppTileType lhs, MppTileType rhs)
+static bool Equals1x1(MppTileID lhs, MppTileID rhs)
 {
     return lhs == rhs || kTiles[lhs].BottomTile == rhs || lhs == kTiles[rhs].BottomTile;
 }
 
-static int GetSprite1x1(MppTileType lhs, const MppLevel& level, int x, int y)
+static int GetSprite1x1(MppTileID lhs, const MppLevel& level, int x, int y)
 {
     int hash = 0;
-    hash |= Equals1x1(lhs, level.GetTile(x + 0, y - 1).GetType()) << 0;
-    hash |= Equals1x1(lhs, level.GetTile(x + 0, y + 1).GetType()) << 1;
-    hash |= Equals1x1(lhs, level.GetTile(x + 1, y + 0).GetType()) << 2;
-    hash |= Equals1x1(lhs, level.GetTile(x - 1, y + 0).GetType()) << 3;
+    hash |= Equals1x1(lhs, level.GetTile(x + 0, y - 1).GetID()) << 0;
+    hash |= Equals1x1(lhs, level.GetTile(x + 0, y + 1).GetID()) << 1;
+    hash |= Equals1x1(lhs, level.GetTile(x + 1, y + 0).GetID()) << 2;
+    hash |= Equals1x1(lhs, level.GetTile(x - 1, y + 0).GetID()) << 3;
     return kSprites[hash];
 }
 
@@ -189,65 +189,65 @@ static constexpr int kSprites2x2[] =
     /* 0b1111 */ 15,
 };
 
-static bool Equals2x2(MppTileType lhs, MppTileType rhs)
+static bool Equals2x2(MppTileID lhs, MppTileID rhs)
 {
     return lhs == rhs;
 }
 
-static int GetSprite2x2(MppTileType lhs, const MppLevel& level, int x, int y)
+static int GetSprite2x2(MppTileID lhs, const MppLevel& level, int x, int y)
 {
     int hash = 0;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x - 1, y - 1).GetType())) << 0;
+        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x - 1, y - 1).GetID())) << 0;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x - 1, y + 1).GetType())) << 1;
+        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x - 1, y + 1).GetID())) << 1;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 1, y + 1).GetType())) << 2;
+        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 1, y + 1).GetID())) << 2;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 1, y - 1).GetType())) << 3;
+        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 1, y - 1).GetID())) << 3;
     return kSprites2x2[hash];
 }
 
-static int GetSprite1x2_2x1(MppTileType lhs, const MppLevel& level, int x, int y)
+static int GetSprite1x2_2x1(MppTileID lhs, const MppLevel& level, int x, int y)
 {
     int hash = 0;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetType()) &&
-        !Equals2x2(lhs, level.GetTile(x - 1, y - 1).GetType())) << 0;
+        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetID()) &&
+        !Equals2x2(lhs, level.GetTile(x - 1, y - 1).GetID())) << 0;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetType()) &&
-        !Equals2x2(lhs, level.GetTile(x - 1, y + 1).GetType())) << 1;
+        (Equals2x2(lhs, level.GetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetID()) &&
+        !Equals2x2(lhs, level.GetTile(x - 1, y + 1).GetID())) << 1;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetType()) &&
-        !Equals2x2(lhs, level.GetTile(x + 1, y + 1).GetType())) << 2;
+        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y + 1).GetID()) &&
+        !Equals2x2(lhs, level.GetTile(x + 1, y + 1).GetID())) << 2;
     hash |=
-        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetType()) &&
-         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetType()) &&
-        !Equals2x2(lhs, level.GetTile(x + 1, y - 1).GetType())) << 3;
+        (Equals2x2(lhs, level.GetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, level.GetTile(x + 0, y - 1).GetID()) &&
+        !Equals2x2(lhs, level.GetTile(x + 1, y - 1).GetID())) << 3;
     return kSprites2x2[hash];
 }
 
-MppTile::MppTile(MppTileType type)
-    : Type{type}
+MppTile::MppTile(MppTileID id)
+    : ID{id}
 {
 }
 
 void MppTile::Update(MppLevel& level, MppRenderer& renderer, int x, int y, float ticks)
 {
     SDL_assert(IsValid());
-    Render(level, renderer, x, y);
-    RenderPhysics(renderer, x, y);
+    Draw(level, renderer, x, y);
+    DrawPhysics(renderer, x, y);
 }
 
 void MppTile::Visit(SavepointVisitor& visitor)
@@ -256,42 +256,42 @@ void MppTile::Visit(SavepointVisitor& visitor)
     {
         SDL_assert(IsValid());
     }
-    visitor(Type);
+    visitor(ID);
 }
 
-MppTileType MppTile::GetType() const
+MppTileID MppTile::GetID() const
 {
-    return Type;
+    return ID;
 }
 
 MppPhysicsType MppTile::GetPhysicsType() const
 {
-    return kTiles[Type].PhysicsType;
+    return kTiles[ID].PhysicsType;
 }
 
 int MppTile::GetPhysicsX(int x) const
 {
-    return x * MppTile::kWidth + kTiles[Type].PhysicsOffsetX;
+    return x * MppTile::kWidth + kTiles[ID].PhysicsOffsetX;
 }
 
 int MppTile::GetPhysicsY(int y) const
 {
-    return y * MppTile::kWidth + kTiles[Type].PhysicsOffsetY;
+    return y * MppTile::kWidth + kTiles[ID].PhysicsOffsetY;
 }
 
 int MppTile::GetPhysicsWidth() const
 {
-    return kTiles[Type].PhysicsWidth;
+    return kTiles[ID].PhysicsWidth;
 }
 
 int MppTile::GetPhysicsHeight() const
 {
-    return kTiles[Type].PhysicsHeight;
+    return kTiles[ID].PhysicsHeight;
 }
 
 bool MppTile::operator==(const MppTile& other) const
 {
-    return Type == other.Type;
+    return ID == other.ID;
 }
 
 bool MppTile::IsValid() const
@@ -299,19 +299,19 @@ bool MppTile::IsValid() const
     return !operator==(kMppTileInvalid);
 }
 
-void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
+void MppTile::Draw(const MppLevel& level, MppRenderer& renderer, int x, int y)
 {
-    if (kTiles[Type].SpriteType == TileSpriteType1x1)
+    if (kTiles[ID].SpriteType == TileSpriteType1x1)
     {
         renderer.Draw(
             MppSprite{
-                kTiles[Type].Color1,
-                kTiles[Type].Color2,
-                kTiles[Type].Color3,
-                kTiles[Type].Color4,
-                kTiles[Type].Color5,
-                GetSprite1x1(Type, level, x, y),
-                kTiles[Type].SpriteY,
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                GetSprite1x1(ID, level, x, y),
+                kTiles[ID].SpriteY,
                 MppTile::kWidth,
             },
             x * MppTile::kWidth,
@@ -319,22 +319,22 @@ void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
             false,
             MppRenderer::LayerTile);
     }
-    else if (kTiles[Type].SpriteType == TileSpriteType2x2)
+    else if (kTiles[ID].SpriteType == TileSpriteType2x2)
     {
-        SDL_assert(kTiles[Type].TopSpriteY == 0);
-        if (kTiles[Type].BottomTile != MppTileTypeCount)
+        SDL_assert(kTiles[ID].TopSpriteY == 0);
+        if (kTiles[ID].BottomTile != MppTileIDCount)
         {
-            MppTileType type = kTiles[Type].BottomTile;
-            SDL_assert(kTiles[type].SpriteType == TileSpriteType1x1);
+            MppTileID id = kTiles[ID].BottomTile;
+            SDL_assert(kTiles[id].SpriteType == TileSpriteType1x1);
             renderer.Draw(
                 MppSprite{
-                    kTiles[type].Color1,
-                    kTiles[type].Color2,
-                    kTiles[type].Color3,
-                    kTiles[type].Color4,
-                    kTiles[type].Color5,
-                    GetSprite1x1(type, level, x, y),
-                    kTiles[type].SpriteY,
+                    kTiles[id].Color1,
+                    kTiles[id].Color2,
+                    kTiles[id].Color3,
+                    kTiles[id].Color4,
+                    kTiles[id].Color5,
+                    GetSprite1x1(id, level, x, y),
+                    kTiles[id].SpriteY,
                     MppTile::kWidth,
                 },
                 x * MppTile::kWidth,
@@ -344,13 +344,13 @@ void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
         }
         renderer.Draw(
             MppSprite{
-                kTiles[Type].Color1,
-                kTiles[Type].Color2,
-                kTiles[Type].Color3,
-                kTiles[Type].Color4,
-                kTiles[Type].Color5,
-                GetSprite2x2(Type, level, x, y),
-                kTiles[Type].SpriteY,
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                GetSprite2x2(ID, level, x, y),
+                kTiles[ID].SpriteY,
                 MppTile::kWidth,
             },
             x * MppTile::kWidth,
@@ -358,18 +358,18 @@ void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
             false,
             MppRenderer::LayerTile);
     }
-    else if (kTiles[Type].SpriteType == TileSpriteType1x2_2x1)
+    else if (kTiles[ID].SpriteType == TileSpriteType1x2_2x1)
     {
-        SDL_assert(kTiles[Type].BottomTile == MppTileTypeCount);
+        SDL_assert(kTiles[ID].BottomTile == MppTileIDCount);
         renderer.Draw(
             MppSprite{
-                kTiles[Type].Color1,
-                kTiles[Type].Color2,
-                kTiles[Type].Color3,
-                kTiles[Type].Color4,
-                kTiles[Type].Color5,
-                GetSprite1x1(Type, level, x, y),
-                kTiles[Type].SpriteY,
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                GetSprite1x1(ID, level, x, y),
+                kTiles[ID].SpriteY,
                 MppTile::kWidth,
             },
             x * MppTile::kWidth,
@@ -378,13 +378,13 @@ void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
             MppRenderer::LayerTile);
         renderer.Draw(
             MppSprite{
-                kTiles[Type].Color1,
-                kTiles[Type].Color2,
-                kTiles[Type].Color3,
-                kTiles[Type].Color4,
-                kTiles[Type].Color5,
-                GetSprite1x2_2x1(Type, level, x, y),
-                kTiles[Type].TopSpriteY,
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                GetSprite1x2_2x1(ID, level, x, y),
+                kTiles[ID].TopSpriteY,
                 MppTile::kWidth,
             },
             x * MppTile::kWidth,
@@ -398,7 +398,7 @@ void MppTile::Render(const MppLevel& level, MppRenderer& renderer, int x, int y)
     }
 }
 
-void MppTile::RenderPhysics(MppRenderer& renderer, int x, int y)
+void MppTile::DrawPhysics(MppRenderer& renderer, int x, int y)
 {
     if (!MppConsoleDebugPhysics)
     {

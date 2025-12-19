@@ -1,9 +1,28 @@
+#include <savepoint.hpp>
+
 #include "item.hpp"
 #include "item_entity.hpp"
+
+MppItemEntity::MppItemEntity()
+    : MppEntity()
+    , Item{kMppItemInvalid}
+{
+}
+
+MppItemEntity::MppItemEntity(const MppItem& item)
+    : MppEntity()
+    , Item{item}
+{
+}
 
 void MppItemEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
     MppEntity::Update(level, renderer, ticks);
+}
+
+void MppItemEntity::Visit(SavepointVisitor& visitor)
+{
+    visitor(Item);
 }
 
 int MppItemEntity::GetSize() const
@@ -13,20 +32,20 @@ int MppItemEntity::GetSize() const
 
 int MppItemEntity::GetPhysicsWidth() const
 {
-    return 0;
+    return Item.GetPhysicsWidth();
 }
 
 int MppItemEntity::GetPhysicsHeight() const
 {
-    return 0;
+    return Item.GetPhysicsHeight();
 }
 
 int MppItemEntity::GetPhysicsOffsetX() const
 {
-    return 0;
+    return Item.GetPhysicsOffsetX();
 }
 
 int MppItemEntity::GetPhysicsOffsetY() const
 {
-    return 0;
+    return Item.GetPhysicsOffsetY();
 }
