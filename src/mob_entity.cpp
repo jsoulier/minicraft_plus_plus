@@ -3,15 +3,15 @@
 #include <memory>
 
 #include "controller.hpp"
+#include "inventory.hpp"
 #include "level.hpp"
 #include "mob_entity.hpp"
 #include "version.hpp"
 
 MppMobEntity::MppMobEntity()
     : MppEntity()
-    , DirectionX{0}
-    , DirectionY{1}
-    , DrawInventory{false}
+    , DeltaX{0}
+    , DeltaY{1}
     , Controller{}
     , Inventory{}
 {
@@ -19,28 +19,27 @@ MppMobEntity::MppMobEntity()
 
 void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
-    SDL_assert(DirectionX || DirectionY);
-    Controller->Update(level, ticks);
-    SDL_assert(DirectionX || DirectionY);
+    SDL_assert(DeltaX || DeltaY);
+    Controller->Update(level, renderer, ticks);
+    SDL_assert(DeltaX || DeltaY);
     MppEntity::Update(level, renderer, ticks);
-    if (DrawInventory)
-    {
-        Inventory.Draw(renderer);
-    }
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
 {
     MppEntity::Visit(visitor);
-    visitor(Inventory);
+    if (Inventory)
+    {
+        visitor(*Inventory);
+    }
 }
 
 void MppMobEntity::Move(MppLevel& level, int dx, int dy, int ticks)
 {
     SDL_assert(dx || dy);
     MppEntity::Move(level, dx, dy);
-    DirectionX = dx;
-    DirectionY = dy;
+    DeltaX = dx;
+    DeltaY = dy;
 }
 
 int MppMobEntity::GetSize() const
@@ -48,17 +47,17 @@ int MppMobEntity::GetSize() const
     return 16;
 }
 
-void MppMobEntity::SetDrawInventory(bool draw)
+const std::shared_ptr<MppInventory>& MppMobEntity::GetInventory()
 {
-    DrawInventory = draw;
-}
-
-bool MppMobEntity::GetDrawInventory() const
-{
-    return DrawInventory;
+    return Inventory;
 }
 
 void MppMobEntity::SetController(const std::shared_ptr<MppController>& controller)
 {
     Controller = controller;
+}
+
+void MppMobEntity::SetInventory(const std::shared_ptr<MppInventory>& inventory)
+{
+    Inventory = inventory;
 }

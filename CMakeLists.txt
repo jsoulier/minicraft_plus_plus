@@ -26,17 +26,19 @@ add_executable(minicraft++ WIN32
     src/controller.cpp
     src/entity.cpp
     src/humanoid_entity.cpp
+    src/humanoid_inventory.cpp
     src/inventory.cpp
     src/item.cpp
     src/item_entity.cpp
     src/level.cpp
     src/main.cpp
+    src/menu.cpp
+    src/menu_list.cpp
     src/mob_entity.cpp
     src/physics.cpp
     src/player_controller.cpp
     src/player_entity.cpp
     src/renderer.cpp
-    src/screen.cpp
     src/slime_entity.cpp
     src/sprite.cpp
     src/surface_level.cpp

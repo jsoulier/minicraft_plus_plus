@@ -4,7 +4,7 @@
 
 class MppRenderer;
 
-class MppScreen
+class MppMenu
 {
 public:
     void Draw(MppRenderer& renderer);

@@ -2,12 +2,13 @@
 
 class MppLevel;
 class MppMobEntity;
+class MppRenderer;
 
 class MppController
 {
 public:
     MppController(MppMobEntity& entity);
-    virtual void Update(MppLevel& level, int ticks) = 0;
+    virtual void Update(MppLevel& level, MppRenderer& renderer, int ticks) = 0;
 
 protected:
     MppMobEntity& Entity;

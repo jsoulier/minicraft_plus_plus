@@ -5,6 +5,6 @@ MppAIController::MppAIController(MppMobEntity& entity)
 {
 }
 
-void MppAIController::Update(MppLevel& level, int ticks)
+void MppAIController::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
 }

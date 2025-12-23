@@ -2,6 +2,7 @@
 
 #include "color.hpp"
 #include "humanoid_entity.hpp"
+#include "humanoid_inventory.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
 
@@ -53,6 +54,7 @@ MppHumanoidEntity::MppHumanoidEntity()
     : MppMobEntity()
     , Flip{false}
 {
+    SetInventory(std::make_shared<MppHumanoidInventory>());
 }
 
 void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
@@ -61,7 +63,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
     bool flip = false;
     int x = 0;
     int y = 0;
-    kFrames.GetSprite(x, y, flip, DirectionX, DirectionY, Flip);
+    kFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
     renderer.Draw(
         MppSprite{
             GetSpriteBorderColor(),
@@ -77,6 +79,11 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
         Y,
         flip,
         MppRenderer::LayerMobEntity);
+}
+
+void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
+{
+    MppMobEntity::Visit(visitor);
 }
 
 void MppHumanoidEntity::Move(MppLevel& level, int dx, int dy, int ticks)

@@ -23,7 +23,7 @@ class MppTile
 public:
     static constexpr int kWidth = 16;
 
-    constexpr MppTile() : ID{MppTileIDInvalid} {}
+    MppTile() : ID{MppTileIDInvalid} {}
     MppTile(MppTileID id);
     void Update(MppLevel& level, MppRenderer& renderer, int x, int y, float ticks);
     void Visit(SavepointVisitor& visitor);
@@ -43,4 +43,4 @@ private:
     MppTileID ID;
 };
 
-static constexpr MppTile kMppTileInvalid{};
+static const MppTile kMppTileInvalid;

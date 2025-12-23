@@ -8,5 +8,5 @@ class MppAIController : public MppController
 {
 public:
     MppAIController(MppMobEntity& entity);
-    void Update(MppLevel& level, int ticks) override;
+    void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
 };

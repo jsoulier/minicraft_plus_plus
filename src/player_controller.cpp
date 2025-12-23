@@ -2,8 +2,10 @@
 
 #include <array>
 
+#include "inventory.hpp"
 #include "mob_entity.hpp"
 #include "player_controller.hpp"
+#include "renderer.hpp"
 
 enum ActionType
 {
@@ -26,9 +28,6 @@ static constexpr SDL_Scancode kScancodes[] =
 
 struct Action
 {
-    bool Held;
-    bool Down;
-
     void Update(ActionType type)
     {
         const bool* keys = SDL_GetKeyboardState(nullptr);
@@ -36,22 +35,26 @@ struct Action
         Down = keys[scancode] && !Held;
         Held = keys[scancode];
     }
+
+    bool Held;
+    bool Down;
 };
 
 static std::array<Action, SDL_SCANCODE_COUNT> actions;
 
 MppPlayerController::MppPlayerController(MppMobEntity& entity)
     : MppController(entity)
+    , DrawInventory{true}
 {
 }
 
-void MppPlayerController::Update(MppLevel& level, int ticks)
+void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
     for (int i = 0; i < ActionTypeCount; i++)
     {
         actions[i].Update(ActionType(i));
     }
-    if (!Entity.GetDrawInventory())
+    if (!DrawInventory)
     {
         int dx = 0;
         int dy = 0;
@@ -66,6 +69,14 @@ void MppPlayerController::Update(MppLevel& level, int ticks)
     }
     if (actions[ActionTypeInventory].Down)
     {
-        Entity.SetDrawInventory(!Entity.GetDrawInventory());
+        DrawInventory = !DrawInventory;
+    }
+    if (DrawInventory)
+    {
+        const std::shared_ptr<MppInventory>& inventory = Entity.GetInventory();
+        if (inventory)
+        {
+            inventory->Draw(renderer);
+        }
     }
 }

@@ -2,10 +2,12 @@
 
 #include <savepoint_fwd.hpp>
 
+#include <memory>
+
 #include "entity.hpp"
-#include "inventory.hpp"
 
 class MppController;
+class MppInventory;
 
 class MppMobEntity : public MppEntity
 {
@@ -15,17 +17,16 @@ public:
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Move(MppLevel& level, int dx, int dy, int ticks);
     int GetSize() const override;
-    void SetDrawInventory(bool draw);
-    bool GetDrawInventory() const;
+    const std::shared_ptr<MppInventory>& GetInventory();
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);
+    void SetInventory(const std::shared_ptr<MppInventory>& inventory);
     
-    int DirectionX;
-    int DirectionY;
-    bool DrawInventory;
+    int DeltaX;
+    int DeltaY;
 
 private:
     std::shared_ptr<MppController> Controller;
-    MppInventory Inventory;
+    std::shared_ptr<MppInventory> Inventory;
 };

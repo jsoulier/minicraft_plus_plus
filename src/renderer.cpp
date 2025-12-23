@@ -158,6 +158,7 @@ void MppRenderer::UseCamera(int& x, int& y, Layer layer)
     case LayerPhysics:
         useCamera = true;
         break;
+    case LayerScreenDebug:
     case LayerScreen:
     case LayerScreenContent:
         useCamera = false;

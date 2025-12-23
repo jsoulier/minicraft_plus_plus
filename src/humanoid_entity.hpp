@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "mob_entity.hpp"
 
 class MppHumanoidEntity : public MppMobEntity
@@ -7,6 +9,7 @@ class MppHumanoidEntity : public MppMobEntity
 public:
     MppHumanoidEntity();
     void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
+    void Visit(SavepointVisitor& visitor) override;
     void Move(MppLevel& level, int dx, int dy, int ticks) override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
