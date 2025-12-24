@@ -13,8 +13,22 @@ MppInventory::MppInventory()
     : MppMenuList()
 {
     // TODO: remove
-    Add(MppItem{MppItemIDIronArmor});
-    Add(MppItem{MppItemIDIronArmor});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronChestplate});
+    Add(MppItem{MppItemIDIronChestplate});
+    Add(MppItem{MppItemIDIronChestplate});
+    Add(MppItem{MppItemIDIronChestplate});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
     Add(MppItem{MppItemIDWood});
     Add(MppItem{MppItemIDWood});
 }
@@ -24,9 +38,22 @@ void MppInventory::Draw(MppRenderer& renderer)
     MppMenuList::Draw(renderer);
 }
 
-void MppInventory::Draw(MppRenderer& renderer, int y, int index)
+void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
 {
     const MppItem& item = Items[index];
+    int width = MppItem::kWidth;
+    if (item.GetFlag() & MppItemFlagStackable && item.GetItems())
+    {
+        width += kCharacterWidth * item.GetItems();
+        width += kCharacterWidth;
+    }
+    width += kCharacterWidth * item.GetName().size();
+    int x = (GetContentWidth() - width) / 2;
+    if (x < 0)
+    {
+        SDL_Log("Width is greater then content width");
+    }
+    x += GetContentX();
     renderer.Draw(
         MppSprite{
             item.GetColor1(),
@@ -38,19 +65,27 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index)
             item.GetSpriteY(),
             MppItem::kWidth
         },
-        GetContentX(),
+        x,
         y,
         false,
         MppRenderer::LayerScreenContent);
-    if (item.GetItems())
+    x += MppItem::kWidth;
+    if (item.GetFlag() & MppItemFlagStackable && item.GetItems())
     {
-        // TODO: number characters
-        int stringX = GetContentX() + MppItem::kWidth + kCharacterWidth / 2;
-        MppMenu::Draw(renderer, "A", kMppColorWhite, stringX, y);
+        std::string string = std::to_string(item.GetItems());
+        x += kCharacterWidth * string.size() / 2;
+        MppMenu::Draw(renderer, string, kMppColorText, x, y);
+        x += kCharacterWidth * string.size() / 2;
+        x += kCharacterWidth;
     }
-    int stringOffsetX = MppItem::kWidth + kCharacterWidth + kCharacterWidth / 2;
-    int stringX = GetContentX() + stringOffsetX + (GetContentWidth() - stringOffsetX) / 2;
-    MppMenu::Draw(renderer, item.GetName(), kMppColorWhite, stringX, y);
+    x += kCharacterWidth * item.GetName().size() / 2;
+    MppMenu::Draw(renderer, item.GetName(), kMppColorText, x, y);
+    if (selected)
+    {
+        x = GetContentX();
+        MppMenu::Draw(renderer, ">", kMppColorText, x, y);
+        MppMenu::Draw(renderer, "<", kMppColorText, x + GetContentWidth(), y);
+    }
 }
 
 void MppInventory::Visit(SavepointVisitor& visitor)
@@ -60,7 +95,7 @@ void MppInventory::Visit(SavepointVisitor& visitor)
 
 void MppInventory::Add(const MppItem& item)
 {
-    if (item.GetType() & MppItemTypeStackable)
+    if (item.GetFlag() & MppItemFlagStackable)
     {
         for (int i = 0; i < Items.size(); i++)
         {
@@ -78,7 +113,7 @@ void MppInventory::Add(const MppItem& item)
 void MppInventory::Remove(int index)
 {
     MppItem& item = Items[index];
-    if (item.GetType() & MppItemTypeStackable)
+    if (item.GetFlag() & MppItemFlagStackable)
     {
         item.RemoveItem();
         if (item.GetItems())
@@ -97,7 +132,7 @@ std::string_view MppInventory::GetName() const
 
 int MppInventory::GetX() const
 {
-    return 16;
+    return 4;
 }
 
 int MppInventory::GetY() const
@@ -107,7 +142,7 @@ int MppInventory::GetY() const
 
 int MppInventory::GetWidth() const
 {
-    return 112;
+    return 144;
 }
 
 int MppInventory::GetHeight() const

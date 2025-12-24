@@ -1,4 +1,3 @@
-#include <cctype>
 #include <string_view>
 
 #include "color.hpp"
@@ -111,8 +110,6 @@ void MppMenu::Draw(MppRenderer& renderer, const std::string_view& string, int co
     x -= string.size() * 8 / 2;
     for (char character : string)
     {
-        // TODO: add characters
-        SDL_assert(std::isupper(character) || character == ' ');
         MppSprite sprite(character, color);
         renderer.Draw(sprite, x, y, false, MppRenderer::LayerScreenContent);
         x += 8;

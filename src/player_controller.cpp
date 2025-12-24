@@ -3,27 +3,36 @@
 #include <array>
 
 #include "inventory.hpp"
+#include "menu_list.hpp"
 #include "mob_entity.hpp"
 #include "player_controller.hpp"
 #include "renderer.hpp"
 
 enum ActionType
 {
-    ActionTypeUp,
-    ActionTypeDown,
-    ActionTypeLeft,
-    ActionTypeRight,
-    ActionTypeInventory,
+    ActionTypeMoveUp,
+    ActionTypeMoveDown,
+    ActionTypeMoveLeft,
+    ActionTypeMoveRight,
+    ActionTypeMenuUp,
+    ActionTypeMenuDown,
+    ActionTypeMenuLeft,
+    ActionTypeMenuRight,
+    ActionTypeToggleInventory,
     ActionTypeCount,
 };
 
 static constexpr SDL_Scancode kScancodes[] =
 {
-    /* Up */ SDL_SCANCODE_W,
-    /* Down */ SDL_SCANCODE_S,
-    /* Left */ SDL_SCANCODE_A,
-    /* Right */ SDL_SCANCODE_D,
-    /* Inventory */ SDL_SCANCODE_E,
+    /* MoveUp */ SDL_SCANCODE_W,
+    /* MoveDown */ SDL_SCANCODE_S,
+    /* MoveLeft */ SDL_SCANCODE_A,
+    /* MoveRight */ SDL_SCANCODE_D,
+    /* MenuUp */ SDL_SCANCODE_UP,
+    /* MenuDown */ SDL_SCANCODE_DOWN,
+    /* MenuLeft */ SDL_SCANCODE_LEFT,
+    /* MenuRight */ SDL_SCANCODE_RIGHT,
+    /* ToggleInventory */ SDL_SCANCODE_E,
 };
 
 struct Action
@@ -44,7 +53,7 @@ static std::array<Action, SDL_SCANCODE_COUNT> actions;
 
 MppPlayerController::MppPlayerController(MppMobEntity& entity)
     : MppController(entity)
-    , DrawInventory{true}
+    , MenuList{}
 {
 }
 
@@ -54,29 +63,45 @@ void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int tic
     {
         actions[i].Update(ActionType(i));
     }
-    if (!DrawInventory)
+    if (actions[ActionTypeToggleInventory].Down)
+    {
+        Toggle(std::dynamic_pointer_cast<MppMenuList>(Entity.GetInventory()));
+    }
+    if (!MenuList)
     {
         int dx = 0;
         int dy = 0;
-        dy -= actions[ActionTypeUp].Held;
-        dy += actions[ActionTypeDown].Held;
-        dx -= actions[ActionTypeLeft].Held;
-        dx += actions[ActionTypeRight].Held;
+        dy -= actions[ActionTypeMoveUp].Held;
+        dy += actions[ActionTypeMoveDown].Held;
+        dx -= actions[ActionTypeMoveLeft].Held;
+        dx += actions[ActionTypeMoveRight].Held;
         if (dx || dy)
         {
             Entity.Move(level, dx, dy, ticks);
         }
     }
-    if (actions[ActionTypeInventory].Down)
+    else
     {
-        DrawInventory = !DrawInventory;
-    }
-    if (DrawInventory)
-    {
-        const std::shared_ptr<MppInventory>& inventory = Entity.GetInventory();
-        if (inventory)
+        if (actions[ActionTypeMenuUp].Down)
         {
-            inventory->Draw(renderer);
+            MenuList->Up();
         }
+        else if (actions[ActionTypeMenuDown].Down)
+        {
+            MenuList->Down();
+        }
+        MenuList->Draw(renderer);
+    }
+}
+
+void MppPlayerController::Toggle(const std::shared_ptr<MppMenuList>& menuList)
+{
+    if (MenuList)
+    {
+        MenuList.reset();
+    }
+    else
+    {
+        MenuList = menuList;
     }
 }

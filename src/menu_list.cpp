@@ -1,5 +1,3 @@
-// TODO: untested
-
 #include <SDL3/SDL.h>
 
 #include <algorithm>
@@ -18,24 +16,25 @@ void MppMenuList::Draw(MppRenderer& renderer)
 {
     MppMenu::Draw(renderer);
     int rowHeight = GetRowHeight();
-    int rows = (Max - First);
-    int visibleRows = GetContentHeight() / rowHeight;
+    int rows = GetContentHeight() / rowHeight;
     int y = GetContentY();
-    for (int i = 0; i < std::min(rows, visibleRows); i++)
+    for (int i = 0, index = First; i < rows && index < Max; i++, index++)
     {
-        Draw(renderer, y, i);
+        Draw(renderer, y, index, index == Index);
         y += rowHeight;
     }
 }
 
 void MppMenuList::Add()
 {
+    // TODO: untested
     Max++;
     Index = std::max(Index, 0);
 }
 
 void MppMenuList::Remove(int index)
 {
+    // TODO: untested
     SDL_assert(Max > 0);
     Max--;
     if (Max == 0)
@@ -54,16 +53,15 @@ void MppMenuList::Remove(int index)
 
 void MppMenuList::Up()
 {
-    Index = std::max(Index + 1, 0);
+    Index = std::max(Index - 1, 0);
     First = std::min(First, Index);
 }
 
 void MppMenuList::Down()
 {
     Index = std::min(Index + 1, Max - 1);
-    int visibleRows = GetContentHeight() / GetRowHeight();
-    First = Index - visibleRows;
-    if (Index + visibleRows > First)
+    int rows = GetContentHeight() / GetRowHeight();
+    if (Index - rows >= First)
     {
         First++;
     }

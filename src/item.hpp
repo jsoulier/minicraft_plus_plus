@@ -9,27 +9,34 @@
 enum MppItemID
 {
     MppItemIDWood,
-    MppItemIDIronArmor,
+    MppItemIDIronHelmet,
+    MppItemIDIronChestplate,
+    MppItemIDIronLeggings,
+    MppItemIDIronBoots,
     MppItemIDCount,
     MppItemIDInvalid = MppItemIDCount,
 };
 
-enum MppItemType
+enum MppItemFlag
 {
-    MppItemTypeMaterial  = 0x01,
-    MppItemTypeHeld      = 0x02,
-    MppItemTypeArmor     = 0x04,
-    MppItemTypeStackable = ~(MppItemTypeHeld | MppItemTypeArmor),
+    MppItemFlagMaterial  = 0x01,
+    MppItemFlagHeld      = 0x02,
+    MppItemFlagArmor     = 0x04,
+    MppItemFlagStackable = ~(MppItemFlagHeld | MppItemFlagArmor),
 };
 
-enum MppItemToolType
+enum MppItemType
 {
-    MppItemToolTypeNone,
-    MppItemToolTypePickaxe,
-    MppItemToolTypeAxe,
-    MppItemToolTypeShovel,
-    MppItemToolTypeSword,
-    MppItemToolTypeHoe,
+    MppItemTypeNone,
+    MppItemTypePickaxe,
+    MppItemTypeAxe,
+    MppItemTypeShovel,
+    MppItemTypeSword,
+    MppItemTypeHoe,
+    MppItemTypeChestplate,
+    MppItemTypeHelmet,
+    MppItemTypeBoots,
+    MppItemTypeLeggings,
 };
 
 class MppItem
@@ -45,8 +52,8 @@ public:
     int GetItems() const;
     std::string_view GetName() const;
     MppItemID GetID() const;
+    MppItemFlag GetFlag() const;
     MppItemType GetType() const;
-    MppItemToolType GetToolType() const;
     int GetColor1() const;
     int GetColor2() const;
     int GetColor3() const;

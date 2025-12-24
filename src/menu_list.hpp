@@ -8,14 +8,14 @@ class MppMenuList : public MppMenu
 {
 public:
     MppMenuList();
-    void Draw(MppRenderer& renderer);
+    void Draw(MppRenderer& renderer) override;
     void Add();
     void Remove(int index);
     void Up();
     void Down();
 
 protected:
-    virtual void Draw(MppRenderer& renderer, int y, int index) = 0;
+    virtual void Draw(MppRenderer& renderer, int y, int index, bool selected) = 0;
     virtual int GetRowHeight() const = 0;
 
 private:

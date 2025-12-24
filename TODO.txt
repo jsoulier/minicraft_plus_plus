@@ -1,2 +1,5 @@
-[ ] Social preview
+[ ] Use Savepoint
 [ ] Add ASCII characters
+[ ] Social preview
+[ ] Repeating menu keys
+[ ] Sound

@@ -7,7 +7,7 @@ class MppRenderer;
 class MppMenu
 {
 public:
-    void Draw(MppRenderer& renderer);
+    virtual void Draw(MppRenderer& renderer);
     void Draw(MppRenderer& renderer, const std::string_view& string, int color, int x, int y);
 
 protected:

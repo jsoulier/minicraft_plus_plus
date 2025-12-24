@@ -13,12 +13,21 @@ static constexpr int kMppColorWhite = 999;
 static constexpr int kMppColorLightGray = 777;
 static constexpr int kMppColorGray = 444;
 static constexpr int kMppColorDarkGray = 222;
-
 static constexpr int kMppColorDirtBrown = 840;
 
 static constexpr int kMppColorEntityPhysics = 909;
 static constexpr int kMppColorGroundTilePhysics = 990;
 static constexpr int kMppColorWallTilePhysics = 909;
 static constexpr int kMppColorLiquidTilePhysics = 99;
+
+static constexpr int kMppColorWood1 = 640;
+static constexpr int kMppColorWood2 = 750;
+static constexpr int kMppColorWood3 = 860;
+
+static constexpr int kMppColorIron1 = 555;
+static constexpr int kMppColorIron2 = 666;
+static constexpr int kMppColorIron3 = 777;
+
+static constexpr int kMppColorText = kMppColorWhite;
 
 SDL_Color MppColorGet(int inColor);

@@ -2,13 +2,14 @@
 
 #include <string_view>
 
+#include "color.hpp"
 #include "item.hpp"
 
 struct
 {
     std::string_view Name;
+    MppItemFlag Flag;
     MppItemType Type;
-    MppItemToolType ToolType;
     int Color1;
     int Color2;
     int Color3;
@@ -22,33 +23,73 @@ static constexpr kItems[MppItemIDCount] =
     /* wood */
     {
         .Name = "WOOD",
-        .Type = MppItemTypeMaterial,
-        .ToolType = MppItemToolTypeNone,
-        .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
+        .Flag = MppItemFlagMaterial,
+        .Type = MppItemTypeNone,
+        .Color1 = kMppColorWood1,
+        .Color2 = kMppColorWood2,
+        .Color3 = kMppColorWood3,
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 0,
-        .SpriteY = 0,
+        .SpriteY = 11,
     },
-    /* iron armor */
+    /* iron helmet */
     {
-        .Name = "IRON ARMOR",
-        .Type = MppItemTypeArmor,
-        .ToolType = MppItemToolTypeNone,
-        .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
+        .Name = "IRON HELMET",
+        .Flag = MppItemFlagArmor,
+        .Type = MppItemTypeHelmet,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 0,
-        .SpriteY = 0,
+        .SpriteY = 12,
+    },
+    /* iron chestplate */
+    {
+        .Name = "IRON CHESTPLATE",
+        .Flag = MppItemFlagArmor,
+        .Type = MppItemTypeChestplate,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 1,
+        .SpriteY = 12,
+    },
+    /* iron leggings */
+    {
+        .Name = "IRON LEGGINGS",
+        .Flag = MppItemFlagArmor,
+        .Type = MppItemTypeLeggings,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 2,
+        .SpriteY = 12,
+    },
+    /* iron chestplate */
+    {
+        .Name = "IRON BOOTS",
+        .Flag = MppItemFlagArmor,
+        .Type = MppItemTypeBoots,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 3,
+        .SpriteY = 12,
     },
 };
 
 MppItem::MppItem(MppItemID id)
     : ID{id}
+    , Count{1}
 {
 }
 
@@ -87,14 +128,14 @@ MppItemID MppItem::GetID() const
     return ID;
 }
 
+MppItemFlag MppItem::GetFlag() const
+{
+    return kItems[ID].Flag;
+}
+
 MppItemType MppItem::GetType() const
 {
     return kItems[ID].Type;
-}
-
-MppItemToolType MppItem::GetToolType() const
-{
-    return kItems[ID].ToolType;
 }
 
 int MppItem::GetColor1() const

@@ -14,13 +14,13 @@ class MppInventory : public MppMenuList
 {
 public:
     MppInventory();
-    void Draw(MppRenderer& renderer);
+    void Draw(MppRenderer& renderer) override;
     void Visit(SavepointVisitor& visitor);
     void Add(const MppItem& item);
     void Remove(int index);
 
 protected:
-    void Draw(MppRenderer& renderer, int y, int index) override;
+    void Draw(MppRenderer& renderer, int y, int index, bool selected) override;
     std::string_view GetName() const override;
     int GetX() const override;
     int GetY() const override;
