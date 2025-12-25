@@ -12,6 +12,13 @@ MppMenuList::MppMenuList()
 {
 }
 
+void MppMenuList::Visit(SavepointVisitor& visitor)
+{
+    visitor(Index);
+    visitor(First);
+    visitor(Max);
+}
+
 void MppMenuList::Draw(MppRenderer& renderer)
 {
     MppMenu::Draw(renderer);
@@ -27,14 +34,12 @@ void MppMenuList::Draw(MppRenderer& renderer)
 
 void MppMenuList::Add()
 {
-    // TODO: untested
     Max++;
     Index = std::max(Index, 0);
 }
 
 void MppMenuList::Remove(int index)
 {
-    // TODO: untested
     SDL_assert(Max > 0);
     Max--;
     if (Max == 0)

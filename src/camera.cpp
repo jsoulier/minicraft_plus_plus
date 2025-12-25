@@ -34,8 +34,8 @@ void MppCamera::Update(int dt)
     int min = 0;
     int max = MppLevel::kWidth - 1;
     int offset = MppConsoleDebugFrustum;
-    TileX1 = std::clamp(X / MppTile::kWidth + offset, min, max);
-    TileY1 = std::clamp(Y / MppTile::kWidth + offset, min, max);
+    TileX1 = std::clamp(X / MppTile::kWidth - 1 + offset, min, max);
+    TileY1 = std::clamp(Y / MppTile::kWidth - 1 + offset, min, max);
     TileX2 = std::clamp((X + Width) / MppTile::kWidth - offset, min, max);
     TileY2 = std::clamp((Y + Height) / MppTile::kWidth - offset, min, max);
 }

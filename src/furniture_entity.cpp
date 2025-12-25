@@ -1,0 +1,1 @@
+#include "furniture_entity.hpp"

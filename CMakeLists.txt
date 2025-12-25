@@ -19,6 +19,7 @@ add_subdirectory(lib/SDL)
 add_subdirectory(lib/savepoint)
 
 add_executable(minicraft++ WIN32
+    src/furniture_entity.cpp
     src/ai_controller.cpp
     src/camera.cpp
     src/color.cpp

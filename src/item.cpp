@@ -33,6 +33,19 @@ static constexpr kItems[MppItemIDCount] =
         .SpriteX = 0,
         .SpriteY = 11,
     },
+    /* apple */
+    {
+        .Name = "APPLE",
+        .Flag = MppItemFlagConsumable,
+        .Type = MppItemTypeNone,
+        .Color1 = 500,
+        .Color2 = 700,
+        .Color3 = 900,
+        .Color4 = 740,
+        .Color5 = 90,
+        .SpriteX = 1,
+        .SpriteY = 11,
+    },
     /* iron helmet */
     {
         .Name = "IRON HELMET",

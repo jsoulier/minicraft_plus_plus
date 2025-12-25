@@ -8,6 +8,7 @@
 #include "renderer.hpp"
 
 static constexpr int kCharacterWidth = 8;
+static constexpr int kSpacing = kCharacterWidth;
 
 MppInventory::MppInventory()
     : MppMenuList()
@@ -16,7 +17,10 @@ MppInventory::MppInventory()
     Add(MppItem{MppItemIDIronHelmet});
     Add(MppItem{MppItemIDIronHelmet});
     Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDApple});
+    Add(MppItem{MppItemIDApple});
     Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDApple});
     Add(MppItem{MppItemIDIronChestplate});
     Add(MppItem{MppItemIDIronChestplate});
     Add(MppItem{MppItemIDIronChestplate});
@@ -31,6 +35,7 @@ MppInventory::MppInventory()
     Add(MppItem{MppItemIDIronBoots});
     Add(MppItem{MppItemIDWood});
     Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDApple});
 }
 
 void MppInventory::Draw(MppRenderer& renderer)
@@ -44,7 +49,8 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
     int width = MppItem::kWidth;
     if (item.GetFlag() & MppItemFlagStackable && item.GetItems())
     {
-        width += kCharacterWidth * item.GetItems();
+        std::string string = std::to_string(item.GetItems());
+        width += kCharacterWidth * string.size();
         width += kCharacterWidth;
     }
     width += kCharacterWidth * item.GetName().size();
@@ -76,7 +82,7 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
         x += kCharacterWidth * string.size() / 2;
         MppMenu::Draw(renderer, string, kMppColorText, x, y);
         x += kCharacterWidth * string.size() / 2;
-        x += kCharacterWidth;
+        x += kSpacing;
     }
     x += kCharacterWidth * item.GetName().size() / 2;
     MppMenu::Draw(renderer, item.GetName(), kMppColorText, x, y);
@@ -90,6 +96,12 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
 
 void MppInventory::Visit(SavepointVisitor& visitor)
 {
+    MppMenuList::Visit(visitor);
+    // TODO: remove
+    if (visitor.IsReader())
+    {
+        Items.clear();
+    }
     visitor(Items);
 }
 

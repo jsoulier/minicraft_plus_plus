@@ -10,3 +10,12 @@ MppHumanoidInventory::MppHumanoidInventory()
 void MppHumanoidInventory::Visit(SavepointVisitor& visitor)
 {
 }
+
+void MppHumanoidInventory::Action()
+{
+    // TODO: remove
+    if (Index != -1)
+    {
+        Remove(Index);
+    }
+}

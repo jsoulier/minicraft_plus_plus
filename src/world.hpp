@@ -25,6 +25,7 @@ public:
     bool Init(Savepoint& savepoint, SavepointStatus status);
     void Quit();
     void Update(MppRenderer& renderer, int ticks);
+    void Save(Savepoint& savepoint);
     void SetLevel(int level);
 
 private:

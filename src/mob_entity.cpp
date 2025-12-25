@@ -28,6 +28,8 @@ void MppMobEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 void MppMobEntity::Visit(SavepointVisitor& visitor)
 {
     MppEntity::Visit(visitor);
+    visitor(DeltaX);
+    visitor(DeltaY);
     if (Inventory)
     {
         visitor(*Inventory);

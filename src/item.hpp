@@ -9,6 +9,7 @@
 enum MppItemID
 {
     MppItemIDWood,
+    MppItemIDApple,
     MppItemIDIronHelmet,
     MppItemIDIronChestplate,
     MppItemIDIronLeggings,
@@ -19,10 +20,11 @@ enum MppItemID
 
 enum MppItemFlag
 {
-    MppItemFlagMaterial  = 0x01,
-    MppItemFlagHeld      = 0x02,
-    MppItemFlagArmor     = 0x04,
-    MppItemFlagStackable = ~(MppItemFlagHeld | MppItemFlagArmor),
+    MppItemFlagMaterial   = 0x01,
+    MppItemFlagConsumable = 0x02,
+    MppItemFlagHeld       = 0x04,
+    MppItemFlagArmor      = 0x08,
+    MppItemFlagStackable  = ~(MppItemFlagHeld | MppItemFlagArmor),
 };
 
 enum MppItemType

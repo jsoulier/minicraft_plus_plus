@@ -9,4 +9,5 @@ class MppHumanoidInventory : public MppInventory
 public:
     MppHumanoidInventory();
     void Visit(SavepointVisitor& visitor);
+    void Action() override;
 };

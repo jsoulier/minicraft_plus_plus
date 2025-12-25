@@ -59,6 +59,8 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     ticks++;
     world.Update(renderer, ticks);
     renderer.Update(ticks);
+    // TODO: throttle
+    world.Save(savepoint);
     return SDL_APP_CONTINUE;
 }
 
@@ -79,8 +81,8 @@ SDL_AppResult SDLCALL SDL_AppEvent(void* appstate, SDL_Event* event)
 
 void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
-    // TODO: save
-    // savepoint.Save();
+    world.Save(savepoint);
+    savepoint.Save();
     world.Quit();
     savepoint.Close();
     renderer.Quit();

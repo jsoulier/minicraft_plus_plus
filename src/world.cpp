@@ -33,6 +33,10 @@ bool MppWorld::Init(Savepoint& savepoint, SavepointStatus status)
         {
             Levels[level]->Generate(*this, level);
         }
+        for (int level = 0; level < LevelCount; level++)
+        {
+            Levels[level]->Save(savepoint, level, true);
+        }
         break;
     }
     if (LevelIndex == -1)
@@ -50,6 +54,11 @@ void MppWorld::Quit()
 void MppWorld::Update(MppRenderer& renderer, int ticks)
 {
     Levels[LevelIndex]->Update(*this, renderer, ticks);
+}
+
+void MppWorld::Save(Savepoint& savepoint)
+{
+    Levels[LevelIndex]->Save(savepoint, LevelIndex, false);
 }
 
 void MppWorld::SetLevel(int level)

@@ -10,29 +10,23 @@
 
 enum ActionType
 {
-    ActionTypeMoveUp,
-    ActionTypeMoveDown,
-    ActionTypeMoveLeft,
-    ActionTypeMoveRight,
-    ActionTypeMenuUp,
-    ActionTypeMenuDown,
-    ActionTypeMenuLeft,
-    ActionTypeMenuRight,
-    ActionTypeToggleInventory,
+    ActionTypeAction,
+    ActionTypeUp,
+    ActionTypeDown,
+    ActionTypeLeft,
+    ActionTypeRight,
+    ActionTypeInventory,
     ActionTypeCount,
 };
 
-static constexpr SDL_Scancode kScancodes[] =
+static constexpr SDL_Scancode kScancodes[ActionTypeCount][2] =
 {
-    /* MoveUp */ SDL_SCANCODE_W,
-    /* MoveDown */ SDL_SCANCODE_S,
-    /* MoveLeft */ SDL_SCANCODE_A,
-    /* MoveRight */ SDL_SCANCODE_D,
-    /* MenuUp */ SDL_SCANCODE_UP,
-    /* MenuDown */ SDL_SCANCODE_DOWN,
-    /* MenuLeft */ SDL_SCANCODE_LEFT,
-    /* MenuRight */ SDL_SCANCODE_RIGHT,
-    /* ToggleInventory */ SDL_SCANCODE_E,
+    /* Action */    {SDL_SCANCODE_SPACE, SDL_SCANCODE_RETURN},
+    /* Up */        {SDL_SCANCODE_W, SDL_SCANCODE_UP},
+    /* Down */      {SDL_SCANCODE_S, SDL_SCANCODE_DOWN},
+    /* Left */      {SDL_SCANCODE_A, SDL_SCANCODE_LEFT},
+    /* Right */     {SDL_SCANCODE_D, SDL_SCANCODE_RIGHT},
+    /* Inventory */ {SDL_SCANCODE_E, SDL_SCANCODE_UNKNOWN},
 };
 
 struct Action
@@ -40,16 +34,26 @@ struct Action
     void Update(ActionType type)
     {
         const bool* keys = SDL_GetKeyboardState(nullptr);
-        SDL_Scancode scancode = kScancodes[type];
-        Down = keys[scancode] && !Held;
-        Held = keys[scancode];
+        Down = false;
+        for (int i = 0; i < 2; i++)
+        {
+            SDL_Scancode scancode = kScancodes[type][i];
+            Down |= keys[scancode] && !Held;
+        }
+        Held = false;
+        for (int i = 0; i < 2; i++)
+        {
+            SDL_Scancode scancode = kScancodes[type][i];
+            Held |= keys[scancode];
+        }
     }
 
     bool Held;
+    // TODO: repeat
     bool Down;
 };
 
-static std::array<Action, SDL_SCANCODE_COUNT> actions;
+static std::array<Action, ActionTypeCount> actions;
 
 MppPlayerController::MppPlayerController(MppMobEntity& entity)
     : MppController(entity)
@@ -63,7 +67,7 @@ void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int tic
     {
         actions[i].Update(ActionType(i));
     }
-    if (actions[ActionTypeToggleInventory].Down)
+    if (actions[ActionTypeInventory].Down)
     {
         Toggle(std::dynamic_pointer_cast<MppMenuList>(Entity.GetInventory()));
     }
@@ -71,10 +75,10 @@ void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int tic
     {
         int dx = 0;
         int dy = 0;
-        dy -= actions[ActionTypeMoveUp].Held;
-        dy += actions[ActionTypeMoveDown].Held;
-        dx -= actions[ActionTypeMoveLeft].Held;
-        dx += actions[ActionTypeMoveRight].Held;
+        dy -= actions[ActionTypeUp].Held;
+        dy += actions[ActionTypeDown].Held;
+        dx -= actions[ActionTypeLeft].Held;
+        dx += actions[ActionTypeRight].Held;
         if (dx || dy)
         {
             Entity.Move(level, dx, dy, ticks);
@@ -82,13 +86,17 @@ void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int tic
     }
     else
     {
-        if (actions[ActionTypeMenuUp].Down)
+        if (actions[ActionTypeAction].Down)
         {
-            MenuList->Up();
+            MenuList->Action();
         }
-        else if (actions[ActionTypeMenuDown].Down)
+        else if (actions[ActionTypeDown].Down)
         {
             MenuList->Down();
+        }
+        else if (actions[ActionTypeUp].Down)
+        {
+            MenuList->Up();
         }
         MenuList->Draw(renderer);
     }

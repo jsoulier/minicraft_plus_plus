@@ -14,8 +14,8 @@
 MppLevel::MppLevel()
     : Tiles{}
     , Entities{}
-    , MinDirtyX{kWidth}
-    , MinDirtyY{kWidth}
+    , MinDirtyX{kWidth - 1}
+    , MinDirtyY{kWidth - 1}
     , MaxDirtyX{0}
     , MaxDirtyY{0}
 {
@@ -56,7 +56,7 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
         {
             visitor(Tiles[x][y]);
         }
-        else if (logs++ < 100)
+        else if (logs++ < 10)
         {
             SDL_Log("Bad tile: %d, %d", x, y);
         }
@@ -68,7 +68,7 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
         {
             continue;
         }
-        if (logs++ < 100)
+        if (logs++ < 10)
         {
             SDL_Log("Bad tile: %d, %d", x, y);
         }
@@ -76,21 +76,35 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
     }
 }
 
-void MppLevel::Save(Savepoint& savepoint, int level)
+void MppLevel::Save(Savepoint& savepoint, int level, bool all)
 {
     SDL_assert(IsValid(MinDirtyX, MinDirtyY));
     SDL_assert(IsValid(MaxDirtyY, MaxDirtyY));
-    for (int x = MinDirtyX; x <= MaxDirtyX; x++)
-    for (int y = MinDirtyY; y <= MaxDirtyY; y++)
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = kWidth - 1;
+    int y2 = kWidth - 1;
+    if (!all)
     {
-        // TODO:
+        x1 = MinDirtyX;
+        x2 = MaxDirtyX;
+        y1 = MinDirtyY;
+        y2 = MaxDirtyY;
+    }
+    SavepointVisitor visitor;
+    for (int x = x1; x <= x2; x++)
+    for (int y = y1; y <= y2; y++)
+    {
+        visitor.Reset();
+        visitor(Tiles[x][y]);
+        savepoint.Write(visitor, x, y, level);
     }
     for (std::shared_ptr<MppEntity>& entity : Entities)
     {
-        // TODO:
+        savepoint.Write(entity.get(), entity->ID, level);
     }
-    MinDirtyX = kWidth;
-    MinDirtyY = kWidth;
+    MinDirtyX = kWidth - 1;
+    MinDirtyY = kWidth - 1;
     MaxDirtyX = 0;
     MaxDirtyY = 0;
 }
