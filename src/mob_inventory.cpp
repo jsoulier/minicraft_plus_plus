@@ -29,29 +29,6 @@ MppMobInventory::MppMobInventory(int slots)
     : MppInventory()
     , Slots(slots)
 {
-    // TODO: remove
-    Add(MppItem{MppItemIDIronHelmet});
-    Add(MppItem{MppItemIDIronHelmet});
-    Add(MppItem{MppItemIDIronHelmet});
-    Add(MppItem{MppItemIDApple});
-    Add(MppItem{MppItemIDApple});
-    Add(MppItem{MppItemIDIronHelmet});
-    Add(MppItem{MppItemIDApple});
-    Add(MppItem{MppItemIDIronCuirass});
-    Add(MppItem{MppItemIDIronCuirass});
-    Add(MppItem{MppItemIDIronCuirass});
-    Add(MppItem{MppItemIDIronCuirass});
-    Add(MppItem{MppItemIDIronLeggings});
-    Add(MppItem{MppItemIDIronLeggings});
-    Add(MppItem{MppItemIDIronLeggings});
-    Add(MppItem{MppItemIDIronLeggings});
-    Add(MppItem{MppItemIDIronBoots});
-    Add(MppItem{MppItemIDIronBoots});
-    Add(MppItem{MppItemIDIronBoots});
-    Add(MppItem{MppItemIDIronBoots});
-    Add(MppItem{MppItemIDWood});
-    Add(MppItem{MppItemIDWood});
-    Add(MppItem{MppItemIDApple});
 }
 
 void MppMobInventory::Visit(SavepointVisitor& visitor)

@@ -4,9 +4,9 @@
 
 #include "recipe_entity.hpp"
 
-class MppCraftingTableEntity : public MppRecipeEntity
+class MppWorkbenchEntity : public MppRecipeEntity
 {
-    SAVEPOINT_DERIVED(MppCraftingTableEntity)
+    SAVEPOINT_DERIVED(MppWorkbenchEntity)
 
 public:
     std::string_view GetName() const override;

@@ -57,7 +57,7 @@ static const kItems[MppItemIDCount] =
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeHelmet,
         .Recipe = MppItemRecipe(
-            MppItemRecipeTypeCraftingBench,
+            MppItemRecipeTypeWorkbench,
             MppItemIDIronHelmet,
             {{MppItemIDIronBar, 5}}),
         .Color1 = kMppColorIron1,
@@ -74,7 +74,7 @@ static const kItems[MppItemIDCount] =
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeCuirass,
         .Recipe = MppItemRecipe(
-            MppItemRecipeTypeCraftingBench,
+            MppItemRecipeTypeWorkbench,
             MppItemIDIronCuirass,
             {{MppItemIDIronBar, 8}}),
         .Color1 = kMppColorIron1,
@@ -91,7 +91,7 @@ static const kItems[MppItemIDCount] =
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeLeggings,
         .Recipe = MppItemRecipe(
-            MppItemRecipeTypeCraftingBench,
+            MppItemRecipeTypeWorkbench,
             MppItemIDIronLeggings,
             {{MppItemIDIronBar, 7}}),
         .Color1 = kMppColorIron1,
@@ -108,7 +108,7 @@ static const kItems[MppItemIDCount] =
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeBoots,
         .Recipe = MppItemRecipe(
-            MppItemRecipeTypeCraftingBench,
+            MppItemRecipeTypeWorkbench,
             MppItemIDIronBoots,
             {{MppItemIDIronBar, 4}}),
         .Color1 = kMppColorIron1,
@@ -151,15 +151,50 @@ static const kItems[MppItemIDCount] =
     },
     /* stone */
     {
-
+        .Name = "STONE",
+        .Flag = MppItemFlagNone,
+        .Type = MppItemTypeNone,
+        .Color1 = kMppColorStone1,
+        .Color2 = kMppColorStone2,
+        .Color3 = kMppColorStone3,
+        .Color4 = kMppColorStone4,
+        .Color5 = 0,
+        .SpriteX = 2,
+        .SpriteY = 12,
     },
-    /* crafting table */
+    /* workbench */
     {
-
+        .Name = "WORKBENCH",
+        .Flag = MppItemFlagHeld,
+        .Type = MppItemTypeFurniture,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeHand,
+            MppItemIDWorkbench,
+            {{MppItemIDWood, 4}}),
+        .Color1 = 0,
+        .Color2 = 311,
+        .Color3 = 533,
+        .Color4 = 755,
+        .Color5 = 966,
+        .SpriteX = 0,
+        .SpriteY = 14,
     },
     /* furnace */
     {
-
+        .Name = "FURNACE",
+        .Flag = MppItemFlagHeld,
+        .Type = MppItemTypeFurniture,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeWorkbench,
+            MppItemIDFurnace,
+            {{MppItemIDStone, 8}}),
+        .Color1 = 0,
+        .Color2 = 333,
+        .Color3 = 555,
+        .Color4 = 777,
+        .Color5 = 960,
+        .SpriteX = 1,
+        .SpriteY = 14,
     },
 };
 

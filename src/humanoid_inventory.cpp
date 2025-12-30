@@ -7,6 +7,55 @@
 MppHumanoidInventory::MppHumanoidInventory()
     : MppMobInventory(SlotTypeCount)
 {
+    // TODO: remove
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDApple});
+    Add(MppItem{MppItemIDApple});
+    Add(MppItem{MppItemIDIronHelmet});
+    Add(MppItem{MppItemIDApple});
+    Add(MppItem{MppItemIDIronCuirass});
+    Add(MppItem{MppItemIDIronCuirass});
+    Add(MppItem{MppItemIDIronCuirass});
+    Add(MppItem{MppItemIDIronCuirass});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronLeggings});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDIronBoots});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDApple});
+    Add(MppItem{MppItemIDWorkbench});
+    Add(MppItem{MppItemIDFurnace});
+    Add(MppItem{MppItemIDWorkbench});
+    Add(MppItem{MppItemIDFurnace});
+    Add(MppItem{MppItemIDWorkbench});
+    Add(MppItem{MppItemIDFurnace});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDWood});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
+    Add(MppItem{MppItemIDStone});
 }
 
 void MppHumanoidInventory::Action()
@@ -18,7 +67,7 @@ void MppHumanoidInventory::Action()
     }
     if (item->GetFlag() & MppItemFlagHeld)
     {
-        SetSlot(SlotTypeHands);
+        SetSlot(SlotTypeHeld);
     }
     else if (item->GetFlag() & MppItemFlagArmor)
     {
@@ -66,7 +115,7 @@ const MppItem* MppHumanoidInventory::GetBoots() const
     return GetItemFromSlot(SlotTypeBoots);
 }
 
-const MppItem* MppHumanoidInventory::GetHands() const
+const MppItem* MppHumanoidInventory::GetHeld() const
 {
-    return GetItemFromSlot(SlotTypeHands);
+    return GetItemFromSlot(SlotTypeHeld);
 }

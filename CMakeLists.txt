@@ -27,7 +27,6 @@ add_executable(minicraft++ WIN32
     src/color.cpp
     src/console.cpp
     src/controller.cpp
-    src/crafting_table_entity.cpp
     src/entity.cpp
     src/furnace_entity.cpp
     src/furniture_entity.cpp
@@ -54,7 +53,9 @@ add_executable(minicraft++ WIN32
     src/surface_level.cpp
     src/tile.cpp
     src/underground_level.cpp
+    src/workbench_entity.cpp
     src/world.cpp
+    src/recipe_menu.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)
 target_link_libraries(minicraft++ PRIVATE

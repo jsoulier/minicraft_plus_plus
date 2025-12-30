@@ -33,4 +33,9 @@ static constexpr int kMppColorIron5 = 777;
 
 static constexpr int kMppColorText = kMppColorWhite;
 
+static constexpr int kMppColorStone1 = 444;
+static constexpr int kMppColorStone2 = 111;
+static constexpr int kMppColorStone3 = 666;
+static constexpr int kMppColorStone4 = 555;
+
 SDL_Color MppColorGet(int inColor);

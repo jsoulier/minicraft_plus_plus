@@ -2,3 +2,4 @@
 [ ] Social preview
 [ ] Repeating menu keys
 [ ] Sound
+[ ] Bulkier armor sprites

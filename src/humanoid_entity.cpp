@@ -8,12 +8,20 @@
 
 struct Frames
 {
-    void GetSprite(int& x, int& y, bool& flip, int dx, int dy, bool tick) const
+    void GetSprite(int& x, int& y, bool& flip, int dx, int dy, bool tick, bool held) const
     {
         SDL_assert(dx || dy);
         flip = false;
-        x = X;
-        y = Y;
+        if (!held)
+        {
+            x = IdleX;
+            y = IdleY;
+        }
+        else
+        {
+            x = HeldX;
+            y = HeldY;
+        }
         if (dy)
         {
             flip = tick;
@@ -40,19 +48,21 @@ struct Frames
         }
     }
 
-    int X;
-    int Y;
+    int IdleX;
+    int IdleY;
+    int HeldX;
+    int HeldY;
     int DownOffsetX;
     int UpOffsetX;
     int Side1OffsetX;
     int Side2OffsetX;
 };
 
-static constexpr Frames kFrames{0, 6, 0, 1, 2, 3};
-static constexpr Frames kHelmetFrames{0, 8, 0, 1, 2, 2};
-static constexpr Frames kChestplateFrames{0, 9, 0, 1, 2, 3};
-static constexpr Frames kLeggingsFrames{0, 10, 0, 1, 2, 3};
-static constexpr Frames kBootsFrames{0, 11, 0, 1, 2, 3};
+static constexpr Frames kFrames{0, 6, 4, 6, 0, 1, 2, 3};
+static constexpr Frames kHelmetFrames{0, 8, 4, 8, 0, 1, 2, 2};
+static constexpr Frames kChestplateFrames{0, 9, 4, 9, 0, 1, 2, 3};
+static constexpr Frames kLeggingsFrames{0, 10, 4, 10, 0, 1, 2, 3};
+static constexpr Frames kBootsFrames{0, 11, 4, 11, 0, 1, 2, 3};
 
 MppHumanoidEntity::MppHumanoidEntity()
     : MppMobEntity()
@@ -64,10 +74,13 @@ MppHumanoidEntity::MppHumanoidEntity()
 void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
     MppMobEntity::Update(level, renderer, ticks);
+    MppHumanoidInventory* inventory = dynamic_cast<MppHumanoidInventory*>(GetInventory().get());
+    SDL_assert(inventory);
+    bool held = inventory->GetHeld() != nullptr;
     bool flip = false;
     int x = 0;
     int y = 0;
-    kFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+    kFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
     renderer.Draw(
         MppSprite{
             GetSpriteBorderColor(),
@@ -83,11 +96,9 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
         Y,
         flip,
         MppRenderer::LayerMobEntity);
-    MppHumanoidInventory* inventory = dynamic_cast<MppHumanoidInventory*>(GetInventory().get());
-    SDL_assert(inventory);
     if (const MppItem* item = inventory->GetHelmet())
     {
-        kHelmetFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        kHelmetFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
         renderer.Draw(
             MppSprite{
                 item->GetColor1(),
@@ -106,7 +117,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
     }
     if (const MppItem* item = inventory->GetCuirass())
     {
-        kChestplateFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        kChestplateFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
         renderer.Draw(
             MppSprite{
                 item->GetColor1(),
@@ -125,7 +136,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
     }
     if (const MppItem* item = inventory->GetLeggings())
     {
-        kLeggingsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        kLeggingsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
         renderer.Draw(
             MppSprite{
                 item->GetColor1(),
@@ -144,7 +155,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
     }
     if (const MppItem* item = inventory->GetBoots())
     {
-        kBootsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        kBootsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
         renderer.Draw(
             MppSprite{
                 item->GetColor1(),

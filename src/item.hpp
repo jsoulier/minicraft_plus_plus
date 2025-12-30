@@ -19,7 +19,7 @@ enum MppItemID
     MppItemIDIronOre,
     MppItemIDIronBar,
     MppItemIDStone,
-    MppItemIDCraftingTable,
+    MppItemIDWorkbench,
     MppItemIDFurnace,
     MppItemIDCount,
     MppItemIDInvalid = MppItemIDCount,
@@ -27,10 +27,10 @@ enum MppItemID
 
 enum MppItemFlag
 {
-    MppItemFlagNone,
-    MppItemFlagConsumable = 0x02,
-    MppItemFlagHeld       = 0x04,
-    MppItemFlagArmor      = 0x08,
+    MppItemFlagNone = 1,
+    MppItemFlagConsumable = 2,
+    MppItemFlagHeld = 4,
+    MppItemFlagArmor = 8,
     MppItemFlagStackable  = ~(MppItemFlagHeld | MppItemFlagArmor),
 };
 
@@ -46,11 +46,13 @@ enum MppItemType
     MppItemTypeHelmet,
     MppItemTypeBoots,
     MppItemTypeLeggings,
+    MppItemTypeFurniture,
 };
 
 enum MppItemRecipeType
 {
-    MppItemRecipeTypeCraftingBench,
+    MppItemRecipeTypeHand,
+    MppItemRecipeTypeWorkbench,
     MppItemRecipeTypeFurnace,
     MppItemRecipeTypeCount,
 };

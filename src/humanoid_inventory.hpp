@@ -13,7 +13,7 @@ public:
         SlotTypeCuirass,
         SlotTypeLeggings,
         SlotTypeBoots,
-        SlotTypeHands,
+        SlotTypeHeld,
         SlotTypeCount,
     };
 
@@ -23,5 +23,5 @@ public:
     const MppItem* GetCuirass() const;
     const MppItem* GetLeggings() const;
     const MppItem* GetBoots() const;
-    const MppItem* GetHands() const;
+    const MppItem* GetHeld() const;
 };
