@@ -1,9 +1,12 @@
 #include <SDL3/SDL.h>
 #include <savepoint/visitor.hpp>
 
+#include <memory>
 #include <string_view>
+#include <unordered_map>
 
 #include "color.hpp"
+#include "inventory.hpp"
 #include "item.hpp"
 
 struct
@@ -11,6 +14,7 @@ struct
     std::string_view Name;
     MppItemFlag Flag;
     MppItemType Type;
+    MppItemRecipe Recipe;
     int Color1;
     int Color2;
     int Color3;
@@ -19,12 +23,12 @@ struct
     int SpriteX;
     int SpriteY;
 }
-static constexpr kItems[MppItemIDCount] =
+static const kItems[MppItemIDCount] =
 {
     /* wood */
     {
         .Name = "WOOD",
-        .Flag = MppItemFlagMaterial,
+        .Flag = MppItemFlagNone,
         .Type = MppItemTypeNone,
         .Color1 = kMppColorWood1,
         .Color2 = kMppColorWood2,
@@ -52,6 +56,10 @@ static constexpr kItems[MppItemIDCount] =
         .Name = "IRON HELMET",
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeHelmet,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeCraftingBench,
+            MppItemIDIronHelmet,
+            {{MppItemIDIronBar, 5}}),
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -65,6 +73,10 @@ static constexpr kItems[MppItemIDCount] =
         .Name = "IRON CHESTPLATE",
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeChestplate,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeCraftingBench,
+            MppItemIDIronChestplate,
+            {{MppItemIDIronBar, 8}}),
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -78,6 +90,10 @@ static constexpr kItems[MppItemIDCount] =
         .Name = "IRON LEGGINGS",
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeLeggings,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeCraftingBench,
+            MppItemIDIronLeggings,
+            {{MppItemIDIronBar, 7}}),
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -91,6 +107,10 @@ static constexpr kItems[MppItemIDCount] =
         .Name = "IRON BOOTS",
         .Flag = MppItemFlagArmor,
         .Type = MppItemTypeBoots,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeCraftingBench,
+            MppItemIDIronBoots,
+            {{MppItemIDIronBar, 4}}),
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -99,7 +119,69 @@ static constexpr kItems[MppItemIDCount] =
         .SpriteX = 3,
         .SpriteY = 13,
     },
+    /* iron ore */
+    {
+        .Name = "IRON ORE",
+        .Flag = MppItemFlagNone,
+        .Type = MppItemTypeNone,
+        .Color1 = 0,
+        .Color2 = 0,
+        .Color3 = 0,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 0,
+        .SpriteY = 0,
+    },
+    /* iron bar */
+    {
+        .Name = "IRON BAR",
+        .Flag = MppItemFlagNone,
+        .Type = MppItemTypeNone,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeFurnace,
+            MppItemIDIronBar,
+            {{MppItemIDIronOre, 1}}),
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
+        .SpriteX = 0,
+        .SpriteY = 12,
+    },
 };
+
+MppItemRecipe::MppItemRecipe()
+    : Type{}
+    , Item{MppItemIDInvalid}
+    , Materials{}
+{
+}
+
+MppItemRecipe::MppItemRecipe(MppItemRecipeType type, MppItemID item, const std::unordered_map<MppItemID, int>& materials)
+    : Type{type}
+    , Item{item}
+    , Materials{materials}
+{
+}
+
+void MppItemRecipe::Craft(std::shared_ptr<MppInventory>& inventory)
+{
+    for (const auto& [id, count] : Materials)
+    {
+        if (!inventory->Remove(id))
+        {
+            SDL_Log("Tried to craft with missing materials: %d", Item);
+            return;
+        }
+    }
+    inventory->Add(Item);
+}
+
+bool MppItemRecipe::IsValid() const
+{
+    return Item != MppItemIDInvalid;
+}
 
 MppItem::MppItem(MppItemID id)
     : ID{id}

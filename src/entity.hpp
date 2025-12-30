@@ -1,5 +1,6 @@
 #pragma once
 
+#include <savepoint/base.hpp>
 #include <savepoint/id.hpp>
 
 class MppLevel;

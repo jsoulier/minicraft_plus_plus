@@ -33,6 +33,7 @@ public:
     void Visit(SavepointVisitor& visitor);
     void Add(const MppItem& item);
     void Remove(int index);
+    bool Remove(MppItemID id);
 
 protected:
     const MppItem* GetItem() const;

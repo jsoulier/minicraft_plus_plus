@@ -110,18 +110,12 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index)
     }
     x += kCharacterWidth * item.GetName().size() / 2;
     MppMenu::Draw(renderer, item.GetName(), kMppColorText, x, y);
-    x = GetContentX();
-    if (index == Index)
-    {
-        MppMenu::Draw(renderer, ">", kMppColorText, x, y);
-        MppMenu::Draw(renderer, "<", kMppColorText, x + GetContentWidth(), y);
-    }
     // TODO: remove nested loop
     for (const Slot& slot : Slots)
     {
         if (slot.Index == index)
         {
-            MppMenu::Draw(renderer, "E", kMppColorText, x + 8, y);
+            MppMenu::Draw(renderer, "E", kMppColorText, GetContentX() + 8, y);
         }
     }
 }
@@ -187,6 +181,19 @@ void MppInventory::Remove(int index)
     }
     MppMenuList::Remove(index);
     Items.erase(Items.begin() + index);
+}
+
+bool MppInventory::Remove(MppItemID id)
+{
+    for (int i = 0; i < Items.size(); i++)
+    {
+        if (Items[i].GetID() == id)
+        {
+            Remove(i);
+            return true;
+        }
+    }
+    return false;
 }
 
 const MppItem* MppInventory::GetItem() const

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/base.hpp>
+
 #include "humanoid_entity.hpp"
 
 class MppPlayerEntity : public MppHumanoidEntity

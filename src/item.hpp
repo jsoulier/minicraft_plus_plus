@@ -2,7 +2,11 @@
 
 #include <savepoint/fwd.hpp>
 
+#include <memory>
 #include <string_view>
+#include <unordered_map>
+
+class MppInventory;
 
 enum MppItemID
 {
@@ -12,13 +16,15 @@ enum MppItemID
     MppItemIDIronChestplate,
     MppItemIDIronLeggings,
     MppItemIDIronBoots,
+    MppItemIDIronOre,
+    MppItemIDIronBar,
     MppItemIDCount,
     MppItemIDInvalid = MppItemIDCount,
 };
 
 enum MppItemFlag
 {
-    MppItemFlagMaterial   = 0x01,
+    MppItemFlagNone,
     MppItemFlagConsumable = 0x02,
     MppItemFlagHeld       = 0x04,
     MppItemFlagArmor      = 0x08,
@@ -37,6 +43,27 @@ enum MppItemType
     MppItemTypeHelmet,
     MppItemTypeBoots,
     MppItemTypeLeggings,
+};
+
+enum MppItemRecipeType
+{
+    MppItemRecipeTypeCraftingBench,
+    MppItemRecipeTypeFurnace,
+    MppItemRecipeTypeCount,
+};
+
+class MppItemRecipe
+{
+public:
+    MppItemRecipe();
+    MppItemRecipe(MppItemRecipeType type, MppItemID item, const std::unordered_map<MppItemID, int>& materials);
+    void Craft(std::shared_ptr<MppInventory>& inventory);
+    bool IsValid() const;
+
+private:
+    MppItemRecipeType Type;
+    MppItemID Item;
+    std::unordered_map<MppItemID, int> Materials;
 };
 
 class MppItem

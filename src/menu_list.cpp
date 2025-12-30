@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+#include "color.hpp"
 #include "menu_list.hpp"
 
 static constexpr int kInvalidIndex = -1;
@@ -31,6 +32,12 @@ void MppMenuList::Draw(MppRenderer& renderer)
     for (int i = 0, index = First; i < rows && index < Max; i++, index++)
     {
         Draw(renderer, y, index);
+        if (index == Index)
+        {
+            int x = GetContentX();
+            MppMenu::Draw(renderer, ">", kMppColorText, x, y);
+            MppMenu::Draw(renderer, "<", kMppColorText, x + GetContentWidth(), y);
+        }
         y += rowHeight;
     }
 }

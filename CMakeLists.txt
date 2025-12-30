@@ -19,13 +19,16 @@ add_subdirectory(lib/SDL)
 add_subdirectory(lib/savepoint)
 
 add_executable(minicraft++ WIN32
-    src/furniture_entity.cpp
     src/ai_controller.cpp
     src/camera.cpp
     src/color.cpp
+    src/color.cpp
     src/console.cpp
     src/controller.cpp
+    src/crafting_table_entity.cpp
     src/entity.cpp
+    src/furnace_entity.cpp
+    src/furniture_entity.cpp
     src/humanoid_entity.cpp
     src/humanoid_inventory.cpp
     src/inventory.cpp
@@ -39,6 +42,8 @@ add_executable(minicraft++ WIN32
     src/physics.cpp
     src/player_controller.cpp
     src/player_entity.cpp
+    src/recipe_inventory.cpp
+    src/recipe_output_menu.cpp
     src/renderer.cpp
     src/slime_entity.cpp
     src/sprite.cpp

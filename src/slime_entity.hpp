@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/base.hpp>
+
 #include "mob_entity.hpp"
 
 class MppSlimeEntity : public MppMobEntity
