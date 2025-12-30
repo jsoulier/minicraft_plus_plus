@@ -2,7 +2,6 @@
 
 #include <savepoint/fwd.hpp>
 
-#include <memory>
 #include <string_view>
 #include <vector>
 
@@ -14,21 +13,6 @@ class MppRenderer;
 class MppInventory : public MppMenuList
 {
 public:
-    class Slot
-    {
-        friend class MppInventory;
-
-    public:
-        Slot();
-        void Visit(SavepointVisitor& visitor);
-        bool operator==(const Slot other) const;
-        bool IsValid() const;
-
-    public:
-        int Index;
-    };
-
-    MppInventory(int slots);
     void Draw(MppRenderer& renderer) override;
     void Visit(SavepointVisitor& visitor);
     void Add(const MppItem& item);
@@ -37,8 +21,7 @@ public:
 
 protected:
     const MppItem* GetItem() const;
-    const MppItem* GetItem(int slot) const;
-    void SetSlot(int slot);
+    const MppItem* GetItem(int index) const;
     void Draw(MppRenderer& renderer, int y, int index) override;
     std::string_view GetName() const override;
     int GetX() const override;
@@ -46,8 +29,8 @@ protected:
     int GetWidth() const override;
     int GetHeight() const override;
     int GetRowHeight() const override;
+    virtual void RemoveInternal(int index) {}
 
 private:
     std::vector<MppItem> Items;
-    std::vector<Slot> Slots;
 };

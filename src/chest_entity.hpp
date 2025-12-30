@@ -2,15 +2,16 @@
 
 #include <savepoint/base.hpp>
 
-#include "recipe_entity.hpp"
+#include "chest_inventory.hpp"
+#include "furniture_entity.hpp"
 
-class MppFurnaceEntity : public MppRecipeEntity
+class MppChestEntity : public MppFurnitureEntity
 {
-    SAVEPOINT_DERIVED(MppFurnaceEntity)
+    SAVEPOINT_DERIVED(MppChestEntity)
 
 public:
-    std::string_view GetName() const override;
-    MppItemRecipeType GetRecipeType() const override;
+    
+protected:
     int GetSpriteX() const override;
     int GetSpriteY() const override;
     int GetColor1() const override;
@@ -18,4 +19,7 @@ public:
     int GetColor3() const override;
     int GetColor4() const override;
     int GetColor5() const override;
+
+private:
+    MppChestInventory Inventory;
 };

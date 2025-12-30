@@ -2,15 +2,15 @@
 
 #include <memory>
 
-#include "inventory.hpp"
+#include "mob_inventory.hpp"
 
-class MppHumanoidInventory : public MppInventory
+class MppHumanoidInventory : public MppMobInventory
 {
 public:
     enum SlotType
     {
         SlotTypeHelmet,
-        SlotTypeChestplate,
+        SlotTypeCuirass,
         SlotTypeLeggings,
         SlotTypeBoots,
         SlotTypeHands,
@@ -20,7 +20,7 @@ public:
     MppHumanoidInventory();
     void Action() override;
     const MppItem* GetHelmet() const;
-    const MppItem* GetChestplate() const;
+    const MppItem* GetCuirass() const;
     const MppItem* GetLeggings() const;
     const MppItem* GetBoots() const;
     const MppItem* GetHands() const;

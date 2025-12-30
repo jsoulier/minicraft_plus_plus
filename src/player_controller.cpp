@@ -2,9 +2,9 @@
 
 #include <array>
 
-#include "inventory.hpp"
 #include "menu_list.hpp"
 #include "mob_entity.hpp"
+#include "mob_inventory.hpp"
 #include "player_controller.hpp"
 #include "renderer.hpp"
 

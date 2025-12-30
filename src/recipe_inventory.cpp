@@ -2,11 +2,6 @@
 
 #include "recipe_inventory.hpp"
 
-MppRecipeInventory::MppRecipeInventory()
-    : MppInventory(0)
-{
-}
-
 void MppRecipeInventory::Action()
 {
     // TODO: craft

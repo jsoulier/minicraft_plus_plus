@@ -75,7 +75,7 @@ private:
         std::vector<Line> Lines;
     };
 
-    void UseCamera(int& x, int& y, Layer layer);
+    void Transform(int& x, int& y, Layer layer);
     void Draw(Sprite& sprite, Layer layer);
 
     SDL_Window* Window;

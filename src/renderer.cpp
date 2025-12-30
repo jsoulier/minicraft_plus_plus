@@ -86,7 +86,7 @@ void MppRenderer::Update(int dt)
         }
         for (Quad& quad : commands.Quads)
         {
-            UseCamera(quad.X, quad.Y, Layer(layer));
+            Transform(quad.X, quad.Y, Layer(layer));
             SDL_FRect rect;
             rect.x = quad.X;
             rect.y = quad.Y;
@@ -98,8 +98,8 @@ void MppRenderer::Update(int dt)
         }
         for (Line& line : commands.Lines)
         {
-            UseCamera(line.X1, line.Y1, Layer(layer));
-            UseCamera(line.X2, line.Y2, Layer(layer));
+            Transform(line.X1, line.Y1, Layer(layer));
+            Transform(line.X2, line.Y2, Layer(layer));
             int x1 = line.X1;
             int y1 = line.Y1;
             int x2 = line.X2;
@@ -146,9 +146,9 @@ bool MppRenderer::Sprite::operator<(const MppRenderer::Sprite& other) const
     return Sprite < other.Sprite;
 }
 
-void MppRenderer::UseCamera(int& x, int& y, Layer layer)
+void MppRenderer::Transform(int& x, int& y, Layer layer)
 {
-    bool useCamera;
+    bool transform;
     switch (layer)
     {
     case LayerBottomTile:
@@ -157,18 +157,18 @@ void MppRenderer::UseCamera(int& x, int& y, Layer layer)
     case LayerMobEntity:
     case LayerMobEntityOverlay:
     case LayerPhysics:
-        useCamera = true;
+        transform = true;
         break;
     case LayerScreenDebug:
     case LayerScreen:
     case LayerScreenContent:
-        useCamera = false;
+        transform = false;
         break;
     default:
-        useCamera = true;
+        transform = true;
         SDL_assert(false);
     }
-    if (useCamera)
+    if (transform)
     {
         x -= Camera.X;
         y -= Camera.Y;
@@ -238,7 +238,7 @@ void MppRenderer::Draw(Sprite& sprite, Layer layer)
     {
         return;
     }
-    UseCamera(sprite.X, sprite.Y, layer);
+    Transform(sprite.X, sprite.Y, layer);
     SDL_Texture* texture = textureIt->second;
     SDL_FRect rect;
     rect.x = sprite.X;

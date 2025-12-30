@@ -21,6 +21,8 @@ add_subdirectory(lib/savepoint)
 add_executable(minicraft++ WIN32
     src/ai_controller.cpp
     src/camera.cpp
+    src/chest_entity.cpp
+    src/chest_inventory.cpp
     src/color.cpp
     src/color.cpp
     src/console.cpp
@@ -39,9 +41,11 @@ add_executable(minicraft++ WIN32
     src/menu.cpp
     src/menu_list.cpp
     src/mob_entity.cpp
+    src/mob_inventory.cpp
     src/physics.cpp
     src/player_controller.cpp
     src/player_entity.cpp
+    src/recipe_entity.cpp
     src/recipe_inventory.cpp
     src/recipe_output_menu.cpp
     src/renderer.cpp

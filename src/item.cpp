@@ -68,14 +68,14 @@ static const kItems[MppItemIDCount] =
         .SpriteX = 0,
         .SpriteY = 13,
     },
-    /* iron chestplate */
+    /* iron cuirass */
     {
-        .Name = "IRON CHESTPLATE",
+        .Name = "IRON CUIRASS",
         .Flag = MppItemFlagArmor,
-        .Type = MppItemTypeChestplate,
+        .Type = MppItemTypeCuirass,
         .Recipe = MppItemRecipe(
             MppItemRecipeTypeCraftingBench,
-            MppItemIDIronChestplate,
+            MppItemIDIronCuirass,
             {{MppItemIDIronBar, 8}}),
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
@@ -102,7 +102,7 @@ static const kItems[MppItemIDCount] =
         .SpriteX = 2,
         .SpriteY = 13,
     },
-    /* iron chestplate */
+    /* iron boots */
     {
         .Name = "IRON BOOTS",
         .Flag = MppItemFlagArmor,
@@ -148,6 +148,18 @@ static const kItems[MppItemIDCount] =
         .Color5 = kMppColorIron5,
         .SpriteX = 0,
         .SpriteY = 12,
+    },
+    /* stone */
+    {
+
+    },
+    /* crafting table */
+    {
+
+    },
+    /* furnace */
+    {
+
     },
 };
 

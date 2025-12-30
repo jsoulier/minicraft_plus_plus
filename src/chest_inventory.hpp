@@ -4,11 +4,11 @@
 
 #include "inventory.hpp"
 
-class MppRecipeInventory : public MppInventory
+class MppChestInventory : public MppInventory
 {
 public:
     void Action() override;
-    
+
 protected:
     std::string_view GetName() const override;
 };

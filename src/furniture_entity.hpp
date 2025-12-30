@@ -1,17 +1,23 @@
 #pragma once
 
 #include "entity.hpp"
-#include "recipe_inventory.hpp"
-#include "recipe_output_menu.hpp"
-
-class MppRenderer;
 
 class MppFurnitureEntity : public MppEntity
 {
 public:
-    virtual void Draw(MppRenderer& renderer) = 0;
+    int GetPhysicsWidth() const override;
+    int GetPhysicsHeight() const override;
+    int GetSize() const override;
+    MppPhysicsType GetPhysicsType() const override;
 
-private:
-    MppRecipeInventory Inventory;
-    MppRecipeOutputMenu Output;
+protected:
+    virtual int GetSpriteX() const = 0;
+    virtual int GetSpriteY() const = 0;
+    virtual int GetColor1() const = 0;
+    virtual int GetColor2() const = 0;
+    virtual int GetColor3() const = 0;
+    virtual int GetColor4() const = 0;
+    virtual int GetColor5() const = 0;
+    int GetPhysicsOffsetX() const override;
+    int GetPhysicsOffsetY() const override;
 };

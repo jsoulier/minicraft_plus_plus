@@ -4,9 +4,9 @@
 #include <memory>
 
 #include "controller.hpp"
-#include "inventory.hpp"
 #include "level.hpp"
 #include "mob_entity.hpp"
+#include "mob_inventory.hpp"
 #include "version.hpp"
 
 MppMobEntity::MppMobEntity()
@@ -33,6 +33,7 @@ void MppMobEntity::Visit(SavepointVisitor& visitor)
     visitor(DeltaY);
     if (Inventory)
     {
+        // Not using shared_ptr specialization to instantiation when reading (abstract class)
         visitor(*Inventory);
     }
 }
@@ -50,7 +51,12 @@ int MppMobEntity::GetSize() const
     return 16;
 }
 
-const std::shared_ptr<MppInventory>& MppMobEntity::GetInventory()
+MppPhysicsType MppMobEntity::GetPhysicsType() const
+{
+    return MppPhysicsTypeMobEntity;
+}
+
+const std::shared_ptr<MppMobInventory>& MppMobEntity::GetInventory()
 {
     return Inventory;
 }
@@ -60,7 +66,7 @@ void MppMobEntity::SetController(const std::shared_ptr<MppController>& controlle
     Controller = controller;
 }
 
-void MppMobEntity::SetInventory(const std::shared_ptr<MppInventory>& inventory)
+void MppMobEntity::SetInventory(const std::shared_ptr<MppMobInventory>& inventory)
 {
     Inventory = inventory;
 }

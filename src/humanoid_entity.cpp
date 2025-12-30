@@ -104,7 +104,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
             flip,
             MppRenderer::LayerMobEntityOverlay);
     }
-    if (const MppItem* item = inventory->GetChestplate())
+    if (const MppItem* item = inventory->GetCuirass())
     {
         kChestplateFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
         renderer.Draw(

@@ -3,6 +3,8 @@
 #include <savepoint/base.hpp>
 #include <savepoint/id.hpp>
 
+#include "physics.hpp"
+
 class MppLevel;
 class MppRenderer;
 
@@ -23,6 +25,7 @@ public:
     virtual int GetPhysicsWidth() const = 0;
     virtual int GetPhysicsHeight() const = 0;
     virtual int GetSize() const = 0;
+    virtual MppPhysicsType GetPhysicsType() const = 0;
     void Move(MppLevel& level, int dx, int dy);
 
 protected:

@@ -2,6 +2,7 @@
 
 #include "item.hpp"
 #include "item_entity.hpp"
+#include "physics.hpp"
 
 MppItemEntity::MppItemEntity()
     : MppEntity()
@@ -18,6 +19,7 @@ MppItemEntity::MppItemEntity(const MppItem& item)
 void MppItemEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
 {
     MppEntity::Update(level, renderer, ticks);
+    // TODO: draw
 }
 
 void MppItemEntity::Visit(SavepointVisitor& visitor)
@@ -28,6 +30,11 @@ void MppItemEntity::Visit(SavepointVisitor& visitor)
 int MppItemEntity::GetSize() const
 {
     return MppItem::kWidth;
+}
+
+MppPhysicsType MppItemEntity::GetPhysicsType() const
+{
+    return MppPhysicsTypeItemEntity;
 }
 
 int MppItemEntity::GetPhysicsWidth() const

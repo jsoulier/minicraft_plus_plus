@@ -5,7 +5,7 @@
 #include "humanoid_inventory.hpp"
 
 MppHumanoidInventory::MppHumanoidInventory()
-    : MppInventory(SlotTypeCount)
+    : MppMobInventory(SlotTypeCount)
 {
 }
 
@@ -27,8 +27,8 @@ void MppHumanoidInventory::Action()
         case MppItemTypeHelmet:
             SetSlot(SlotTypeHelmet);
             break;
-        case MppItemTypeChestplate:
-            SetSlot(SlotTypeChestplate);
+        case MppItemTypeCuirass:
+            SetSlot(SlotTypeCuirass);
             break;
         case MppItemTypeLeggings:
             SetSlot(SlotTypeLeggings);
@@ -48,25 +48,25 @@ void MppHumanoidInventory::Action()
 
 const MppItem* MppHumanoidInventory::GetHelmet() const
 {
-    return GetItem(SlotTypeHelmet);
+    return GetItemFromSlot(SlotTypeHelmet);
 }
 
-const MppItem* MppHumanoidInventory::GetChestplate() const
+const MppItem* MppHumanoidInventory::GetCuirass() const
 {
-    return GetItem(SlotTypeChestplate);
+    return GetItemFromSlot(SlotTypeCuirass);
 }
 
 const MppItem* MppHumanoidInventory::GetLeggings() const
 {
-    return GetItem(SlotTypeLeggings);
+    return GetItemFromSlot(SlotTypeLeggings);
 }
 
 const MppItem* MppHumanoidInventory::GetBoots() const
 {
-    return GetItem(SlotTypeBoots);
+    return GetItemFromSlot(SlotTypeBoots);
 }
 
 const MppItem* MppHumanoidInventory::GetHands() const
 {
-    return GetItem(SlotTypeHands);
+    return GetItemFromSlot(SlotTypeHands);
 }

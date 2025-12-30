@@ -15,6 +15,7 @@ public:
     void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
     void Visit(SavepointVisitor& visitor);
     int GetSize() const override;
+    MppPhysicsType GetPhysicsType() const;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
     
