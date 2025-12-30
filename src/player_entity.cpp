@@ -36,3 +36,8 @@ int MppPlayerEntity::GetSpritePantColor() const
 {
     return 9;
 }
+
+int MppPlayerEntity::GetSpriteShoeColor() const
+{
+    return 421;
+}

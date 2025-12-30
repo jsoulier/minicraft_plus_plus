@@ -15,4 +15,5 @@ protected:
     int GetSpriteShirtColor() const override;
     int GetSpritePantColor() const override;
     int GetSpriteSkinColor() const override;
+    int GetSpriteShoeColor() const override;
 };

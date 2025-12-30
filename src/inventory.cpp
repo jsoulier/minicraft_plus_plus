@@ -1,17 +1,41 @@
 #include <SDL3/SDL.h>
-#include <savepoint.hpp>
+#include <savepoint/visitor.hpp>
 
+#include <algorithm>
+#include <memory>
 #include <string_view>
 
 #include "inventory.hpp"
 #include "item.hpp"
 #include "renderer.hpp"
 
+static constexpr int kInvalidIndex = -1;
 static constexpr int kCharacterWidth = 8;
 static constexpr int kSpacing = kCharacterWidth;
 
-MppInventory::MppInventory()
+MppInventory::Slot::Slot()
+    : Index{kInvalidIndex}
+{
+}
+
+void MppInventory::Slot::Visit(SavepointVisitor& visitor)
+{
+    visitor(Index);
+}
+
+bool MppInventory::Slot::operator==(const Slot other) const
+{
+    return Index == other.Index;
+}
+
+bool MppInventory::Slot::IsValid() const
+{
+    return Index != kInvalidIndex;
+}
+
+MppInventory::MppInventory(int slots)
     : MppMenuList()
+    , Slots(slots)
 {
     // TODO: remove
     Add(MppItem{MppItemIDIronHelmet});
@@ -43,7 +67,7 @@ void MppInventory::Draw(MppRenderer& renderer)
     MppMenuList::Draw(renderer);
 }
 
-void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
+void MppInventory::Draw(MppRenderer& renderer, int y, int index)
 {
     const MppItem& item = Items[index];
     int width = MppItem::kWidth;
@@ -86,11 +110,19 @@ void MppInventory::Draw(MppRenderer& renderer, int y, int index, bool selected)
     }
     x += kCharacterWidth * item.GetName().size() / 2;
     MppMenu::Draw(renderer, item.GetName(), kMppColorText, x, y);
-    if (selected)
+    x = GetContentX();
+    if (index == Index)
     {
-        x = GetContentX();
         MppMenu::Draw(renderer, ">", kMppColorText, x, y);
         MppMenu::Draw(renderer, "<", kMppColorText, x + GetContentWidth(), y);
+    }
+    // TODO: remove nested loop
+    for (const Slot& slot : Slots)
+    {
+        if (slot.Index == index)
+        {
+            MppMenu::Draw(renderer, "E", kMppColorText, x + 8, y);
+        }
     }
 }
 
@@ -98,11 +130,16 @@ void MppInventory::Visit(SavepointVisitor& visitor)
 {
     MppMenuList::Visit(visitor);
     // TODO: remove
-    if (visitor.IsReader())
+    if (visitor.IsReading())
     {
         Items.clear();
     }
+    if (visitor.IsReading())
+    {
+        Slots.clear();
+    }
     visitor(Items);
+    visitor(Slots);
 }
 
 void MppInventory::Add(const MppItem& item)
@@ -133,8 +170,59 @@ void MppInventory::Remove(int index)
             return;
         }
     }
+    for (Slot& slot : Slots)
+    {
+        if (slot.Index == index)
+        {
+            slot.Index = kInvalidIndex;
+        }
+        else if (slot.Index < index)
+        {
+            slot.Index--;
+            if (slot.Index < 0)
+            {
+                slot.Index = kInvalidIndex;
+            }
+        }
+    }
     MppMenuList::Remove(index);
     Items.erase(Items.begin() + index);
+}
+
+const MppItem* MppInventory::GetItem() const
+{
+    if (Index != kInvalidIndex)
+    {
+        return &Items[Index];
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+const MppItem* MppInventory::GetItem(int slot) const
+{
+    if (Slots[slot].IsValid())
+    {
+        return &Items[Slots[slot].Index];
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+void MppInventory::SetSlot(int slot)
+{
+    if (Slots[slot].Index == Index)
+    {
+        Slots[slot].Index = kInvalidIndex;
+    }
+    else
+    {
+        Slots[slot].Index = Index;
+    }
 }
 
 std::string_view MppInventory::GetName() const
@@ -154,7 +242,7 @@ int MppInventory::GetY() const
 
 int MppInventory::GetWidth() const
 {
-    return 144;
+    return 160;
 }
 
 int MppInventory::GetHeight() const

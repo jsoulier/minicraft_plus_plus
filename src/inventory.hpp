@@ -1,7 +1,8 @@
 #pragma once
 
-#include <savepoint_fwd.hpp>
+#include <savepoint/fwd.hpp>
 
+#include <memory>
 #include <string_view>
 #include <vector>
 
@@ -13,14 +14,31 @@ class MppRenderer;
 class MppInventory : public MppMenuList
 {
 public:
-    MppInventory();
+    class Slot
+    {
+        friend class MppInventory;
+
+    public:
+        Slot();
+        void Visit(SavepointVisitor& visitor);
+        bool operator==(const Slot other) const;
+        bool IsValid() const;
+
+    public:
+        int Index;
+    };
+
+    MppInventory(int slots);
     void Draw(MppRenderer& renderer) override;
     void Visit(SavepointVisitor& visitor);
     void Add(const MppItem& item);
     void Remove(int index);
 
 protected:
-    void Draw(MppRenderer& renderer, int y, int index, bool selected) override;
+    const MppItem* GetItem() const;
+    const MppItem* GetItem(int slot) const;
+    void SetSlot(int slot);
+    void Draw(MppRenderer& renderer, int y, int index) override;
     std::string_view GetName() const override;
     int GetX() const override;
     int GetY() const override;
@@ -30,4 +48,5 @@ protected:
 
 private:
     std::vector<MppItem> Items;
+    std::vector<Slot> Slots;
 };

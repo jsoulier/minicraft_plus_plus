@@ -1,5 +1,5 @@
 #include <SDL3/SDL.h>
-#include <savepoint.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <algorithm>
 #include <memory>
@@ -50,11 +50,11 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
             SDL_Log("Bad entity");
         }
     }, level);
-    savepoint.Read([&](SavepointVisitor& visitor, int x, int y)
+    savepoint.Read<MppTile>([&](MppTile& tile, int x, int y)
     {
         if (IsValid(x, y))
         {
-            visitor(Tiles[x][y]);
+            Tiles[x][y] = tile;
         }
         else if (logs++ < 10)
         {
@@ -91,13 +91,10 @@ void MppLevel::Save(Savepoint& savepoint, int level, bool all)
         y1 = MinDirtyY;
         y2 = MaxDirtyY;
     }
-    SavepointVisitor visitor;
     for (int x = x1; x <= x2; x++)
     for (int y = y1; y <= y2; y++)
     {
-        visitor.Reset();
-        visitor(Tiles[x][y]);
-        savepoint.Write(visitor, x, y, level);
+        savepoint.Write(Tiles[x][y], x, y, level);
     }
     for (std::shared_ptr<MppEntity>& entity : Entities)
     {

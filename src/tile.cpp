@@ -1,5 +1,5 @@
 #include <SDL3/SDL.h>
-#include <savepoint.hpp>
+#include <savepoint/visitor.hpp>
 
 #include "color.hpp"
 #include "console.hpp"
@@ -252,7 +252,7 @@ void MppTile::Update(MppLevel& level, MppRenderer& renderer, int x, int y, float
 
 void MppTile::Visit(SavepointVisitor& visitor)
 {
-    if (visitor.IsWriter())
+    if (visitor.IsWriting())
     {
         SDL_assert(IsValid());
     }

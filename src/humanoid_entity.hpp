@@ -21,6 +21,7 @@ protected:
     virtual int GetSpriteSkinColor() const = 0;
     virtual int GetSpriteShirtColor() const = 0;
     virtual int GetSpritePantColor() const = 0;
+    virtual int GetSpriteShoeColor() const = 0;
     virtual int GetAnimationSpeed() const;
 
 private:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint.hpp>
+#include <savepoint/id.hpp>
 
 class MppLevel;
 class MppRenderer;

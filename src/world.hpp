@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint_fwd.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <array>
 #include <memory>

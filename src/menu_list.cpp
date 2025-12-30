@@ -1,12 +1,15 @@
 #include <SDL3/SDL.h>
+#include <savepoint/visitor.hpp>
 
 #include <algorithm>
 
 #include "menu_list.hpp"
 
+static constexpr int kInvalidIndex = -1;
+
 MppMenuList::MppMenuList()
     : MppMenu()
-    , Index{-1}
+    , Index{kInvalidIndex}
     , First{0}
     , Max{0}
 {
@@ -27,7 +30,7 @@ void MppMenuList::Draw(MppRenderer& renderer)
     int y = GetContentY();
     for (int i = 0, index = First; i < rows && index < Max; i++, index++)
     {
-        Draw(renderer, y, index, index == Index);
+        Draw(renderer, y, index);
         y += rowHeight;
     }
 }
@@ -44,7 +47,7 @@ void MppMenuList::Remove(int index)
     Max--;
     if (Max == 0)
     {
-        Index = -1;
+        Index = kInvalidIndex;
     }
     if (index <= First)
     {

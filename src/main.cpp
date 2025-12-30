@@ -1,7 +1,7 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <savepoint.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -40,7 +40,7 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
     {
         SDL_Log("%s", string.data());
     });
-    SavepointStatus status = savepoint.Open(kSavepoint.string().data(), kVersion);
+    SavepointStatus status = savepoint.Open(SavepointDriver::Sqlite3, kSavepoint.string().data(), kVersion);
     if (status == SavepointStatus::Failed)
     {
         SDL_Log("Failed to open savepoint: %s", kSavepoint.string().data());

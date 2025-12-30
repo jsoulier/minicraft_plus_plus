@@ -155,6 +155,7 @@ void MppRenderer::UseCamera(int& x, int& y, Layer layer)
     case LayerTile:
     case LayerTopTile:
     case LayerMobEntity:
+    case LayerMobEntityOverlay:
     case LayerPhysics:
         useCamera = true;
         break;

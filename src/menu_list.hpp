@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint_fwd.hpp>
+#include <savepoint/fwd.hpp>
 
 #include "menu.hpp"
 
@@ -19,7 +19,7 @@ public:
     virtual void Action() = 0;
 
 protected:
-    virtual void Draw(MppRenderer& renderer, int y, int index, bool selected) = 0;
+    virtual void Draw(MppRenderer& renderer, int y, int index) = 0;
     virtual int GetRowHeight() const = 0;
 
     int Index;

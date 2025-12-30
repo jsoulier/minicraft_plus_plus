@@ -1,4 +1,5 @@
-#include <savepoint.hpp>
+#include <SDL3/SDL.h>
+#include <savepoint/visitor.hpp>
 
 #include <string_view>
 
@@ -31,7 +32,7 @@ static constexpr kItems[MppItemIDCount] =
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 0,
-        .SpriteY = 11,
+        .SpriteY = 12,
     },
     /* apple */
     {
@@ -44,7 +45,7 @@ static constexpr kItems[MppItemIDCount] =
         .Color4 = 740,
         .Color5 = 90,
         .SpriteX = 1,
-        .SpriteY = 11,
+        .SpriteY = 12,
     },
     /* iron helmet */
     {
@@ -54,10 +55,10 @@ static constexpr kItems[MppItemIDCount] =
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 0,
-        .SpriteY = 12,
+        .SpriteY = 13,
     },
     /* iron chestplate */
     {
@@ -67,10 +68,10 @@ static constexpr kItems[MppItemIDCount] =
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 1,
-        .SpriteY = 12,
+        .SpriteY = 13,
     },
     /* iron leggings */
     {
@@ -80,10 +81,10 @@ static constexpr kItems[MppItemIDCount] =
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 2,
-        .SpriteY = 12,
+        .SpriteY = 13,
     },
     /* iron chestplate */
     {
@@ -93,10 +94,10 @@ static constexpr kItems[MppItemIDCount] =
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 3,
-        .SpriteY = 12,
+        .SpriteY = 13,
     },
 };
 
@@ -108,7 +109,7 @@ MppItem::MppItem(MppItemID id)
 
 void MppItem::Visit(SavepointVisitor& visitor)
 {
-    if (visitor.IsWriter())
+    if (visitor.IsWriting())
     {
         SDL_assert(IsValid());
     }

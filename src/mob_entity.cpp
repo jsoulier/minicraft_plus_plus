@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include <savepoint/visitor.hpp>
 
 #include <memory>
 

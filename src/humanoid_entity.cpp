@@ -49,6 +49,10 @@ struct Frames
 };
 
 static constexpr Frames kFrames{0, 6, 0, 1, 2, 3};
+static constexpr Frames kHelmetFrames{0, 8, 0, 1, 2, 2};
+static constexpr Frames kChestplateFrames{0, 9, 0, 1, 2, 3};
+static constexpr Frames kLeggingsFrames{0, 10, 0, 1, 2, 3};
+static constexpr Frames kBootsFrames{0, 11, 0, 1, 2, 3};
 
 MppHumanoidEntity::MppHumanoidEntity()
     : MppMobEntity()
@@ -70,7 +74,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
             GetSpriteShirtColor(),
             GetSpritePantColor(),
             GetSpriteSkinColor(),
-            0,
+            GetSpriteShoeColor(),
             x,
             y,
             GetSize(),
@@ -79,6 +83,84 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
         Y,
         flip,
         MppRenderer::LayerMobEntity);
+    MppHumanoidInventory* inventory = dynamic_cast<MppHumanoidInventory*>(GetInventory().get());
+    SDL_assert(inventory);
+    if (const MppItem* item = inventory->GetHelmet())
+    {
+        kHelmetFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        renderer.Draw(
+            MppSprite{
+                item->GetColor1(),
+                item->GetColor2(),
+                item->GetColor3(),
+                item->GetColor4(),
+                item->GetColor5(),
+                x,
+                y,
+                GetSize(),
+            },
+            X,
+            Y,
+            flip,
+            MppRenderer::LayerMobEntityOverlay);
+    }
+    if (const MppItem* item = inventory->GetChestplate())
+    {
+        kChestplateFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        renderer.Draw(
+            MppSprite{
+                item->GetColor1(),
+                item->GetColor2(),
+                item->GetColor3(),
+                item->GetColor4(),
+                item->GetColor5(),
+                x,
+                y,
+                GetSize(),
+            },
+            X,
+            Y,
+            flip,
+            MppRenderer::LayerMobEntityOverlay);
+    }
+    if (const MppItem* item = inventory->GetLeggings())
+    {
+        kLeggingsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        renderer.Draw(
+            MppSprite{
+                item->GetColor1(),
+                item->GetColor2(),
+                item->GetColor3(),
+                item->GetColor4(),
+                item->GetColor5(),
+                x,
+                y,
+                GetSize(),
+            },
+            X,
+            Y,
+            flip,
+            MppRenderer::LayerMobEntityOverlay);
+    }
+    if (const MppItem* item = inventory->GetBoots())
+    {
+        kBootsFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip);
+        renderer.Draw(
+            MppSprite{
+                item->GetColor1(),
+                item->GetColor2(),
+                item->GetColor3(),
+                item->GetColor4(),
+                item->GetColor5(),
+                x,
+                y,
+                GetSize(),
+            },
+            X,
+            Y,
+            flip,
+            MppRenderer::LayerMobEntityOverlay);
+    }
 }
 
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)

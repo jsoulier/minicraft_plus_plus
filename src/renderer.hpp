@@ -21,6 +21,7 @@ public:
         LayerTile,
         LayerTopTile,
         LayerMobEntity,
+        LayerMobEntityOverlay,
         LayerPhysics,
         LayerScreenDebug,
         LayerScreen,

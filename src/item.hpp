@@ -1,10 +1,8 @@
 #pragma once
 
-#include <savepoint_fwd.hpp>
+#include <savepoint/fwd.hpp>
 
 #include <string_view>
-
-#include "renderer.hpp"
 
 enum MppItemID
 {
