@@ -1,9 +1,14 @@
 #include "item.hpp"
 #include "furnace_entity.hpp"
 
+MppItemID MppFurnaceEntity::GetItemID() const
+{
+    return MppItemIDFurnace;
+}
+
 std::string_view MppFurnaceEntity::GetName() const
 {
-    return "CRAFTING TABLE";
+    return "FURNACE";
 }
 
 MppItemRecipeType MppFurnaceEntity::GetRecipeType() const

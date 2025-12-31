@@ -6,7 +6,9 @@
 #include <string_view>
 #include <unordered_map>
 
+class MppFurnitureEntity;
 class MppInventory;
+class MppItemEntity;
 
 enum MppItemID
 {
@@ -21,6 +23,7 @@ enum MppItemID
     MppItemIDStone,
     MppItemIDWorkbench,
     MppItemIDFurnace,
+    MppItemIDChest,
     MppItemIDCount,
     MppItemIDInvalid = MppItemIDCount,
 };
@@ -86,6 +89,8 @@ public:
     MppItemID GetID() const;
     MppItemFlag GetFlag() const;
     MppItemType GetType() const;
+    std::shared_ptr<MppItemEntity> CreateItemEntity() const;
+    std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
     int GetColor1() const;
     int GetColor2() const;
     int GetColor3() const;

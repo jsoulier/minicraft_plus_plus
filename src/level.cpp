@@ -33,22 +33,14 @@ void MppLevel::Generate(MppWorld& world, int level)
 void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
 {
     int logs = 0;
-    savepoint.Read([&](SavepointBase* base, SavepointID id)
+    savepoint.Read<std::shared_ptr<MppEntity>>([&](std::shared_ptr<MppEntity>& entity, SavepointID id)
     {
-        MppEntity* entity = dynamic_cast<MppEntity*>(base);
-        if (entity)
+        entity->ID = id;
+        if (dynamic_cast<MppPlayerEntity*>(entity.get()))
         {
-            entity->ID = id;
-            if (dynamic_cast<MppPlayerEntity*>(entity))
-            {
-                world.SetLevel(level);
-            }
-            AddEntity(std::shared_ptr<MppEntity>(entity));
+            world.SetLevel(level);
         }
-        else
-        {
-            SDL_Log("Bad entity");
-        }
+        AddEntity(std::shared_ptr<MppEntity>(entity));
     }, level);
     savepoint.Read<MppTile>([&](MppTile& tile, int x, int y)
     {
@@ -98,7 +90,7 @@ void MppLevel::Save(Savepoint& savepoint, int level, bool all)
     }
     for (std::shared_ptr<MppEntity>& entity : Entities)
     {
-        savepoint.Write(entity.get(), entity->ID, level);
+        savepoint.Write(entity, entity->ID, level);
     }
     MinDirtyX = kWidth - 1;
     MinDirtyY = kWidth - 1;

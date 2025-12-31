@@ -31,11 +31,7 @@ void MppMobEntity::Visit(SavepointVisitor& visitor)
     MppEntity::Visit(visitor);
     visitor(DeltaX);
     visitor(DeltaY);
-    if (Inventory)
-    {
-        // Not using shared_ptr specialization to instantiation when reading (abstract class)
-        visitor(*Inventory);
-    }
+    visitor(Inventory);
 }
 
 void MppMobEntity::Move(MppLevel& level, int dx, int dy, int ticks)

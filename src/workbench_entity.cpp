@@ -1,6 +1,11 @@
 #include "item.hpp"
 #include "workbench_entity.hpp"
 
+MppItemID MppWorkbenchEntity::GetItemID() const
+{
+    return MppItemIDWorkbench;
+}
+
 std::string_view MppWorkbenchEntity::GetName() const
 {
     return "WORKBENCH";

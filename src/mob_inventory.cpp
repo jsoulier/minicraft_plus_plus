@@ -15,6 +15,11 @@ void MppMobInventory::Slot::Visit(SavepointVisitor& visitor)
     visitor(Index);
 }
 
+int MppMobInventory::Slot::GetIndex() const
+{
+    return Index;
+}
+
 bool MppMobInventory::Slot::operator==(const Slot other) const
 {
     return Index == other.Index;
@@ -76,22 +81,26 @@ void MppMobInventory::SetSlot(int slot)
     {
         Slots[slot].Index = Index;
     }
+    OnSetSlot(slot, Slots[slot]);
 }
     
 void MppMobInventory::RemoveInternal(int index)
 {
-    for (Slot& slot : Slots)
+    for (int i = 0; i < Slots.size(); i++)
     {
+        Slot& slot = Slots[i];
         if (slot.Index == index)
         {
             slot.Index = kInvalidIndex;
+            OnSetSlot(i, slot);
         }
-        else if (slot.Index < index)
+        else if (slot.Index > index)
         {
             slot.Index--;
             if (slot.Index < 0)
             {
                 slot.Index = kInvalidIndex;
+                OnSetSlot(i, slot);
             }
         }
     }

@@ -5,9 +5,30 @@
 #include <string_view>
 #include <unordered_map>
 
+#include "chest_entity.hpp"
 #include "color.hpp"
+#include "furnace_entity.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
+#include "item_entity.hpp"
+#include "workbench_entity.hpp"
+
+using CreateFurnitureEntityFunction = std::shared_ptr<MppFurnitureEntity>(*)();
+
+static std::shared_ptr<MppFurnitureEntity> CreateWorkbenchEntity()
+{
+    return std::make_shared<MppWorkbenchEntity>();
+}
+
+static std::shared_ptr<MppFurnitureEntity> CreateFurnaceEntity()
+{
+    return std::make_shared<MppFurnaceEntity>();
+}
+
+static std::shared_ptr<MppFurnitureEntity> CreateChestEntity()
+{
+    return std::make_shared<MppChestEntity>();
+}
 
 struct
 {
@@ -15,6 +36,7 @@ struct
     MppItemFlag Flag;
     MppItemType Type;
     MppItemRecipe Recipe;
+    CreateFurnitureEntityFunction CreateFurnitureEntity;
     int Color1;
     int Color2;
     int Color3;
@@ -171,6 +193,7 @@ static const kItems[MppItemIDCount] =
             MppItemRecipeTypeHand,
             MppItemIDWorkbench,
             {{MppItemIDWood, 4}}),
+        .CreateFurnitureEntity = CreateWorkbenchEntity,
         .Color1 = 0,
         .Color2 = 311,
         .Color3 = 533,
@@ -188,6 +211,7 @@ static const kItems[MppItemIDCount] =
             MppItemRecipeTypeWorkbench,
             MppItemIDFurnace,
             {{MppItemIDStone, 8}}),
+        .CreateFurnitureEntity = CreateFurnaceEntity,
         .Color1 = 0,
         .Color2 = 333,
         .Color3 = 555,
@@ -195,6 +219,24 @@ static const kItems[MppItemIDCount] =
         .Color5 = 960,
         .SpriteX = 1,
         .SpriteY = 14,
+    },
+    /* chest */
+    {
+        .Name = "CHEST",
+        .Flag = MppItemFlagHeld,
+        .Type = MppItemTypeFurniture,
+        .Recipe = MppItemRecipe(
+            MppItemRecipeTypeWorkbench,
+            MppItemIDWorkbench,
+            {{MppItemIDWood, 8}}),
+        .CreateFurnitureEntity = CreateChestEntity,
+        .Color1 = 0,
+        .Color2 = 0,
+        .Color3 = 0,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 0,
+        .SpriteY = 0,
     },
 };
 
@@ -279,6 +321,16 @@ MppItemFlag MppItem::GetFlag() const
 MppItemType MppItem::GetType() const
 {
     return kItems[ID].Type;
+}
+
+std::shared_ptr<MppItemEntity> MppItem::CreateItemEntity() const
+{
+    return std::make_shared<MppItemEntity>(*this);
+}
+
+std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
+{
+    return kItems[ID].CreateFurnitureEntity();
 }
 
 int MppItem::GetColor1() const

@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 
 #include "color.hpp"
+#include "furniture_entity.hpp"
 #include "humanoid_entity.hpp"
 #include "humanoid_inventory.hpp"
 #include "renderer.hpp"
@@ -66,9 +67,38 @@ static constexpr Frames kBootsFrames{0, 11, 4, 11, 0, 1, 2, 3};
 
 MppHumanoidEntity::MppHumanoidEntity()
     : MppMobEntity()
+    , Held{}
+    , IsInHeldCallback{false}
     , Flip{false}
 {
-    SetInventory(std::make_shared<MppHumanoidInventory>());
+    std::shared_ptr<MppHumanoidInventory> inventory = std::make_shared<MppHumanoidInventory>();
+    SDL_assert(inventory);
+    SetInventory(inventory);
+    inventory->SetHeldCallback([this](int index, const MppItem* item)
+    {
+        if (IsInHeldCallback)
+        {
+            return;
+        }
+        IsInHeldCallback = true;
+        std::shared_ptr<MppHumanoidInventory> inventory = std::dynamic_pointer_cast<MppHumanoidInventory>(GetInventory());
+        SDL_assert(inventory);
+        if (Held)
+        {
+            inventory->Add(MppItem(Held->GetItemID()));
+            Held = nullptr;
+        }
+        if (item)
+        {
+            if (item->GetType() != MppItemTypeFurniture)
+            {
+                return;
+            }
+            Held = item->CreateFurnitureEntity();
+            inventory->Remove(index);
+        }
+        IsInHeldCallback = false;
+    });
 }
 
 void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks)
@@ -76,7 +106,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
     MppMobEntity::Update(level, renderer, ticks);
     MppHumanoidInventory* inventory = dynamic_cast<MppHumanoidInventory*>(GetInventory().get());
     SDL_assert(inventory);
-    bool held = inventory->GetHeld() != nullptr;
+    bool held = Held.get() != nullptr;
     bool flip = false;
     int x = 0;
     int y = 0;
@@ -96,6 +126,10 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
         Y,
         flip,
         MppRenderer::LayerMobEntity);
+    if (Held)
+    {
+        // TODO:
+    }
     if (const MppItem* item = inventory->GetHelmet())
     {
         kHelmetFrames.GetSprite(x, y, flip, DeltaX, DeltaY, Flip, held);
@@ -177,6 +211,7 @@ void MppHumanoidEntity::Update(MppLevel& level, MppRenderer& renderer, int ticks
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
+    visitor(Held);
 }
 
 void MppHumanoidEntity::Move(MppLevel& level, int dx, int dy, int ticks)

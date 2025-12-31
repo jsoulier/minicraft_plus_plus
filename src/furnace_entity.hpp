@@ -9,6 +9,9 @@ class MppFurnaceEntity : public MppRecipeEntity
     SAVEPOINT_DERIVED(MppFurnaceEntity)
 
 public:
+    MppItemID GetItemID() const override;
+    
+protected:
     std::string_view GetName() const override;
     MppItemRecipeType GetRecipeType() const override;
     int GetSpriteX() const override;

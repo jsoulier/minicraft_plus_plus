@@ -21,6 +21,11 @@ MppPhysicsType MppFurnitureEntity::GetPhysicsType() const
     return MppPhysicsTypeFurnitureEntity;
 }
 
+bool MppFurnitureEntity::IsConvertableToItem() const
+{
+    return true;
+}
+
 int MppFurnitureEntity::GetPhysicsOffsetX() const
 {
     return 0;

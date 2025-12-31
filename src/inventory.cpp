@@ -136,7 +136,15 @@ const MppItem* MppInventory::GetItem() const
 
 const MppItem* MppInventory::GetItem(int index) const
 {
-    return &Items.at(index);
+    if (index != kInvalidIndex)
+    {
+        SDL_assert(index < Items.size());
+        return &Items[index];
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 std::string_view MppInventory::GetName() const

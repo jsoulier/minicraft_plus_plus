@@ -95,6 +95,11 @@ void MppHumanoidInventory::Action()
     }
 }
 
+void MppHumanoidInventory::SetHeldCallback(const MppHumanoidInventoryHeldCallback& callback)
+{
+    HeldCallback = callback;
+}
+
 const MppItem* MppHumanoidInventory::GetHelmet() const
 {
     return GetItemFromSlot(SlotTypeHelmet);
@@ -118,4 +123,16 @@ const MppItem* MppHumanoidInventory::GetBoots() const
 const MppItem* MppHumanoidInventory::GetHeld() const
 {
     return GetItemFromSlot(SlotTypeHeld);
+}
+
+void MppHumanoidInventory::OnSetSlot(int position, const Slot& slot)
+{
+    if (position != SlotTypeHeld)
+    {
+        return;
+    }
+    if (HeldCallback)
+    {
+        HeldCallback(slot.GetIndex(), GetItem(slot.GetIndex()));
+    }
 }

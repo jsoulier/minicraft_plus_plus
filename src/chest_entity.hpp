@@ -10,6 +10,8 @@ class MppChestEntity : public MppFurnitureEntity
     SAVEPOINT_DERIVED(MppChestEntity)
 
 public:
+    MppItemID GetItemID() const override;
+    bool IsConvertableToItem() const override;
     
 protected:
     int GetSpriteX() const override;

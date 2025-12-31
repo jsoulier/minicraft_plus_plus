@@ -19,6 +19,7 @@ public:
     public:
         Slot();
         void Visit(SavepointVisitor& visitor);
+        int GetIndex() const;
         bool operator==(const Slot other) const;
         bool IsValid() const;
 
@@ -34,6 +35,7 @@ protected:
     const MppItem* GetItemFromSlot(int slot) const;
     void SetSlot(int slot);
     void RemoveInternal(int index) override;
+    virtual void OnSetSlot(int position, const Slot& slot) {}
 
 private:
     std::vector<Slot> Slots;

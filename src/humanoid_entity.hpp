@@ -4,6 +4,8 @@
 
 #include "mob_entity.hpp"
 
+class MppFurnitureEntity;
+
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
@@ -25,5 +27,8 @@ protected:
     virtual int GetAnimationSpeed() const;
 
 private:
+    std::shared_ptr<MppFurnitureEntity> Held;
+    // TODO: ugly hack for avoiding recursive call for HeldCallback
+    bool IsInHeldCallback;
     bool Flip;
 };

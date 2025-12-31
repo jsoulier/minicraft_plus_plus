@@ -14,6 +14,7 @@ public:
     MppItemEntity(const MppItem& item);
     void Update(MppLevel& level, MppRenderer& renderer, int ticks) override;
     void Visit(SavepointVisitor& visitor);
+    const MppItem& GetItem() const;
     int GetSize() const override;
     MppPhysicsType GetPhysicsType() const;
     int GetPhysicsWidth() const override;

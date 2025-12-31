@@ -27,6 +27,11 @@ void MppItemEntity::Visit(SavepointVisitor& visitor)
     visitor(Item);
 }
 
+const MppItem& MppItemEntity::GetItem() const
+{
+    return Item;
+}
+
 int MppItemEntity::GetSize() const
 {
     return MppItem::kWidth;
