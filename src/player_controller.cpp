@@ -83,6 +83,10 @@ void MppPlayerController::Update(MppLevel& level, MppRenderer& renderer, int tic
         {
             Entity.Move(level, dx, dy, ticks);
         }
+        if (actions[ActionTypeAction].Down)
+        {
+            Entity.Action(level, renderer, ticks);
+        }
     }
     else
     {

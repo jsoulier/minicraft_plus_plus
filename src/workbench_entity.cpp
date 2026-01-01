@@ -1,3 +1,6 @@
+#include <string_view>
+
+#include "color.hpp"
 #include "item.hpp"
 #include "workbench_entity.hpp"
 
@@ -23,30 +26,30 @@ int MppWorkbenchEntity::GetSpriteX() const
 
 int MppWorkbenchEntity::GetSpriteY() const
 {
-    return 0;
+    return 17;
 }
 
 int MppWorkbenchEntity::GetColor1() const
 {
-    return 0;
+    return kMppColorWorkbench1;
 }
 
 int MppWorkbenchEntity::GetColor2() const
 {
-    return 0;
+    return kMppColorWorkbench2;
 }
 
 int MppWorkbenchEntity::GetColor3() const
 {
-    return 0;
+    return kMppColorWorkbench3;
 }
 
 int MppWorkbenchEntity::GetColor4() const
 {
-    return 0;
+    return kMppColorWorkbench4;
 }
 
 int MppWorkbenchEntity::GetColor5() const
 {
-    return 0;
+    return kMppColorWorkbench5;
 }

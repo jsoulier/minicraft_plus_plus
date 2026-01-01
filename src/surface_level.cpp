@@ -18,7 +18,7 @@ void MppSurfaceLevel::Generate(MppWorld& world, int level)
     std::shared_ptr<MppPlayerEntity> player = std::make_shared<MppPlayerEntity>();
     player->SetX(MppLevel::kWidth * MppTile::kWidth / 2);
     player->SetY(MppLevel::kWidth * MppTile::kWidth / 2);
-    AddEntity(player);
+    Add(player);
     world.SetLevel(level);
 }
 

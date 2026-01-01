@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 #include "camera.hpp"
 #include "entity.hpp"
@@ -40,7 +41,7 @@ void MppLevel::Load(MppWorld& world, Savepoint& savepoint, int level)
         {
             world.SetLevel(level);
         }
-        AddEntity(std::shared_ptr<MppEntity>(entity));
+        Add(std::shared_ptr<MppEntity>(entity));
     }, level);
     savepoint.Read<MppTile>([&](MppTile& tile, int x, int y)
     {
@@ -112,15 +113,22 @@ void MppLevel::Update(MppWorld& world, MppRenderer& renderer, int ticks)
     {
         entity->Update(*this, renderer, ticks);
     }
+    for (std::shared_ptr<MppEntity>& entity : std::exchange(AddedEntities, {}))
+    {
+        entity->Update(*this, renderer, ticks);
+        Entities.push_back(entity);
+    }
+    // TODO: may cause issues later with repeatedly adding entities
+    SDL_assert(AddedEntities.empty());
     MinDirtyX = std::min(camera.TileX1, MinDirtyX);
     MinDirtyY = std::min(camera.TileY1, MinDirtyY);
     MaxDirtyX = std::max(camera.TileX2, MaxDirtyX);
     MaxDirtyY = std::max(camera.TileY2, MaxDirtyY);
 }
 
-void MppLevel::AddEntity(const std::shared_ptr<MppEntity>& entity)
+void MppLevel::Add(const std::shared_ptr<MppEntity>& entity)
 {
-    Entities.push_back(entity);
+    AddedEntities.push_back(entity);
 }
 
 const MppTile& MppLevel::GetTile(int x, int y) const

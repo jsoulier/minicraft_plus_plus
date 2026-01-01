@@ -1,5 +1,8 @@
-#include "item.hpp"
+#include <string_view>
+
+#include "color.hpp"
 #include "furnace_entity.hpp"
+#include "item.hpp"
 
 MppItemID MppFurnaceEntity::GetItemID() const
 {
@@ -18,36 +21,35 @@ MppItemRecipeType MppFurnaceEntity::GetRecipeType() const
 
 int MppFurnaceEntity::GetSpriteX() const
 {
-    return 0;
+    return 1;
 }
 
 int MppFurnaceEntity::GetSpriteY() const
 {
-    return 0;
+    return 17;
 }
 
 int MppFurnaceEntity::GetColor1() const
 {
-    return 0;
+    return kMppColorFurnace1;
 }
 
 int MppFurnaceEntity::GetColor2() const
 {
-    return 0;
+    return kMppColorFurnace2;
 }
 
 int MppFurnaceEntity::GetColor3() const
 {
-    return 0;
+    return kMppColorFurnace3;
 }
 
 int MppFurnaceEntity::GetColor4() const
 {
-    return 0;
+    return kMppColorFurnace4;
 }
 
 int MppFurnaceEntity::GetColor5() const
 {
-    return 0;
+    return kMppColorFurnace5;
 }
-

@@ -1,11 +1,13 @@
 #include "chest_entity.hpp"
+#include "color.hpp"
+#include "item.hpp"
 
 MppItemID MppChestEntity::GetItemID() const
 {
     return MppItemIDChest;
 }
 
-bool MppChestEntity::IsConvertableToItem() const
+bool MppChestEntity::IsConvertibleToItem() const
 {
     // TODO: check if inventory is empty
     return true;
@@ -13,35 +15,35 @@ bool MppChestEntity::IsConvertableToItem() const
 
 int MppChestEntity::GetSpriteX() const
 {
-    return 0;
+    return 2;
 }
 
 int MppChestEntity::GetSpriteY() const
 {
-    return 0;
+    return 17;
 }
 
 int MppChestEntity::GetColor1() const
 {
-    return 0;
+    return kMppColorChest1;
 }
 
 int MppChestEntity::GetColor2() const
 {
-    return 0;
+    return kMppColorChest2;
 }
 
 int MppChestEntity::GetColor3() const
 {
-    return 0;
+    return kMppColorChest3;
 }
 
 int MppChestEntity::GetColor4() const
 {
-    return 0;
+    return kMppColorChest4;
 }
 
 int MppChestEntity::GetColor5() const
 {
-    return 0;
+    return kMppColorChest5;
 }

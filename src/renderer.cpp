@@ -157,6 +157,7 @@ void MppRenderer::Transform(int& x, int& y, Layer layer)
     case LayerMobEntity:
     case LayerMobEntityOverlay:
     case LayerPhysics:
+    case LayerFurnitureEntity:
         transform = true;
         break;
     case LayerScreenDebug:

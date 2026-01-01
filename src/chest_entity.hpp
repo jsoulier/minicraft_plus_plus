@@ -11,7 +11,7 @@ class MppChestEntity : public MppFurnitureEntity
 
 public:
     MppItemID GetItemID() const override;
-    bool IsConvertableToItem() const override;
+    bool IsConvertibleToItem() const override;
     
 protected:
     int GetSpriteX() const override;

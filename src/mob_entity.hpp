@@ -7,7 +7,9 @@
 #include "entity.hpp"
 
 class MppController;
+class MppLevel;
 class MppMobInventory;
+class MppRenderer;
 
 class MppMobEntity : public MppEntity
 {
@@ -19,11 +21,12 @@ public:
     int GetSize() const override;
     MppPhysicsType GetPhysicsType() const override;
     const std::shared_ptr<MppMobInventory>& GetInventory();
+    virtual void Action(MppLevel& level, MppRenderer& renderer, int ticks) {}
 
 protected:
     void SetController(const std::shared_ptr<MppController>& controller);
     void SetInventory(const std::shared_ptr<MppMobInventory>& inventory);
-    
+
     int DeltaX;
     int DeltaY;
 

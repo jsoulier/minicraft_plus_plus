@@ -22,7 +22,7 @@ public:
     void Load(MppWorld& world, Savepoint& savepoint, int level);
     void Save(Savepoint& savepoint, int level, bool all);
     void Update(MppWorld& world, MppRenderer& renderer, int ticks);
-    void AddEntity(const std::shared_ptr<MppEntity>& entity);
+    void Add(const std::shared_ptr<MppEntity>& entity);
     const MppTile& GetTile(int x, int y) const;
     bool IsValid(int x, int y) const;
 
@@ -32,6 +32,7 @@ protected:
 private:
     std::array<std::array<MppTile, kWidth>, kWidth> Tiles;
     std::vector<std::shared_ptr<MppEntity>> Entities;
+    std::vector<std::shared_ptr<MppEntity>> AddedEntities;
     int MinDirtyX;
     int MinDirtyY;
     int MaxDirtyX;

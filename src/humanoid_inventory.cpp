@@ -8,6 +8,8 @@ MppHumanoidInventory::MppHumanoidInventory()
     : MppMobInventory(SlotTypeCount)
 {
     // TODO: remove
+    Add(MppItem{MppItemIDChest});
+    Add(MppItem{MppItemIDChest});
     Add(MppItem{MppItemIDIronHelmet});
     Add(MppItem{MppItemIDIronHelmet});
     Add(MppItem{MppItemIDIronHelmet});
