@@ -2,12 +2,22 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include <cstdint>
+
 #include "audio.hpp"
 #include "log.hpp"
 #include "renderer.hpp"
 #include "save.hpp"
 #include "version.hpp"
 #include "world.hpp"
+
+static uint64_t savedTicks;
+static uint64_t startTicks;
+
+static uint64_t GetTicks()
+{
+    return SDL_GetTicks() + savedTicks - startTicks;
+}
 
 SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 {
@@ -40,11 +50,15 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
         MppLog("Failed to initialize world");
         return SDL_APP_FAILURE;
     }
+    savedTicks = MppSaveGetTicks();
+    startTicks = SDL_GetTicks();
     return SDL_APP_CONTINUE;
 }
 
 void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
+    uint64_t ticks = GetTicks();
+    MppSaveUpdate(ticks, true);
     MppWorldQuit();
     MppAudioQuit();
     MppRendererQuit();
@@ -54,6 +68,10 @@ void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
+    uint64_t ticks = GetTicks();
+    MppWorldUpdate(ticks);
+    MppSaveUpdate(ticks, false);
+    MppWorldRender();
     MppRendererSubmit();
     return SDL_APP_CONTINUE;
 }

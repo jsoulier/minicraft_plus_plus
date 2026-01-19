@@ -9,6 +9,8 @@
 class MppEntity : public SavepointBase
 {
 public:
+    virtual void Visit(SavepointVisitor& visitor) override;
+
     template<typename T, typename... Args>
     static std::shared_ptr<T> Create(Args&&... args)
     {
@@ -21,8 +23,10 @@ public:
         return std::dynamic_pointer_cast<OutT>(entity);
     }
 
-private:
+public:
     SavepointID ID;
+
+private:
     int X;
     int Y;
 };

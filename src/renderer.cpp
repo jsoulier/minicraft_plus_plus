@@ -129,6 +129,9 @@ static void Transform(int& x, int& y, MppRendererLayer layer)
 {
     switch (layer)
     {
+    case MppRendererLayerBottomTile:
+    case MppRendererLayerTile:
+    case MppRendererLayerTopTile:
     case MppRendererLayerDebug:
         x -= worldX;
         y -= worldY;

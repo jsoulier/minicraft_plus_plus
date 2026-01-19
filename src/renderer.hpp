@@ -4,6 +4,9 @@
 
 enum MppRendererLayer
 {
+    MppRendererLayerBottomTile,
+    MppRendererLayerTile,
+    MppRendererLayerTopTile,
     MppRendererLayerDebug,
     MppRendererLayerCount,
 };

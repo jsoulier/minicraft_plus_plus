@@ -21,10 +21,11 @@ add_subdirectory(lib/savepoint)
 add_executable(minicraft++ WIN32
     src/audio.cpp
     src/color.cpp
-    src/entities/humanoid.cpp
-    src/entities/mob.cpp
-    src/entities/player.cpp
     src/entity.cpp
+    src/entity/humanoid.cpp
+    src/entity/mob.cpp
+    src/entity/player.cpp
+    src/gen.cpp
     src/item.cpp
     src/main.cpp
     src/renderer.cpp
