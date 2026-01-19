@@ -132,6 +132,7 @@ static void Transform(int& x, int& y, MppRendererLayer layer)
     case MppRendererLayerBottomTile:
     case MppRendererLayerTile:
     case MppRendererLayerTopTile:
+    case MppRendererLayerMobEntity:
     case MppRendererLayerDebug:
         x -= worldX;
         y -= worldY;
@@ -276,8 +277,8 @@ void MppRendererSubmit()
     int max = MppWorldGetSize() - 1;
     tileX1 = std::clamp(worldX / MppTile::kSize - 1, min, max);
     tileY1 = std::clamp(worldY / MppTile::kSize - 1, min, max);
-    tileX2 = std::clamp((worldX + kWidth) / MppTile::kSize, min, max);
-    tileY2 = std::clamp((worldY + kHeight) / MppTile::kSize, min, max);
+    tileX2 = std::clamp((worldX + kWidth) / MppTile::kSize + 1, min, max);
+    tileY2 = std::clamp((worldY + kHeight) / MppTile::kSize + 1, min, max);
 }
 
 void MppRendererDraw(MppSprite sprite, int x, int y, bool flip, MppRendererLayer layer)

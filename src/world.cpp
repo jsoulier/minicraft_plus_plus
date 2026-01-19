@@ -49,7 +49,7 @@ bool MppWorldInit()
         {
             levels[level].Tiles[x][y] = kGenerators[level](x, y, level);
         }
-        player = MppEntity::Create<MppPlayerEntity>();
+        player = std::make_shared<MppPlayerEntity>();
         levels[level].Entities.push_back(player);
         level = LevelIDSurface;
     }
@@ -66,6 +66,10 @@ void MppWorldQuit()
 
 void MppWorldUpdate(uint64_t ticks)
 {
+    for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
+    {
+        entity->Update(ticks);
+    }
     for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
     for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
     {
@@ -75,6 +79,10 @@ void MppWorldUpdate(uint64_t ticks)
 
 void MppWorldRender()
 {
+    for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
+    {
+        entity->Render();
+    }
     for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
     for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
     {
@@ -121,6 +129,10 @@ void MppWorldSetTile(const MppTile& tile, int x, int y)
 
 void MppWorldAddEntity(const std::shared_ptr<MppEntity>& entity, int level)
 {
+    if (entity->Is<MppPlayerEntity>())
+    {
+        player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
+    }
     levels[level].Entities.push_back(entity);
 }
 

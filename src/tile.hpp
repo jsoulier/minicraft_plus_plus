@@ -30,7 +30,7 @@ public:
     MppTile();
     MppTile(MppTileID id);
     void Visit(SavepointVisitor& visitor);
-    void Update(int x, int y, float ticks);
+    void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y);
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

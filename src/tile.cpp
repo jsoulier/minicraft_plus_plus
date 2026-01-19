@@ -273,7 +273,7 @@ void MppTile::Visit(SavepointVisitor& visitor)
     visitor(Ticks);
 }
 
-void MppTile::Update(int x, int y, float ticks)
+void MppTile::Update(int x, int y, uint64_t ticks)
 {
     if (Ticks == kInvalidTicks)
     {

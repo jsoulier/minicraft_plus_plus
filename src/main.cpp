@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "audio.hpp"
+#include "input.hpp"
 #include "log.hpp"
 #include "renderer.hpp"
 #include "save.hpp"
@@ -69,6 +70,7 @@ void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
     uint64_t ticks = GetTicks();
+    MppInputUpdate(ticks);
     MppWorldUpdate(ticks);
     MppSaveUpdate(ticks, false);
     MppWorldRender();

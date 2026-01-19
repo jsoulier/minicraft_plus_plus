@@ -79,9 +79,8 @@ bool MppSaveInit()
     for (int level : savepoint.GetLevels())
     {
         using EntityT = std::shared_ptr<MppEntity>;
-        savepoint.Read<EntityT>([&](EntityT& entity, SavepointID id)
+        savepoint.Read<EntityT>([&](EntityT& entity)
         {
-            entity->ID = id;
             MppWorldAddEntity(entity, level);
             entities++;
         }, level);
@@ -152,12 +151,12 @@ void MppSaveUpdate(uint64_t inTicks, bool force)
         }
         for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(level))
         {
-            savepoint.Write(entity, entity->ID, level);
+            savepoint.Write(entity, level);
             entities++;
         }
     }
     savepoint.Save();
-    ticks = ticks + kTicks;
+    ticks = inTicks + kTicks;
     MppLog("Saved at: %s", header.LastModifyTime.GetString().data());
     MppLog("Saved %d tiles", tiles);
     MppLog("Saved %d entities", entities);

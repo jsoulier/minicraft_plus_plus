@@ -26,6 +26,8 @@ add_executable(minicraft++ WIN32
     src/entity/mob.cpp
     src/entity/player.cpp
     src/gen.cpp
+    src/input.cpp
+    src/inventory.cpp
     src/item.cpp
     src/main.cpp
     src/renderer.cpp

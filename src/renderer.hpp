@@ -7,6 +7,7 @@ enum MppRendererLayer
     MppRendererLayerBottomTile,
     MppRendererLayerTile,
     MppRendererLayerTopTile,
+    MppRendererLayerMobEntity,
     MppRendererLayerDebug,
     MppRendererLayerCount,
 };
