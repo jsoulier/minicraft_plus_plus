@@ -1,11 +1,16 @@
+#include <cstdint>
 #include <limits>
 
 #include "assert.hpp"
 #include "color.hpp"
+#include "entity.hpp"
+#include "item.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
 #include "tile.hpp"
 #include "world.hpp"
+
+static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
 
 enum TileSpriteType
 {
@@ -253,8 +258,6 @@ static int GetSprite1x2_2x1(MppTileID lhs, int x, int y)
     return kSprites2x2[hash];
 }
 
-static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
-
 MppTile::MppTile()
     : ID{MppTileIDInvalid}
     , Ticks{kInvalidTicks}
@@ -385,6 +388,14 @@ void MppTile::Render(int x, int y)
     {
         MppAssert(false);
     }
+}
+
+void MppTile::OnAction(MppEntity& instigator)
+{
+}
+
+void MppTile::OnCollision(MppEntity& instigator)
+{
 }
 
 MppTileID MppTile::GetID() const

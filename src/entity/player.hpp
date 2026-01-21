@@ -16,6 +16,7 @@ public:
     void Update(uint64_t ticks) override;
     void Render() override;
     void OnAction() override;
+    void OnInventory() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
     void OnHeldLeft() override;

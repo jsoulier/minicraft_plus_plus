@@ -9,14 +9,14 @@
 void MppWorkbenchEntity::OnAction(MppEntity& instigator)
 {
     MppFurnitureEntity::OnAction(instigator);
-    if (!instigator.Is<MppMobEntity>())
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    if (!mob)
     {
         MppLog("Instigator wasn't an MppMobEntity");
         return;
     }
-    MppMobEntity& mob = instigator.Cast<MppMobEntity>();
-    Inventory = mob.GetInventory();
-    MppInputSetInteraction(SharedFromThis<MppWorkbenchEntity>());
+    Inventory = mob->GetInventory();
+    MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppWorkbenchEntity::OnAction()

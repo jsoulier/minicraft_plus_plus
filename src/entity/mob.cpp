@@ -15,12 +15,6 @@ MppMobEntity::MppMobEntity()
 {
 }
 
-MppMobEntity::~MppMobEntity()
-{
-    // TODO: why does it crash without the empty destructor?
-    int i = 0;
-}
-
 void MppMobEntity::Visit(SavepointVisitor& visitor)
 {
     MppEntity::Visit(visitor);

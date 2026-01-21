@@ -4,6 +4,8 @@
 
 #include <cstdint>
 
+class MppEntity;
+
 enum MppTileID : uint16_t
 {
     MppTileIDInvalid,
@@ -32,6 +34,8 @@ public:
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y);
+    void OnAction(MppEntity& instigator);
+    void OnCollision(MppEntity& instigator);
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;
     int GetPhysicsX(int x) const;
@@ -46,4 +50,4 @@ private:
     uint64_t Ticks;
 };
 
-static const MppTile kMppTileInvalid{};
+static MppTile kMppTileInvalid{};

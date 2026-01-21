@@ -15,15 +15,15 @@ MppChestEntity::MppChestEntity()
 void MppChestEntity::OnAction(MppEntity& instigator)
 {
     MppFurnitureEntity::OnAction(instigator);
-    if (!instigator.Is<MppMobEntity>())
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    if (!mob)
     {
         MppLog("Instigator wasn't an MppMobEntity");
         return;
     }
-    MppMobEntity& mob = instigator.Cast<MppMobEntity>();
-    Other = mob.GetInventory();
+    Other = mob->GetInventory();
     Focused = Inventory;
-    MppInputSetInteraction(SharedFromThis<MppChestEntity>());
+    MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppChestEntity::OnAction()

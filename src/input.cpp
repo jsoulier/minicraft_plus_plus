@@ -10,6 +10,7 @@
 #include "log.hpp"
 
 static constexpr int kAction = SDL_SCANCODE_SPACE;
+static constexpr int kInventory = SDL_SCANCODE_E;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
 static constexpr int kLeft = SDL_SCANCODE_A;
@@ -33,7 +34,7 @@ void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler)
     interaction = handler;
 }
 
-void MppInputUpdate(uint64_t ticks)
+static std::shared_ptr<MppInputHandler> GetHandler()
 {
     std::shared_ptr<MppInputHandler> handler = interaction.lock();
     if (!handler)
@@ -43,13 +44,18 @@ void MppInputUpdate(uint64_t ticks)
     if (!handler)
     {
         MppLog("Missing input handler");
+    }
+    return handler;
+}
+
+void MppInputUpdate(uint64_t ticks)
+{
+    std::shared_ptr<MppInputHandler> handler = GetHandler();
+    if (!handler)
+    {
         return;
     }
     const bool* keys = SDL_GetKeyboardState(nullptr);
-    if (keys[kAction])
-    {
-        handler->OnAction();
-    }
     if (keys[kUp])
     {
         handler->OnHeldUp();
@@ -69,5 +75,51 @@ void MppInputUpdate(uint64_t ticks)
     if (keys[kExit])
     {
         interaction.reset();
+    }
+}
+
+void MppInputHandle(SDL_Event* event)
+{
+    std::shared_ptr<MppInputHandler> handler = GetHandler();
+    if (!handler)
+    {
+        return;
+    }
+    switch (event->key.scancode)
+    {
+    case kAction:
+        handler->OnAction();
+        break;
+    case kInventory:
+        if (!interaction.expired())
+        {
+            interaction.reset();
+        }
+        else
+        {
+            handler->OnInventory();
+        }
+        break;
+    case kUp:
+        handler->OnUp();
+        break;
+    case kDown:
+        handler->OnDown();
+        break;
+    case kLeft:
+        handler->OnLeft();
+        break;
+    case kRight:
+        handler->OnRight();
+        break;
+    }
+}
+
+void MppInputRender()
+{
+    std::shared_ptr<MppInputHandler> handler = interaction.lock();
+    if (handler)
+    {
+        handler->OnRender();
     }
 }

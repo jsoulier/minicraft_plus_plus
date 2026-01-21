@@ -88,7 +88,7 @@ void MppWorldRender()
     }
 }
 
-const MppTile& MppWorldGetTile(int x, int y, int level)
+MppTile& MppWorldGetTile(int x, int y, int level)
 {
     if (x >= 0 && y >= 0 && x < kSize && y < kSize)
     {
@@ -100,7 +100,7 @@ const MppTile& MppWorldGetTile(int x, int y, int level)
     }
 }
 
-const MppTile& MppWorldGetTile(int x, int y)
+MppTile& MppWorldGetTile(int x, int y)
 {
     return MppWorldGetTile(x, y, level);
 }

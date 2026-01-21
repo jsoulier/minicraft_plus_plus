@@ -1,13 +1,14 @@
 #include <memory>
 
 #include "../input.hpp"
+#include "../inventory.hpp"
 #include "../renderer.hpp"
 #include "player.hpp"
 
 void MppPlayerEntity::OnAddEntity()
 {
     MppHumanoidEntity::OnAddEntity();
-    MppInputSetPlayer(SharedFromThis<MppPlayerEntity>());
+    MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppPlayerEntity::Update(uint64_t ticks)
@@ -23,6 +24,11 @@ void MppPlayerEntity::Render()
 
 void MppPlayerEntity::OnAction()
 {
+}
+
+void MppPlayerEntity::OnInventory()
+{
+    MppInputSetInteraction(Inventory);
 }
 
 void MppPlayerEntity::OnHeldUp()

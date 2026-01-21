@@ -34,6 +34,7 @@ add_executable(minicraft++ WIN32
     src/inventory.cpp
     src/item.cpp
     src/main.cpp
+    src/menu.cpp
     src/renderer.cpp
     src/save.cpp
     src/sprite.cpp

@@ -74,21 +74,20 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     MppWorldUpdate(ticks);
     MppSaveUpdate(ticks, false);
     MppWorldRender();
+    MppInputRender();
     MppRendererSubmit();
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDLCALL SDL_AppEvent(void* appstate, SDL_Event* event)
 {
-    switch (event->type)
+    if (event->type == SDL_EVENT_QUIT)
     {
-    case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
-    case SDL_EVENT_KEY_DOWN:
-    case SDL_EVENT_KEY_UP:
-    case SDL_EVENT_MOUSE_BUTTON_DOWN:
-    case SDL_EVENT_MOUSE_BUTTON_UP:
-        break;
+    }
+    if (event->type == SDL_EVENT_KEY_DOWN)
+    {
+        MppInputHandle(event);
     }
     return SDL_APP_CONTINUE;
 }

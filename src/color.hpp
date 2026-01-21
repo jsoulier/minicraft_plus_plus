@@ -22,4 +22,7 @@ static constexpr int kMppColorStone2 = 111;
 static constexpr int kMppColorStone3 = 666;
 static constexpr int kMppColorStone4 = 555;
 
+static constexpr int kMppColorMenuFg = kMppColorWhite;
+static constexpr int kMppColorMenuBg = kMppColorBlue;
+
 SDL_Color MppColorGet(int inColor);

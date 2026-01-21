@@ -34,24 +34,6 @@ public:
     virtual int GetPhysicsHeight() const = 0;
     virtual int GetSize() const = 0;
 
-    template<typename T>
-    bool Is() const
-    {
-        return dynamic_cast<const T*>(this) != nullptr;
-    }
-
-    template<typename T>
-    T& Cast()
-    {
-        return *dynamic_cast<T*>(this);
-    }
-
-    template<typename T>
-    std::shared_ptr<T> SharedFromThis()
-    {
-        return std::dynamic_pointer_cast<T>(shared_from_this());
-    }
-
 protected:
     void Move(int velocityX, int velocityY);
 

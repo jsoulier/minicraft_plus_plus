@@ -1,6 +1,7 @@
 #include <cstdint>
 
 #include "entity.hpp"
+#include "tile.hpp"
 #include "world.hpp"
 
 MppEntity::MppEntity()
@@ -64,7 +65,39 @@ void MppEntity::MoveAxis(int velocityX, int velocityY)
     }
 }
 
+static bool Test(float x1, float y1, int w1, int h1, float x2, float y2, int w2, int h2)
+{
+    return (x1 + w1 > x2) && (x1 < x2 + w2) && (y1 + h1 > y2) && (y1 < y2 + h2);
+}
+
 bool MppEntity::MoveAxisTest()
 {
+    int size = GetSize();
+    int x = GetPhysicsX();
+    int y = GetPhysicsY();
+    int w = GetPhysicsWidth();
+    int h = GetPhysicsHeight();
+    int tileX1 = x / MppTile::kSize;
+    int tileY1 = y / MppTile::kSize;
+    int tileX2 = (x + w) / MppTile::kSize;
+    int tileY2 = (y + h) / MppTile::kSize;
+    for (int tileX = tileX1; tileX <= tileX2; tileX++)
+    for (int tileY = tileY1; tileY <= tileY2; tileY++)
+    {
+        MppTile& tile = MppWorldGetTile(tileX, tileY);
+        int tx = tile.GetPhysicsX(tileX);
+        int ty = tile.GetPhysicsY(tileY);
+        int tw = tile.GetPhysicsWidth();
+        int th = tile.GetPhysicsHeight();
+        if (!Test(x, y, w, h, tx, ty, tw, th))
+        {
+            continue;
+        }
+        tile.OnCollision(*this);
+        if (tile.GetPhysicsType() & MppTilePhysicsTypeWall)
+        {
+            return false;
+        }
+    }
     return true;
 }

@@ -125,7 +125,7 @@ void MppRendererMove(int x, int y, int size)
     worldY = y - kHeight / 2 + size / 2;
 }
 
-static void Transform(int& x, int& y, MppRendererLayer layer)
+static void Move(int& x, int& y, MppRendererLayer layer)
 {
     switch (layer)
     {
@@ -136,6 +136,8 @@ static void Transform(int& x, int& y, MppRendererLayer layer)
     case MppRendererLayerDebug:
         x -= worldX;
         y -= worldY;
+        break;
+    case MppRendererLayerMenu:
         break;
     default:
         MppAssert(false);
@@ -205,7 +207,7 @@ static void DrawSprite(Sprite& sprite, MppRendererLayer layer)
     {
         return;
     }
-    Transform(sprite.X, sprite.Y, layer);
+    Move(sprite.X, sprite.Y, layer);
     SDL_Texture* texture = textureIt->second;
     SDL_FRect rect;
     rect.x = sprite.X;
@@ -224,7 +226,7 @@ static void DrawSprite(Sprite& sprite, MppRendererLayer layer)
 
 static void DrawQuad(Quad& quad, MppRendererLayer layer)
 {
-    Transform(quad.X, quad.Y, layer);
+    Move(quad.X, quad.Y, layer);
     SDL_FRect rect;
     rect.x = quad.X;
     rect.y = quad.Y;
@@ -237,8 +239,8 @@ static void DrawQuad(Quad& quad, MppRendererLayer layer)
 
 static void DrawLine(Line& line, MppRendererLayer layer)
 {
-    Transform(line.X1, line.Y1, layer);
-    Transform(line.X2, line.Y2, layer);
+    Move(line.X1, line.Y1, layer);
+    Move(line.X2, line.Y2, layer);
     int x1 = line.X1;
     int y1 = line.Y1;
     int x2 = line.X2;
