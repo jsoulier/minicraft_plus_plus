@@ -36,12 +36,11 @@ static constexpr std::array<MppGenFunction, LevelIDCount> kGenerators =
 };
 
 static std::array<Level, LevelIDCount> levels;
-static std::shared_ptr<MppEntity> player;
 static LevelID level;
 
 bool MppWorldInit()
 {
-    if (!player)
+    if (!MppSaveIsExisting())
     {
         for (int level = 0; level < LevelIDCount; level++)
         for (int x = 0; x < kSize; x++)
@@ -49,8 +48,7 @@ bool MppWorldInit()
         {
             levels[level].Tiles[x][y] = kGenerators[level](x, y, level);
         }
-        player = std::make_shared<MppPlayerEntity>();
-        levels[level].Entities.push_back(player);
+        levels[level].Entities.push_back(std::make_shared<MppPlayerEntity>());
         level = LevelIDSurface;
     }
     return true;
@@ -129,10 +127,7 @@ void MppWorldSetTile(const MppTile& tile, int x, int y)
 
 void MppWorldAddEntity(const std::shared_ptr<MppEntity>& entity, int level)
 {
-    if (entity->Is<MppPlayerEntity>())
-    {
-        player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
-    }
+    entity->OnAddEntity();
     levels[level].Entities.push_back(entity);
 }
 

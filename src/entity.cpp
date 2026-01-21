@@ -15,14 +15,6 @@ void MppEntity::Visit(SavepointVisitor& visitor)
     visitor(Y);
 }
 
-void MppEntity::Render()
-{
-}
-
-void MppEntity::Update(uint64_t ticks)
-{
-}
-
 void MppEntity::SetX(int x)
 {
     X = x;

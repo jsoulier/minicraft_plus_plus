@@ -100,6 +100,11 @@ void MppSaveQuit()
     savepoint.Close();
 }
 
+bool MppSaveIsExisting()
+{
+    return status == SavepointStatus::Existing;
+}
+
 uint64_t MppSaveGetTicks()
 {
     return header.Ticks;

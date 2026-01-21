@@ -17,6 +17,6 @@ public:
     virtual void OnHeldRight() {}
 };
 
-void MppInputPush(const std::shared_ptr<MppInputHandler>& handler);
-void MppInputPop(const std::shared_ptr<MppInputHandler>& handler);
+void MppInputSetPlayer(const std::shared_ptr<MppInputHandler>& handler);
+void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler);
 void MppInputUpdate(uint64_t ticks);

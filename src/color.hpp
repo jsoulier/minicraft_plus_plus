@@ -11,7 +11,7 @@ static constexpr int kMppColorMagenta = 909;
 static constexpr int kMppColorCyan = 99;
 static constexpr int kMppColorWhite = 999;
 
-static constexpr int kMppColorDirtBrown = 840;
+static constexpr int kMppColorDirt = 840;
 
 static constexpr int kMppColorWood1 = 640;
 static constexpr int kMppColorWood2 = 750;

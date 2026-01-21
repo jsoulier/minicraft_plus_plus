@@ -5,56 +5,51 @@
 #include <utility>
 #include <vector>
 
+#include "assert.hpp"
 #include "input.hpp"
 #include "log.hpp"
 
+static constexpr int kAction = SDL_SCANCODE_SPACE;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
 static constexpr int kLeft = SDL_SCANCODE_A;
 static constexpr int kRight = SDL_SCANCODE_D;
+static constexpr int kExit = SDL_SCANCODE_ESCAPE;
 
-static std::vector<std::weak_ptr<MppInputHandler>> handlers;
+static std::weak_ptr<MppInputHandler> player;
+static std::weak_ptr<MppInputHandler> interaction;
 
-void MppInputPush(const std::shared_ptr<MppInputHandler>& handler)
+void MppInputSetPlayer(const std::shared_ptr<MppInputHandler>& handler)
 {
-    handlers.push_back(handler);
+    MppAssert(player.expired());
+    MppAssert(handler);
+    player = handler;
 }
 
-void MppInputPop(const std::shared_ptr<MppInputHandler>& handler)
+void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler)
 {
-    std::vector<std::weak_ptr<MppInputHandler>> newHandlers;
-    for (int i = 0; i < handlers.size(); i++)
-    {
-        if (handlers[i].lock().get() != handler.get())
-        {
-            handlers.push_back(handlers[i]);
-        }
-    }
-    handlers = std::move(newHandlers);
+    MppAssert(interaction.expired());
+    MppAssert(handler);
+    interaction = handler;
 }
 
 void MppInputUpdate(uint64_t ticks)
 {
-    std::shared_ptr<MppInputHandler> handler;
-    while (handlers.size())
+    std::shared_ptr<MppInputHandler> handler = interaction.lock();
+    if (!handler)
     {
-        handler = handlers.back().lock();
-        if (!handler)
-        {
-            MppLog("Found expired input handler");
-            handlers.pop_back();
-        }
-        else
-        {
-            break;
-        }
+        handler = player.lock();
     }
     if (!handler)
     {
-        MppLog("No input handlers");
+        MppLog("Missing input handler");
         return;
     }
     const bool* keys = SDL_GetKeyboardState(nullptr);
+    if (keys[kAction])
+    {
+        handler->OnAction();
+    }
     if (keys[kUp])
     {
         handler->OnHeldUp();
@@ -70,5 +65,9 @@ void MppInputUpdate(uint64_t ticks)
     if (keys[kRight])
     {
         handler->OnHeldRight();
+    }
+    if (keys[kExit])
+    {
+        interaction.reset();
     }
 }

@@ -22,9 +22,13 @@ add_executable(minicraft++ WIN32
     src/audio.cpp
     src/color.cpp
     src/entity.cpp
+    src/entity/chest.cpp
+    src/entity/furnace.cpp
+    src/entity/furniture.cpp
     src/entity/humanoid.cpp
     src/entity/mob.cpp
     src/entity/player.cpp
+    src/entity/workbench.cpp
     src/gen.cpp
     src/input.cpp
     src/inventory.cpp

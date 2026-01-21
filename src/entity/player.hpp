@@ -1,25 +1,23 @@
 #pragma once
 
-#include <savepoint/base.hpp>
-
 #include <memory>
 
+#include "../input.hpp"
 #include "humanoid.hpp"
 
-class MppInputHandler;
-class Handler;
-
-class MppPlayerEntity final : public MppHumanoidEntity
+class MppPlayerEntity final
+    : public MppHumanoidEntity
+    , public MppInputHandler
 {
     SAVEPOINT_DERIVED(MppPlayerEntity)
 
-    friend class Handler;
-
 public:
-    MppPlayerEntity();
+    void OnAddEntity() override;
     void Update(uint64_t ticks) override;
     void Render() override;
-
-private:
-    std::shared_ptr<MppInputHandler> InputHandler;
+    void OnAction() override;
+    void OnHeldUp() override;
+    void OnHeldDown() override;
+    void OnHeldLeft() override;
+    void OnHeldRight() override;
 };

@@ -4,46 +4,10 @@
 #include "../renderer.hpp"
 #include "player.hpp"
 
-class Handler : public MppInputHandler
+void MppPlayerEntity::OnAddEntity()
 {
-public:
-    Handler(MppPlayerEntity& player)
-        : Player(player)
-    {
-    }
-
-    void OnAction() override
-    {
-    }
-
-    void OnHeldUp() override
-    {
-        Player.VelocityY--;
-    }
-
-    void OnHeldDown() override
-    {
-        Player.VelocityY++;
-    }
-
-    void OnHeldLeft() override
-    {
-        Player.VelocityX--;
-    }
-
-    void OnHeldRight() override
-    {
-        Player.VelocityX++;
-    }
-
-private:
-    MppPlayerEntity& Player;
-};
-
-MppPlayerEntity::MppPlayerEntity()
-{
-    InputHandler = std::make_shared<Handler>(*this);
-    MppInputPush(InputHandler);
+    MppHumanoidEntity::OnAddEntity();
+    MppInputSetPlayer(SharedFromThis<MppPlayerEntity>());
 }
 
 void MppPlayerEntity::Update(uint64_t ticks)
@@ -55,4 +19,28 @@ void MppPlayerEntity::Update(uint64_t ticks)
 void MppPlayerEntity::Render()
 {
     MppHumanoidEntity::Render();
+}
+
+void MppPlayerEntity::OnAction()
+{
+}
+
+void MppPlayerEntity::OnHeldUp()
+{
+    VelocityY--;
+}
+
+void MppPlayerEntity::OnHeldDown()
+{
+    VelocityY++;
+}
+
+void MppPlayerEntity::OnHeldLeft()
+{
+    VelocityX--;
+}
+
+void MppPlayerEntity::OnHeldRight()
+{
+    VelocityX++;
 }

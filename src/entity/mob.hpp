@@ -1,17 +1,24 @@
 #pragma once
 
+#include <memory>
+
 #include "../entity.hpp"
+
+class MppInventory;
 
 class MppMobEntity : public MppEntity
 {
 public:
     MppMobEntity();
+    virtual ~MppMobEntity();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
     virtual void Render() override;
     int GetSize() const override;
+    std::shared_ptr<MppInventory> GetInventory();
 
 protected:
+    std::shared_ptr<MppInventory> Inventory;
     int VelocityX;
     int VelocityY;
     int FacingX;
