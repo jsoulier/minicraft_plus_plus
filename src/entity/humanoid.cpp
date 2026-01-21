@@ -1,11 +1,21 @@
+#include <savepoint/visitor.hpp>
+
+#include <cstdint>
+
 #include "humanoid.hpp"
+
+void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
+{
+    MppMobEntity::Visit(visitor);
+    visitor(HeldEntity);
+}
 
 void MppHumanoidEntity::Update(uint64_t ticks) 
 {
     MppMobEntity::Update(ticks);
 }
 
-void MppHumanoidEntity::Render() 
+void MppHumanoidEntity::Render() const
 {
     MppMobEntity::Render();
 }

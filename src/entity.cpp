@@ -1,3 +1,5 @@
+#include <savepoint/visitor.hpp>
+
 #include <cstdint>
 
 #include "entity.hpp"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/base.hpp>
+
 #include <memory>
 
 #include "../input.hpp"
@@ -14,7 +16,7 @@ class MppPlayerEntity final
 public:
     void OnAddEntity() override;
     void Update(uint64_t ticks) override;
-    void Render() override;
+    void Render() const override;
     void OnAction() override;
     void OnInventory() override;
     void OnHeldUp() override;

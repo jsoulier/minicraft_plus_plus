@@ -1,8 +1,10 @@
 #include <algorithm>
 #include <memory>
 
+#include "../color.hpp"
 #include "../input.hpp"
 #include "../inventory.hpp"
+#include "../item.hpp"
 #include "../log.hpp"
 #include "chest.hpp"
 #include "mob.hpp"
@@ -58,4 +60,49 @@ void MppChestEntity::OnHeldUp()
 void MppChestEntity::OnHeldDown()
 {
     Focused.lock()->OnHeldDown();
+}
+
+MppItemID MppChestEntity::GetItemID() const
+{
+    return MppItemIDChest;
+}
+
+bool MppChestEntity::IsEmpty() const
+{
+    return Inventory->IsEmpty();
+}
+
+int MppChestEntity::GetSpriteX() const
+{
+    return 2;
+}
+
+int MppChestEntity::GetSpriteY() const
+{
+    return 17;
+}
+
+int MppChestEntity::GetColor1() const
+{
+    return kMppColorChest1;
+}
+
+int MppChestEntity::GetColor2() const
+{
+    return kMppColorChest2;
+}
+
+int MppChestEntity::GetColor3() const
+{
+    return kMppColorChest3;
+}
+
+int MppChestEntity::GetColor4() const
+{
+    return kMppColorChest4;
+}
+
+int MppChestEntity::GetColor5() const
+{
+    return kMppColorChest5;
 }

@@ -12,7 +12,7 @@ MppMenu::MppMenu()
 {
 }
 
-void MppMenu::Render()
+void MppMenu::Render() const
 {
     MppRendererDrawRect(FgColor, X1, Y1, GetWidth(), GetHeight(), MppRendererLayerMenu);
 }

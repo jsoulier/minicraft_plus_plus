@@ -77,7 +77,7 @@ void MppWorldUpdate(uint64_t ticks)
 
 void MppWorldRender()
 {
-    for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
+    for (const std::shared_ptr<MppEntity>& entity : levels[level].Entities)
     {
         entity->Render();
     }

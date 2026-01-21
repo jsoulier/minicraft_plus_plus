@@ -1,3 +1,5 @@
+#include <savepoint/visitor.hpp>
+
 #include <memory>
 
 #include "../color.hpp"
@@ -36,7 +38,7 @@ void MppMobEntity::Update(uint64_t ticks)
     VelocityY = 0;
 }
 
-void MppMobEntity::Render()
+void MppMobEntity::Render() const
 {
     MppEntity::Render();
     MppRendererDraw(MppSprite(kMppColorWhite), X, Y, false, MppRendererLayerDebug);

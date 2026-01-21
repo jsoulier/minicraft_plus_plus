@@ -26,6 +26,7 @@ add_executable(minicraft++ WIN32
     src/entity/furnace.cpp
     src/entity/furniture.cpp
     src/entity/humanoid.cpp
+    src/entity/item.cpp
     src/entity/mob.cpp
     src/entity/player.cpp
     src/entity/workbench.cpp

@@ -1,8 +1,23 @@
+#include "../renderer.hpp"
 #include "furniture.hpp"
 
-void MppFurnitureEntity::Render()
+void MppFurnitureEntity::Render() const
 {
     MppEntity::Render();
+    MppRendererDraw(MppSprite{
+            GetColor1(),
+            GetColor2(),
+            GetColor3(),
+            GetColor4(),
+            GetColor5(),
+            GetSpriteX(),
+            GetSpriteY(),
+            GetSize(),
+        },
+        X,
+        Y,
+        false,
+        MppRendererLayerEntity);
 }
 
 int MppFurnitureEntity::GetPhysicsOffsetX() const
@@ -28,4 +43,9 @@ int MppFurnitureEntity::GetPhysicsHeight() const
 int MppFurnitureEntity::GetSize() const
 {
     return 16;
+}
+
+bool MppFurnitureEntity::IsEmpty() const
+{
+    return true;
 }

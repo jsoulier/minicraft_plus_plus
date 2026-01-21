@@ -6,7 +6,7 @@ class MppMenu
 {
 public:
     MppMenu();
-    virtual void Render();
+    virtual void Render() const;
     void SetFgColor(int color);
     void SetBgColor(int color);
     void SetX1(int x1);

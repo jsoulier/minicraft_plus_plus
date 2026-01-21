@@ -19,7 +19,7 @@ public:
     virtual ~MppEntity() = default;
     virtual void OnAddEntity() {}
     virtual void Visit(SavepointVisitor& visitor) override;
-    virtual void Render() {}
+    virtual void Render() const {}
     virtual void Update(uint64_t ticks) {}
     virtual void OnAction(MppEntity& instigator) {}
     void SetX(int x);

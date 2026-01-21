@@ -132,7 +132,7 @@ static void Move(int& x, int& y, MppRendererLayer layer)
     case MppRendererLayerBottomTile:
     case MppRendererLayerTile:
     case MppRendererLayerTopTile:
-    case MppRendererLayerMobEntity:
+    case MppRendererLayerEntity:
     case MppRendererLayerDebug:
         x -= worldX;
         y -= worldY;

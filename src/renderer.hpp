@@ -1,13 +1,15 @@
 #pragma once
 
+#include <cstdint>
+
 #include "sprite.hpp"
 
-enum MppRendererLayer
+enum MppRendererLayer : uint8_t
 {
     MppRendererLayerBottomTile,
     MppRendererLayerTile,
     MppRendererLayerTopTile,
-    MppRendererLayerMobEntity,
+    MppRendererLayerEntity,
     MppRendererLayerMenu,
     MppRendererLayerDebug,
     MppRendererLayerCount,

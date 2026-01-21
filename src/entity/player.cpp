@@ -17,7 +17,7 @@ void MppPlayerEntity::Update(uint64_t ticks)
     MppRendererMove(X, Y, GetSize());
 }
 
-void MppPlayerEntity::Render()
+void MppPlayerEntity::Render() const
 {
     MppHumanoidEntity::Render();
 }

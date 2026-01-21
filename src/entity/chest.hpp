@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/base.hpp>
+
 #include <memory>
 
 #include "../input.hpp"
@@ -22,6 +24,17 @@ public:
     void OnRight() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
+    MppItemID GetItemID() const override;
+    bool IsEmpty() const override;
+
+protected:
+    int GetSpriteX() const override;
+    int GetSpriteY() const override;
+    int GetColor1() const override;
+    int GetColor2() const override;
+    int GetColor3() const override;
+    int GetColor4() const override;
+    int GetColor5() const override;
 
 private:
     std::shared_ptr<MppInventory> Inventory;
