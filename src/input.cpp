@@ -6,32 +6,67 @@
 #include <vector>
 
 #include "assert.hpp"
+#include "console.hpp"
 #include "input.hpp"
 #include "log.hpp"
 
 static constexpr int kAction = SDL_SCANCODE_SPACE;
 static constexpr int kInventory = SDL_SCANCODE_E;
+static constexpr int kConsole = SDLK_SLASH;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
+static constexpr int kUpArrow = SDL_SCANCODE_UP;
+static constexpr int kDownArrow = SDL_SCANCODE_DOWN;
 static constexpr int kLeft = SDL_SCANCODE_A;
 static constexpr int kRight = SDL_SCANCODE_D;
 static constexpr int kExit = SDL_SCANCODE_ESCAPE;
+static constexpr int kEnter = SDL_SCANCODE_RETURN;
+static constexpr int kBackspace = SDL_SCANCODE_BACKSPACE;
 
 static std::weak_ptr<MppInputHandler> player;
 static std::weak_ptr<MppInputHandler> interaction;
+static std::shared_ptr<MppInputHandler> console = std::make_shared<MppConsole>();
+
+void MppInputQuit()
+{
+    MppInputResetInteraction();
+    MppInputResetPlayer();
+}
 
 void MppInputSetPlayer(const std::shared_ptr<MppInputHandler>& handler)
 {
-    MppAssert(player.expired());
     MppAssert(handler);
+    MppInputResetPlayer();
     player = handler;
+    handler->OnGainFocus();
 }
 
 void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler)
 {
-    MppAssert(interaction.expired());
     MppAssert(handler);
+    MppInputResetInteraction();
     interaction = handler;
+    handler->OnGainFocus();
+}
+
+void MppInputResetPlayer()
+{
+    std::shared_ptr<MppInputHandler> handler = player.lock();
+    if (handler)
+    {
+        handler->OnLoseFocus();
+        player.reset();
+    }
+}
+
+void MppInputResetInteraction()
+{
+    std::shared_ptr<MppInputHandler> handler = interaction.lock();
+    if (handler)
+    {
+        handler->OnLoseFocus();
+        interaction.reset();
+    }
 }
 
 static std::shared_ptr<MppInputHandler> GetHandler()
@@ -55,6 +90,7 @@ void MppInputUpdate(uint64_t ticks)
     {
         return;
     }
+    handler->OnUpdate(ticks);
     const bool* keys = SDL_GetKeyboardState(nullptr);
     if (keys[kUp])
     {
@@ -72,9 +108,14 @@ void MppInputUpdate(uint64_t ticks)
     {
         handler->OnHeldRight();
     }
-    if (keys[kExit])
+}
+
+void MppInputRender()
+{
+    std::shared_ptr<MppInputHandler> handler = GetHandler();
+    if (handler)
     {
-        interaction.reset();
+        handler->OnRender();
     }
 }
 
@@ -85,41 +126,59 @@ void MppInputHandle(SDL_Event* event)
     {
         return;
     }
-    switch (event->key.scancode)
+    if (event->type == SDL_EVENT_KEY_DOWN)
     {
-    case kAction:
-        handler->OnAction();
-        break;
-    case kInventory:
-        if (!interaction.expired())
+        switch (event->key.scancode)
         {
-            interaction.reset();
+        case kAction:
+            handler->OnAction();
+            break;
+        case kInventory:
+            handler->OnInventory();
+            break;
+        case kUp:
+            handler->OnUp();
+            break;
+        case kDown:
+            handler->OnDown();
+            break;
+        case kUpArrow:
+            handler->OnUpArrow();
+            break;
+        case kDownArrow:
+            handler->OnDownArrow();
+            break;
+        case kLeft:
+            handler->OnLeft();
+            break;
+        case kRight:
+            handler->OnRight();
+            break;
+        case kEnter:
+            handler->OnEnter();
+            break;
+        case kBackspace:
+            handler->OnBackspace();
+            break;
+        case kExit:
+            MppInputResetInteraction();
+            break;
+        }
+        if (event->key.key == SDLK_SLASH && handler != console)
+        {
+            MppInputSetInteraction(console);
+        }
+    }
+    else if (event->type == SDL_EVENT_TEXT_INPUT)
+    {
+        char character = event->text.text[0];
+        if (character <= 127)
+        {
+            handler->OnTextInput(character);
         }
         else
         {
-            handler->OnInventory();
+            MppLog("Unhandled text input: %s", event->text.text);
         }
-        break;
-    case kUp:
-        handler->OnUp();
-        break;
-    case kDown:
-        handler->OnDown();
-        break;
-    case kLeft:
-        handler->OnLeft();
-        break;
-    case kRight:
-        handler->OnRight();
-        break;
-    }
-}
-
-void MppInputRender()
-{
-    std::shared_ptr<MppInputHandler> handler = interaction.lock();
-    if (handler)
-    {
-        handler->OnRender();
     }
 }

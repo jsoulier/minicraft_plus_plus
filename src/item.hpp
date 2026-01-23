@@ -43,6 +43,8 @@ enum MppItemType
     MppItemTypeCuirass,
     MppItemTypeLeggings,
     MppItemTypeBoots,
+    MppItemTypeConsumable,
+    MppItemTypeEffect,
     MppItemTypeFurniture,
 };
 
@@ -58,6 +60,9 @@ public:
     std::string_view GetName() const;
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
+    void Add();
+    void Remove();
+    int GetCount() const;
     MppItemID GetID() const;
     MppItemType GetType() const;
     int GetPhysicsOffsetX() const;

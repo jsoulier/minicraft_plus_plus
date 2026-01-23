@@ -1,11 +1,13 @@
+#include <cctype>
+#include <string_view>
+
+#include "assert.hpp"
 #include "color.hpp"
 #include "menu.hpp"
 #include "renderer.hpp"
 
 MppMenu::MppMenu()
-    : FgColor{kMppColorMenuFg}
-    , BgColor{kMppColorMenuBg}
-    , X1{8}
+    : X1{8}
     , Y1{8}
     , X2{248}
     , Y2{136}
@@ -14,17 +16,29 @@ MppMenu::MppMenu()
 
 void MppMenu::Render() const
 {
-    MppRendererDrawRect(FgColor, X1, Y1, GetWidth(), GetHeight(), MppRendererLayerMenu);
+    MppRendererDrawRect(kMppColorMenuBackground, X1, Y1, GetWidth(), GetHeight(), MppRendererLayerMenu);
 }
 
-void MppMenu::SetFgColor(int color)
+void MppMenu::Render(const std::string_view& string, int color, int x, int y, MppMenuAlignment alignment) const
 {
-    FgColor = color;
-}
-
-void MppMenu::SetBgColor(int color)
-{
-    BgColor = color;
+    switch (alignment)
+    {
+    case MppMenuAlignmentCenter:
+        x += string.size() * 8 / 2;
+        break;
+    case MppMenuAlignmentLeft:
+        x += 0;
+        break;
+    case MppMenuAlignmentRight:
+        x -= string.size() * 8;
+        break;
+    }
+    for (char character : string)
+    {
+        MppSprite sprite(color, std::toupper(character));
+        MppRendererDraw(sprite, x, y, false, MppRendererLayerMenuContent);
+        x += 8;
+    }
 }
 
 void MppMenu::SetX1(int x1)

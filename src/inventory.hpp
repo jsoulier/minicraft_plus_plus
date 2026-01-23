@@ -24,13 +24,15 @@ class MppInventory
     , public MppInputHandler
 {
 public:
+    MppInventory();
     void Visit(SavepointVisitor& visitor);
     void Render() const override;
     bool Add(const MppItem& item);
+    void SetMaxItems(int max);
     bool IsEmpty() const;
     void OnAction() override;
-    void OnUp() override;
-    void OnDown() override;
+    void OnUpArrow() override;
+    void OnDownArrow() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
     void OnRender() override;
@@ -38,4 +40,7 @@ public:
 private:
     std::vector<MppItem> Items;
     std::array<int, MppInventorySlotCount> Slots;
+    int MaxItems;
+    int Top;
+    int Index;
 };

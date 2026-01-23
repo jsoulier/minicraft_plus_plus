@@ -115,6 +115,12 @@ std::vector<std::shared_ptr<MppEntity>>& MppWorldGetEntities()
     return MppWorldGetEntities(level);
 }
 
+std::vector<std::shared_ptr<MppEntity>>& MppWorldGetEntities(int x, int y)
+{
+    // TODO: spatial queries
+    return MppWorldGetEntities(level);
+}
+
 void MppWorldSetTile(const MppTile& tile, int x, int y, int level)
 {
     levels[level].Tiles[x][y] = tile;

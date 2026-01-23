@@ -21,6 +21,7 @@ add_subdirectory(lib/savepoint)
 add_executable(minicraft++ WIN32
     src/audio.cpp
     src/color.cpp
+    src/console.cpp
     src/entity.cpp
     src/entity/chest.cpp
     src/entity/furnace.cpp
@@ -51,13 +52,16 @@ target_link_libraries(minicraft++ PRIVATE
 target_precompile_headers(minicraft++ PRIVATE
     <algorithm>
     <array>
+    <cctype>
     <cmath>
     <cstddef>
     <cstdint>
+    <exception>
     <filesystem>
     <format>
     <limits>
     <memory>
+    <sstream>
     <string>
     <string_view>
     <unordered_map>

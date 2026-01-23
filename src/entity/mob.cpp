@@ -17,6 +17,11 @@ MppMobEntity::MppMobEntity()
 {
 }
 
+void MppMobEntity::OnAddEntity()
+{
+    Inventory->SetMaxItems(GetMaxItems());
+}
+
 void MppMobEntity::Visit(SavepointVisitor& visitor)
 {
     MppEntity::Visit(visitor);
@@ -41,7 +46,7 @@ void MppMobEntity::Update(uint64_t ticks)
 void MppMobEntity::Render() const
 {
     MppEntity::Render();
-    MppRendererDraw(MppSprite(kMppColorWhite), X, Y, false, MppRendererLayerDebug);
+    MppRendererDraw(MppSprite(kMppColorWhite), X, Y, false, MppRendererLayerEntity);
 }
 
 int MppMobEntity::GetSize() const
@@ -52,4 +57,9 @@ int MppMobEntity::GetSize() const
 std::shared_ptr<MppInventory> MppMobEntity::GetInventory()
 {
     return Inventory;
+}
+
+int MppMobEntity::GetMaxItems() const
+{
+    return 0;
 }

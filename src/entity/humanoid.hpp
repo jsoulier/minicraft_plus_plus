@@ -17,5 +17,8 @@ public:
     int GetPhysicsHeight() const override;
 
 protected:
+    int GetMaxItems() const override;
+
+protected:
     std::shared_ptr<MppEntity> HeldEntity;
 };

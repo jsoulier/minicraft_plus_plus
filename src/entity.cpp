@@ -83,6 +83,7 @@ bool MppEntity::MoveAxisTest()
     int tileY1 = y / MppTile::kSize;
     int tileX2 = (x + w) / MppTile::kSize;
     int tileY2 = (y + h) / MppTile::kSize;
+    bool rejected = false;
     for (int tileX = tileX1; tileX <= tileX2; tileX++)
     for (int tileY = tileY1; tileY <= tileY2; tileY++)
     {
@@ -98,8 +99,10 @@ bool MppEntity::MoveAxisTest()
         tile.OnCollision(*this);
         if (tile.GetPhysicsType() & MppTilePhysicsTypeWall)
         {
-            return false;
+            rejected = true;
         }
     }
-    return true;
+    // TODO: entities
+    // std::vector<std::shared_ptr<MppEntity>>& entities = MppWorldGetEntities(X, Y);
+    return !rejected;
 }

@@ -39,3 +39,8 @@ int MppHumanoidEntity::GetPhysicsHeight() const
 {
     return 14;
 }
+
+int MppHumanoidEntity::GetMaxItems() const
+{
+    return 32;
+}

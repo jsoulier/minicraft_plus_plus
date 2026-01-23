@@ -9,6 +9,8 @@ void MppPlayerEntity::OnAddEntity()
 {
     MppHumanoidEntity::OnAddEntity();
     MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    GetInventory()->SetX2(120);
+    GetInventory()->SetY2(120);
 }
 
 void MppPlayerEntity::Update(uint64_t ticks)

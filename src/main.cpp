@@ -59,6 +59,7 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     uint64_t ticks = GetTicks();
+    MppInputQuit();
     MppSaveUpdate(ticks, true);
     MppWorldQuit();
     MppAudioQuit();
@@ -81,13 +82,14 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 
 SDL_AppResult SDLCALL SDL_AppEvent(void* appstate, SDL_Event* event)
 {
-    if (event->type == SDL_EVENT_QUIT)
+    switch (event->type)
     {
+    case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
-    }
-    if (event->type == SDL_EVENT_KEY_DOWN)
-    {
+    case SDL_EVENT_KEY_DOWN:
+    case SDL_EVENT_TEXT_INPUT:
         MppInputHandle(event);
+        break;
     }
     return SDL_APP_CONTINUE;
 }

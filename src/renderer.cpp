@@ -138,6 +138,7 @@ static void Move(int& x, int& y, MppRendererLayer layer)
         y -= worldY;
         break;
     case MppRendererLayerMenu:
+    case MppRendererLayerMenuContent:
         break;
     default:
         MppAssert(false);

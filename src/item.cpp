@@ -4,6 +4,7 @@
 #include <memory>
 #include <string_view>
 
+#include "assert.hpp"
 #include "color.hpp"
 #include "entity/chest.hpp"
 #include "entity/furnace.hpp"
@@ -46,7 +47,7 @@ static const kItems[MppItemIDCount] =
 {
     {
         .Name = "invalid",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -57,18 +58,18 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "wood",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .Color1 = kMppColorWood1,
         .Color2 = kMppColorWood2,
         .Color3 = kMppColorWood3,
         .Color4 = 0,
         .Color5 = 0,
-        .SpriteX = 0,
+        .SpriteX = 3,
         .SpriteY = 12,
     },
     {
         .Name = "apple",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .Color1 = 500,
         .Color2 = 700,
         .Color3 = 900,
@@ -122,18 +123,18 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "iron ore",
-        .Type = MppItemTypeNone,
-        .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
-        .Color4 = 0,
-        .Color5 = 0,
-        .SpriteX = 0,
-        .SpriteY = 0,
+        .Type = MppItemTypeConsumable,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
+        .SpriteX = 2,
+        .SpriteY = 12,
     },
     {
         .Name = "iron bar",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -144,7 +145,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "stone",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .Color1 = kMppColorStone1,
         .Color2 = kMppColorStone2,
         .Color3 = kMppColorStone3,
@@ -191,7 +192,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "heart",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeEffect,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -202,7 +203,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "energy",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeEffect,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -213,7 +214,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "food",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeEffect,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -277,6 +278,23 @@ std::shared_ptr<MppItemEntity> MppItem::CreateItemEntity() const
 std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
 {
     return kItems[ID].CreateFurnitureEntity();
+}
+
+void MppItem::Add()
+{
+    MppAssert(Count > 0);
+    Count++;
+}
+
+void MppItem::Remove()
+{
+    MppAssert(Count > 0);
+    Count--;
+}
+
+int MppItem::GetCount() const
+{
+    return Count;
 }
 
 MppItemID MppItem::GetID() const
