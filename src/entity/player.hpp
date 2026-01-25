@@ -24,4 +24,11 @@ public:
     void OnHeldDown() override;
     void OnHeldLeft() override;
     void OnHeldRight() override;
+
+protected:
+    int GetSpriteBorderColor() const override;
+    int GetSpriteSkinColor() const override;
+    int GetSpriteShirtColor() const override;
+    int GetSpritePantColor() const override;
+    int GetSpriteShoeColor() const override;
 };

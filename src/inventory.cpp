@@ -44,12 +44,12 @@ void MppInventory::Render() const
         if (count > 1)
         {
             int offset = MppGetNumberOfDigits(count) * 8;
-            MppMenu::Render(std::to_string(count), kMppColorMenuForeground, X1 + 16, y, MppMenuAlignmentLeft);
-            MppMenu::Render(item.GetName(), kMppColorMenuForeground, X1 + 24 + offset, y, MppMenuAlignmentLeft);
+            MppMenu::Render(std::to_string(count), kMppColorMenuUnlockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
+            MppMenu::Render(item.GetName(), kMppColorMenuUnlockedForeground, X1 + 24 + offset, y, MppMenuAlignmentLeft);
         }
         else if (count == 1)
         {
-            MppMenu::Render(item.GetName(), kMppColorMenuForeground, X1 + 16, y, MppMenuAlignmentLeft);
+            MppMenu::Render(item.GetName(), kMppColorMenuUnlockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
         }
         else if (count == 0)
         {
@@ -62,7 +62,7 @@ void MppInventory::Render() const
     }
     if (Focused)
     {
-        MppMenu::Render(">", kMppColorMenuForeground, X1, Y1 + (Index - Top) * 8, MppMenuAlignmentLeft);
+        MppMenu::Render(">", kMppColorMenuUnlockedForeground, X1, Y1 + (Index - Top) * 8, MppMenuAlignmentLeft);
     }
 }
 

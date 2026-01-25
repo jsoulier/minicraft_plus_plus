@@ -25,6 +25,8 @@ add_executable(minicraft++ WIN32
     src/entity.cpp
     src/entity/anvil.cpp
     src/entity/chest.cpp
+    src/entity/controller.cpp
+    src/entity/creature.cpp
     src/entity/furnace.cpp
     src/entity/furniture.cpp
     src/entity/humanoid.cpp
@@ -32,7 +34,10 @@ add_executable(minicraft++ WIN32
     src/entity/mob.cpp
     src/entity/player.cpp
     src/entity/recipe.cpp
+    src/entity/sheep.cpp
+    src/entity/slime.cpp
     src/entity/workbench.cpp
+    src/entity/zombie.cpp
     src/gen.cpp
     src/input.cpp
     src/inventory.cpp

@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include "../color.hpp"
 #include "../entity.hpp"
 #include "../input.hpp"
 #include "../inventory.hpp"
@@ -108,4 +109,29 @@ void MppPlayerEntity::OnHeldLeft()
 void MppPlayerEntity::OnHeldRight()
 {
     VelocityX++;
+}
+
+int MppPlayerEntity::GetSpriteBorderColor() const
+{
+    return kMppColorPlayerBorder;
+}
+
+int MppPlayerEntity::GetSpriteSkinColor() const
+{
+    return kMppColorPlayerSkin;
+}
+
+int MppPlayerEntity::GetSpriteShirtColor() const
+{
+    return kMppColorPlayerShirt;
+}
+
+int MppPlayerEntity::GetSpritePantColor() const
+{
+    return kMppColorPlayerPants;
+}
+
+int MppPlayerEntity::GetSpriteShoeColor() const
+{
+    return kMppColorPlayerShoes;
 }

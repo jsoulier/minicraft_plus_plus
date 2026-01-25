@@ -6,6 +6,7 @@
 
 #include "../entity.hpp"
 
+class MppMobController;
 class MppInventory;
 
 class MppMobEntity : public MppEntity
@@ -21,9 +22,11 @@ public:
 
 protected:
     virtual int GetMaxItems() const = 0;
+    virtual std::shared_ptr<MppMobController> GetController() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;
+    std::shared_ptr<MppMobController> Controller;
     int VelocityX;
     int VelocityY;
     int FacingX;

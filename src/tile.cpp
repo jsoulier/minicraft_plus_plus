@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <string_view>
 
 #include "assert.hpp"
 #include "color.hpp"
@@ -23,6 +24,7 @@ enum TileSpriteType
 
 struct
 {
+    std::string_view Name;
     TileSpriteType SpriteType;
     int SpriteY;
     int TopSpriteY;
@@ -40,8 +42,8 @@ struct
 }
 static constexpr kTiles[MppTileIDCount] =
 {
-    /* invalid */
     {
+        .Name = "invalid",
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
@@ -57,8 +59,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
     },
-    /* grass */
     {
+        .Name = "grass",
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
@@ -74,8 +76,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
     },
-    /* dirt */
     {
+        .Name = "dirt",
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
@@ -91,8 +93,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
     },
-    /* stone wall */
     {
+        .Name = "stone wall",
         .SpriteType = TileSpriteType1x2_2x1,
         .SpriteY = 3,
         .TopSpriteY = 4,
@@ -108,8 +110,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
     },
-    /* tree */
     {
+        .Name = "tree",
         .SpriteType = TileSpriteType2x2,
         .SpriteY = 5,
         .TopSpriteY = 0,
@@ -125,8 +127,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
     },
-    /* sand */
     {
+        .Name = "sand",
         .SpriteType = TileSpriteType1x1,
         .SpriteY = 0,
         .TopSpriteY = 0,
@@ -398,6 +400,11 @@ void MppTile::OnAction(MppEntity& instigator)
 
 void MppTile::OnCollision(MppEntity& instigator)
 {
+}
+
+const std::string_view& MppTile::GetName() const
+{
+    return kTiles[ID].Name;
 }
 
 MppTileID MppTile::GetID() const

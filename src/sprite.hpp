@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <utility>
 
 class MppSprite
 {
@@ -29,4 +30,27 @@ public:
 
 private:
     uint64_t Value;
+};
+
+class MppSpriteAnimation
+{
+private:
+    static constexpr int kMaxPoses = 2;
+
+public:
+    MppSpriteAnimation();
+    void Update(int pose, int dx, int dy, uint64_t ticks);
+    void SetPose(int pose, int x, int y);
+    void SetTickRate(int rate);
+    int GetX() const;
+    int GetY() const;
+    bool GetFlip() const;
+
+private:
+    int Poses[kMaxPoses][2];
+    int TickRate;
+    bool Tick;
+    int X;
+    int Y;
+    bool Flip;
 };

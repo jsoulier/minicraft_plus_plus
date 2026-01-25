@@ -139,3 +139,80 @@ bool MppSprite::IsValid() const
 {
     return !operator==(MppSprite{});
 }
+
+MppSpriteAnimation::MppSpriteAnimation()
+    : Poses{}
+    , TickRate{0}
+    , Tick{false}
+    , X{0}
+    , Y{0}
+    , Flip{false}
+{
+}
+
+void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
+{
+    MppAssert(pose < kMaxPoses);
+    if (!dx && !dy)
+    {
+        return;
+    }
+    if (ticks % TickRate == 0)
+    {
+        Tick = !Tick;
+    }
+    X = Poses[pose][0];
+    Y = Poses[pose][1];
+    if (dy)
+    {
+        Flip = Tick;
+        if (dy > 0)
+        {
+            X += 0;
+        }
+        else
+        {
+            X += 1;
+        }
+    }
+    else
+    {
+        Flip = dx < 0;
+        if (Tick)
+        {
+            X += 2;
+        }
+        else
+        {
+            X += 3;
+        }
+    }
+}
+
+void MppSpriteAnimation::SetPose(int pose, int x, int y)
+{
+    MppAssert(pose < kMaxPoses);
+    Poses[pose][0] = x;
+    Poses[pose][1] = y;
+}
+
+void MppSpriteAnimation::SetTickRate(int rate)
+{
+    TickRate = rate;
+}
+
+int MppSpriteAnimation::GetX() const
+{
+    return X;
+}
+
+int MppSpriteAnimation::GetY() const
+{
+    return Y;
+}
+
+bool MppSpriteAnimation::GetFlip() const
+{
+    return Flip;
+}
+

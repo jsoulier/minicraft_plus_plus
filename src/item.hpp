@@ -74,7 +74,7 @@ public:
     MppItem(MppItemID id);
     void Visit(SavepointVisitor& visitor);
     void Render(int x, int y, MppRendererLayer layer) const;
-    std::string_view GetName() const;
+    const std::string_view& GetName() const;
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
     MppItemRecipe GetRecipe() const;

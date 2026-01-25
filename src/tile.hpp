@@ -3,6 +3,7 @@
 #include <savepoint/savepoint.hpp>
 
 #include <cstdint>
+#include <string_view>
 
 class MppEntity;
 
@@ -19,9 +20,9 @@ enum MppTileID : uint16_t
 
 enum MppTilePhysicsType
 {
-    MppTilePhysicsTypeGround,
-    MppTilePhysicsTypeWall,
-    MppTilePhysicsTypeLiquid,
+    MppTilePhysicsTypeGround = 0x01,
+    MppTilePhysicsTypeWall   = 0x02,
+    MppTilePhysicsTypeLiquid = 0x04,
 };
 
 class MppTile
@@ -36,6 +37,7 @@ public:
     void Render(int x, int y);
     void OnAction(MppEntity& instigator);
     void OnCollision(MppEntity& instigator);
+    const std::string_view& GetName() const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;
     int GetPhysicsX(int x) const;

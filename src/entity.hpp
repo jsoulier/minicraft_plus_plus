@@ -5,27 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
-
-#define MPP_ENTITY(T) \
-    SAVEPOINT_DERIVED(T) \
-    private: \
-        struct SavepointDerivedFunctionRegistrar \
-        { \
-            static SavepointBase* Function() \
-            { \
-                return new T(); \
-            } \
-            SavepointDerivedFunctionRegistrar() \
-            { \
-                SavepointAddDerivedFunction(#T, Function); \
-            } \
-        }; \
-        static inline SavepointDerivedFunctionRegistrar SavepointDerivedFunctionRegistrar; \
-    public: \
-        std::string_view SavepointDerivedGetString() const override \
-        { \
-            return #T; \
-        } \
+#include <vector>
 
 class MppEntity :
     public SavepointEntity,
@@ -60,6 +40,7 @@ public:
 protected:
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
     void Move(int velocityX, int velocityY);
+    std::vector<std::pair<int, int>> Raycast(int x2, int y2);
 
 private:
     void MoveAxis(int velocityX, int velocityY);

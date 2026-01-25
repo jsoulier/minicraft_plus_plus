@@ -25,6 +25,7 @@
 #include "log.hpp"
 #include "menu.hpp"
 #include "renderer.hpp"
+#include "tile.hpp"
 #include "world.hpp"
 
 MppConsole::MppConsole()
@@ -69,14 +70,9 @@ void MppConsole::HandleGive(const std::vector<std::string>& tokens)
     {
         return;
     }
-    if (tokens.size() > 3)
+    if (tokens.size() < 2 || tokens.size() > 3)
     {
-        MppLog("Expected \"give <item_name>\"");
-        return;
-    }
-    if (tokens.size() < 2)
-    {
-        MppLog("Expected \"give <item_name>\"");
+        MppLog("Expected give <item_name>");
         return;
     }
     MppItem item;
@@ -120,11 +116,11 @@ void MppConsole::HandleGive(const std::vector<std::string>& tokens)
     }
 }
 
-void MppConsole::HandleSpawn(const std::vector<std::string>& tokens)
+void MppConsole::HandleEntity(const std::vector<std::string>& tokens)
 {
     if (tokens.size() != 4)
     {
-        MppLog("Expected \"spawn <entity_name> <x> <y>\"");
+        MppLog("Expected entity <entity_name> <x> <y>");
         return;
     }
     // TODO: doesn't handle underscore separators
@@ -138,18 +134,58 @@ void MppConsole::HandleSpawn(const std::vector<std::string>& tokens)
         MppLog("Unknown entity: %s", tokens[1].data());
         return;
     }
-    std::shared_ptr<MppEntity> entity{dynamic_cast<MppEntity*>(function())};
     try
     {
+        std::shared_ptr<MppEntity> entity{dynamic_cast<MppEntity*>(function())};
         entity->SetX(std::stoi(tokens[2]));
         entity->SetY(std::stoi(tokens[3]));
+        MppWorldAddEntity(entity);
     }
     catch (const std::exception& e)
     {
         MppLog("Invalid position: %s, %s", tokens[2].data(), tokens[3].data());
+    }
+}
+
+void MppConsole::HandleTile(const std::vector<std::string>& tokens)
+{
+    if (tokens.size() != 4)
+    {
+        MppLog("Expected tile <tile_name> <x> <y>");
         return;
     }
-    MppWorldAddEntity(entity);
+    MppTile tile;
+    for (int i = MppTileIDInvalid + 1; i < MppTileIDCount; i++)
+    {
+        std::string name{MppTile{MppTileID(i)}.GetName()};
+        for (int j = 0; j < name.size(); j++)
+        {
+            if (name[j] == ' ')
+            {
+                name[j] = '_';
+            }
+        }
+        if (name == tokens[1])
+        {
+            tile = MppTile{MppTileID(i)};
+            break;
+        }
+    }
+    if (!tile.IsValid())
+    {
+        MppLog("Unknown tile: %s", tokens[1].data());
+        return;
+    }
+    try
+    {
+        int x = std::stoi(tokens[2]);
+        int y = std::stoi(tokens[3]);
+        MppWorldSetTile(tile, x, y);
+    }
+    catch (const std::exception& e)
+    {
+        MppLog("Invalid position: %s, %s", tokens[2].data(), tokens[3].data());
+    }
 }
 
 void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
@@ -188,9 +224,13 @@ void MppConsole::Handle()
     {
         HandleGive(tokens);
     }
-    else if (tokens[0] == "spawn")
+    else if (tokens[0] == "entity")
     {
-        HandleSpawn(tokens);
+        HandleEntity(tokens);
+    }
+    else if (tokens[0] == "tile")
+    {
+        HandleTile(tokens);
     }
     else if (tokens[0] == "killall")
     {
@@ -242,7 +282,7 @@ void MppConsole::OnTextInput(char character)
 void MppConsole::OnRender()
 {
     MppMenu::Render();
-    MppMenu::Render("/", kMppColorMenuForeground, X1, Y1, MppMenuAlignmentLeft);
-    MppMenu::Render(Characters, kMppColorMenuForeground, X1 + 8, Y1, MppMenuAlignmentLeft);
-    MppMenu::Render("^", kMppColorMenuForeground, X1 + Characters.size() * 8 + 8, Y1 + 8, MppMenuAlignmentLeft);
+    MppMenu::Render("/", kMppColorMenuUnlockedForeground, X1, Y1, MppMenuAlignmentLeft);
+    MppMenu::Render(Characters, kMppColorMenuUnlockedForeground, X1 + 8, Y1, MppMenuAlignmentLeft);
+    MppMenu::Render("^", kMppColorMenuUnlockedForeground, X1 + Characters.size() * 8 + 8, Y1 + 8, MppMenuAlignmentLeft);
 }

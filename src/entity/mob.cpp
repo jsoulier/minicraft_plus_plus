@@ -5,6 +5,7 @@
 #include "../color.hpp"
 #include "../inventory.hpp"
 #include "../renderer.hpp"
+#include "controller.hpp"
 #include "mob.hpp"
 
 MppMobEntity::MppMobEntity()
@@ -19,7 +20,9 @@ MppMobEntity::MppMobEntity()
 
 void MppMobEntity::OnAddEntity()
 {
+    MppEntity::OnAddEntity();
     Inventory->SetMaxItems(GetMaxItems());
+    Controller = GetController();
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
@@ -33,6 +36,10 @@ void MppMobEntity::Visit(SavepointVisitor& visitor)
 void MppMobEntity::Update(uint64_t ticks)
 {
     MppEntity::Update(ticks);
+    if (Controller)
+    {
+        // TODO: use controller
+    }
     MppEntity::Move(VelocityX, VelocityY);
     if (VelocityX || VelocityY)
     {
@@ -46,7 +53,6 @@ void MppMobEntity::Update(uint64_t ticks)
 void MppMobEntity::Render() const
 {
     MppEntity::Render();
-    MppRendererDraw(MppSprite(kMppColorWhite), X, Y, false, MppRendererLayerEntity);
 }
 
 int MppMobEntity::GetSize() const
@@ -57,4 +63,10 @@ int MppMobEntity::GetSize() const
 std::shared_ptr<MppInventory> MppMobEntity::GetInventory()
 {
     return Inventory;
+}
+
+
+std::shared_ptr<MppMobController> MppMobEntity::GetController() const
+{
+    return nullptr;
 }

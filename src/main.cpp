@@ -12,12 +12,12 @@
 #include "version.hpp"
 #include "world.hpp"
 
+static uint64_t frameTicks;
 static uint64_t savedTicks;
-static uint64_t startTicks;
 
 static uint64_t GetTicks()
 {
-    return SDL_GetTicks() + savedTicks - startTicks;
+    return frameTicks + savedTicks;
 }
 
 SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
@@ -52,7 +52,6 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
         return SDL_APP_FAILURE;
     }
     savedTicks = MppSaveGetTicks();
-    startTicks = SDL_GetTicks();
     return SDL_APP_CONTINUE;
 }
 
@@ -70,6 +69,7 @@ void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 
 SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
 {
+    frameTicks++;
     uint64_t ticks = GetTicks();
     MppInputUpdate(ticks);
     MppWorldUpdate(ticks);

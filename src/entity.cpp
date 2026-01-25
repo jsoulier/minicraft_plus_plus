@@ -3,12 +3,12 @@
 #include <cmath>
 #include <cstdint>
 #include <memory>
+#include <utility>
+#include <vector>
 
 #include "entity.hpp"
 #include "tile.hpp"
 #include "world.hpp"
-
-
 
 MppEntity::MppEntity()
     : X{0}
@@ -131,10 +131,52 @@ bool MppEntity::MoveAxisTest()
         }
         // TODO: handle collisions
         // or... we can handle them in OnCollision.
-        // furniture can inherit mob velocity and immediately move
+        // furniture can inherit mob velocity and immediately call MppEntity::Move
         entity->OnCollision(*this);
     }
     return !rejected;
+}
+
+std::vector<std::pair<int, int>> MppEntity::Raycast(int x2, int y2)
+{
+    int x1 = X;
+    int y1 = Y;
+    int dx = std::abs(x2 - x1);
+    int dy = std::abs(y2 - y1);
+    int sx = (x1 < x2) ? 1 : -1;
+    int sy = (y1 < y2) ? 1 : -1;
+    int error = dx - dy;
+    int x = x1;
+    int y = y1;
+    std::vector<std::pair<int, int>> points;
+    while (true)
+    {
+        int tx = x / 16;
+        int ty = y / 16;
+        const MppTile& tile = MppWorldGetTile(tx, ty);
+        if (tile.GetPhysicsType() & MppTilePhysicsTypeWall)
+        {
+            points.clear();
+            break;
+        }
+        points.emplace_back(x, y);
+        if (x == x2 && y == y2)
+        {
+            break;
+        }
+        int e2 = error * 2;
+        if (e2 > -dy)
+        {
+            error -= dy;
+            x += sx;
+        }
+        if (e2 < dx)
+        {
+            error += dx;
+            y += sy;
+        }
+    }
+    return points;
 }
 
 void MppEntity::Kill()

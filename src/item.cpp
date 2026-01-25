@@ -350,7 +350,7 @@ void MppItem::Render(int x, int y, MppRendererLayer layer) const
         layer);
 }
 
-std::string_view MppItem::GetName() const
+const std::string_view& MppItem::GetName() const
 {
     return kItems[ID].Name;
 }

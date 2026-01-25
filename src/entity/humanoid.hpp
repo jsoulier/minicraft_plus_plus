@@ -5,11 +5,13 @@
 #include <cstdint>
 #include <memory>
 
+#include "../sprite.hpp"
 #include "mob.hpp"
 
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
+    virtual void OnAddEntity() override;
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
@@ -20,7 +22,17 @@ public:
 
 protected:
     int GetMaxItems() const override;
+    int GetSpritePose1X() const;
+    int GetSpritePose1Y() const;
+    int GetSpritePose2X() const;
+    int GetSpritePose2Y() const;
+    virtual int GetSpriteBorderColor() const = 0;
+    virtual int GetSpriteSkinColor() const = 0;
+    virtual int GetSpriteShirtColor() const = 0;
+    virtual int GetSpritePantColor() const = 0;
+    virtual int GetSpriteShoeColor() const = 0;
 
 protected:
     std::shared_ptr<MppEntity> HeldEntity;
+    MppSpriteAnimation Animation;
 };
