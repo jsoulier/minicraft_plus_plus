@@ -1,3 +1,5 @@
+#include <savepoint/savepoint.hpp>
+
 #include <algorithm>
 #include <memory>
 
@@ -9,9 +11,21 @@
 #include "chest.hpp"
 #include "mob.hpp"
 
+static constexpr int kMaxItems = 32;
+
 MppChestEntity::MppChestEntity()
     : Inventory{std::make_shared<MppInventory>()}
 {
+    Inventory->SetX1(132);
+    Inventory->SetX2(246);
+    Inventory->SetY2(136);
+    Inventory->SetMaxItems(kMaxItems);
+}
+
+void MppChestEntity::Visit(SavepointVisitor& visitor)
+{
+    MppFurnitureEntity::Visit(visitor);
+    visitor(Inventory);
 }
 
 void MppChestEntity::OnAction(MppEntity& instigator)
@@ -24,42 +38,87 @@ void MppChestEntity::OnAction(MppEntity& instigator)
         return;
     }
     Other = mob->GetInventory();
-    Focused = Inventory;
+    Other.lock()->SetIsFocused(true);
+    Inventory->SetIsFocused(false);
     MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppChestEntity::OnAction()
 {
+    std::shared_ptr<MppInventory> from;
+    std::shared_ptr<MppInventory> to;
+    if (Other.lock()->IsFocused())
+    {
+        from = Other.lock();
+        to = Inventory;
+    }
+    else
+    {
+        from = Inventory;
+        to = Other.lock();
+    }
+    if (!from->IsEmpty())
+    {
+        to->Add(from->Remove(from->GetIndex()));
+    }
 }
 
-void MppChestEntity::OnUp()
+void MppChestEntity::OnRender()
 {
-    Focused.lock()->OnUp();
+    Other.lock()->Render();
+    Inventory->Render();
 }
 
-void MppChestEntity::OnDown()
+void MppChestEntity::OnUpArrow()
 {
-    Focused.lock()->OnDown();
+    if (Other.lock()->IsFocused())
+    {
+        Other.lock()->OnUpArrow();
+    }
+    else
+    {
+        Inventory->OnUpArrow();
+    }
 }
 
-void MppChestEntity::OnLeft()
+void MppChestEntity::OnDownArrow()
 {
-    std::swap(Focused, Other);
+    if (Other.lock()->IsFocused())
+    {
+        Other.lock()->OnDownArrow();
+    }
+    else
+    {
+        Inventory->OnDownArrow();
+    }
 }
 
-void MppChestEntity::OnRight()
+void MppChestEntity::OnLeftArrow()
 {
-    std::swap(Focused, Other);
+    if (Inventory->IsFocused())
+    {
+        Other.lock()->SetIsFocused(true);
+        Inventory->SetIsFocused(false);
+    }
+}
+
+void MppChestEntity::OnRightArrow()
+{
+    if (Other.lock()->IsFocused())
+    {
+        Other.lock()->SetIsFocused(false);
+        Inventory->SetIsFocused(true);
+    }
 }
 
 void MppChestEntity::OnHeldUp()
 {
-    Focused.lock()->OnHeldUp();
+    OnUp();
 }
 
 void MppChestEntity::OnHeldDown()
 {
-    Focused.lock()->OnHeldDown();
+    OnDown();
 }
 
 MppItemID MppChestEntity::GetItemID() const
@@ -105,4 +164,10 @@ int MppChestEntity::GetColor4() const
 int MppChestEntity::GetColor5() const
 {
     return kMppColorChest5;
+}
+
+void MppChestEntity::OnLoseFocus()
+{
+    Other.lock()->SetIsFocused(true);
+    Inventory->SetIsFocused(false);
 }

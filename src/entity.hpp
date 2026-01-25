@@ -1,7 +1,6 @@
 #pragma once
 
-#include <savepoint/base.hpp>
-#include <savepoint/entity.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <cstdint>
 #include <memory>
@@ -22,6 +21,7 @@ public:
     virtual void Render() const {}
     virtual void Update(uint64_t ticks) {}
     virtual void OnAction(MppEntity& instigator) {}
+    virtual void OnCollision(MppEntity& instigator) {}
     void SetX(int x);
     void SetY(int y);
     int GetX() const;
@@ -33,8 +33,11 @@ public:
     virtual int GetPhysicsWidth() const = 0;
     virtual int GetPhysicsHeight() const = 0;
     virtual int GetSize() const = 0;
+    void Kill();
+    bool IsDead() const;
 
 protected:
+    int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
     void Move(int velocityX, int velocityY);
 
 private:
@@ -44,4 +47,7 @@ private:
 protected:
     int X;
     int Y;
+
+private:
+    bool Dead;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint/fwd.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <cstdint>
 

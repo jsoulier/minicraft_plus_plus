@@ -1,3 +1,5 @@
+#include <savepoint/savepoint.hpp>
+
 #include "../renderer.hpp"
 #include "furniture.hpp"
 

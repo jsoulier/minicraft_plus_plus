@@ -11,12 +11,15 @@
 #include "log.hpp"
 
 static constexpr int kAction = SDL_SCANCODE_SPACE;
+static constexpr int kDrop = SDL_SCANCODE_Q;
 static constexpr int kInventory = SDL_SCANCODE_E;
 static constexpr int kConsole = SDLK_SLASH;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
 static constexpr int kUpArrow = SDL_SCANCODE_UP;
 static constexpr int kDownArrow = SDL_SCANCODE_DOWN;
+static constexpr int kLeftArrow = SDL_SCANCODE_LEFT;
+static constexpr int kRightArrow = SDL_SCANCODE_RIGHT;
 static constexpr int kLeft = SDL_SCANCODE_A;
 static constexpr int kRight = SDL_SCANCODE_D;
 static constexpr int kExit = SDL_SCANCODE_ESCAPE;
@@ -133,6 +136,9 @@ void MppInputHandle(SDL_Event* event)
         case kAction:
             handler->OnAction();
             break;
+        case kDrop:
+            handler->OnDrop();
+            break;
         case kInventory:
             handler->OnInventory();
             break;
@@ -147,6 +153,12 @@ void MppInputHandle(SDL_Event* event)
             break;
         case kDownArrow:
             handler->OnDownArrow();
+            break;
+        case kLeftArrow:
+            handler->OnLeftArrow();
+            break;
+        case kRightArrow:
+            handler->OnRightArrow();
             break;
         case kLeft:
             handler->OnLeft();

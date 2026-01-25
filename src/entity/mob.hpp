@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/savepoint.hpp>
+
 #include <memory>
 
 #include "../entity.hpp"
@@ -18,7 +20,7 @@ public:
     std::shared_ptr<MppInventory> GetInventory();
 
 protected:
-    virtual int GetMaxItems() const;
+    virtual int GetMaxItems() const = 0;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;

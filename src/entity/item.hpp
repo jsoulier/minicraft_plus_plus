@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint/base.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include "../entity.hpp"
 #include "../item.hpp"
@@ -14,6 +14,7 @@ public:
     MppItemEntity(const MppItem& item);
     void Visit(SavepointVisitor& visitor) override;
     void Render() const override;
+    void OnCollision(MppEntity& instigator);
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;

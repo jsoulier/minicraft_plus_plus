@@ -1,5 +1,5 @@
 #pragma once
 
-#include <savepoint/version.hpp>
+#include <savepoint/savepoint.hpp>
 
 static constexpr SavepointVersion kMppVersion{0, 0, 0};

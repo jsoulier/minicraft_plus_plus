@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint/base.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <memory>
 
@@ -16,16 +16,19 @@ class MppChestEntity final
 
 public:
     MppChestEntity();
+    void Visit(SavepointVisitor& visitor);
     void OnAction(MppEntity& instigator) override;
     void OnAction() override;
-    void OnUp() override;
-    void OnDown() override;
-    void OnLeft() override;
-    void OnRight() override;
+    void OnRender() override;
+    void OnUpArrow() override;
+    void OnDownArrow() override;
+    void OnLeftArrow() override;
+    void OnRightArrow() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
     MppItemID GetItemID() const override;
     bool IsEmpty() const override;
+    void OnLoseFocus() override;
 
 protected:
     int GetSpriteX() const override;
@@ -39,5 +42,4 @@ protected:
 private:
     std::shared_ptr<MppInventory> Inventory;
     std::weak_ptr<MppInventory> Other;
-    std::weak_ptr<MppInventory> Focused;
 };

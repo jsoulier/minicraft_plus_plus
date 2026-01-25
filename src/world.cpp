@@ -1,5 +1,6 @@
 #include <array>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "entity.hpp"
@@ -64,10 +65,20 @@ void MppWorldQuit()
 
 void MppWorldUpdate(uint64_t ticks)
 {
+    std::vector<std::shared_ptr<MppEntity>> entities;
     for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
     {
         entity->Update(ticks);
+        if (entity->IsDead())
+        {
+            MppSaveRemove(entity);
+        }
+        else
+        {
+            entities.push_back(entity);
+        }
     }
+    levels[level].Entities = std::move(entities);
     for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
     for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
     {
@@ -105,17 +116,17 @@ MppTile& MppWorldGetTile(int x, int y)
     return MppWorldGetTile(x, y, level);
 }
 
-std::vector<std::shared_ptr<MppEntity>>& MppWorldGetEntities(int level)
+std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities(int level)
 {
     return levels[level].Entities;
 }
 
-std::vector<std::shared_ptr<MppEntity>>& MppWorldGetEntities()
+std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities()
 {
     return MppWorldGetEntities(level);
 }
 
-std::vector<std::shared_ptr<MppEntity>>& MppWorldGetEntities(int x, int y)
+std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities(int x, int y)
 {
     // TODO: spatial queries
     return MppWorldGetEntities(level);

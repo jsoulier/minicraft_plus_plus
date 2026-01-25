@@ -1,6 +1,6 @@
 #pragma once
 
-#include <savepoint/fwd.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <cstdint>
 #include <memory>
@@ -61,7 +61,7 @@ public:
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
     void Add();
-    void Remove();
+    MppItem Remove();
     int GetCount() const;
     MppItemID GetID() const;
     MppItemType GetType() const;

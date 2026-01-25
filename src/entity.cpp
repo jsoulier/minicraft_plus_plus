@@ -1,6 +1,8 @@
-#include <savepoint/visitor.hpp>
+#include <savepoint/savepoint.hpp>
 
+#include <cmath>
 #include <cstdint>
+#include <memory>
 
 #include "entity.hpp"
 #include "tile.hpp"
@@ -9,6 +11,7 @@
 MppEntity::MppEntity()
     : X{0}
     , Y{0}
+    , Dead{false}
 {
 }
 
@@ -46,6 +49,17 @@ int MppEntity::GetPhysicsX() const
 int MppEntity::GetPhysicsY() const
 {
     return Y + GetPhysicsOffsetY();
+}
+
+int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
+{
+    int x = GetPhysicsX() + GetPhysicsWidth() / 2;
+    int y = GetPhysicsY() + GetPhysicsHeight() / 2;
+    int otherX = entity->GetX() + entity->GetPhysicsWidth() / 2;
+    int otherY = entity->GetY() + entity->GetPhysicsHeight() / 2;
+    float dx = otherX - x;
+    float dy = otherY - y;
+    return std::sqrtf(dx * dx + dy * dy);
 }
 
 void MppEntity::Move(int velocityX, int velocityY)
@@ -102,7 +116,31 @@ bool MppEntity::MoveAxisTest()
             rejected = true;
         }
     }
-    // TODO: entities
-    // std::vector<std::shared_ptr<MppEntity>>& entities = MppWorldGetEntities(X, Y);
+    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(X, Y);
+    for (std::shared_ptr<MppEntity>& entity : entities)
+    {
+        int ex = entity->GetPhysicsX();
+        int ey = entity->GetPhysicsY();
+        int ew = entity->GetPhysicsWidth();
+        int eh = entity->GetPhysicsHeight();
+        if (!Test(x, y, w, h, ex, ey, ew, eh))
+        {
+            continue;
+        }
+        // TODO: handle collisions
+        // or... we can handle them in OnCollision.
+        // furniture can inherit mob velocity and immediately move
+        entity->OnCollision(*this);
+    }
     return !rejected;
+}
+
+void MppEntity::Kill()
+{
+    Dead = true;
+}
+
+bool MppEntity::IsDead() const
+{
+    return Dead;
 }

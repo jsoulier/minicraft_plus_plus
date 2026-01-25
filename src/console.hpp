@@ -27,6 +27,8 @@ public:
 private:
     void Handle();
     void HandleGive(const std::vector<std::string>& tokens);
+    void HandleSpawn(const std::vector<std::string>& tokens);
+    void HandleKillAll(const std::vector<std::string>& tokens);
     std::shared_ptr<MppPlayerEntity> GetPlayer() const;
 
 private:

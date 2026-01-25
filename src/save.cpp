@@ -170,3 +170,8 @@ void MppSaveUpdate(uint64_t inTicks, bool force)
     tileX2 = -1;
     tileY2 = -1;
 }
+
+void MppSaveRemove(const std::shared_ptr<SavepointEntity>& entity)
+{
+    savepoint.Delete(*entity);
+}

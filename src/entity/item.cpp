@@ -1,7 +1,12 @@
+#include <savepoint/savepoint.hpp>
+
 #include "../entity.hpp"
+#include "../inventory.hpp"
 #include "../item.hpp"
+#include "../log.hpp"
 #include "../renderer.hpp"
 #include "item.hpp"
+#include "mob.hpp"
 
 MppItemEntity::MppItemEntity()
     : Item{kMppItemInvalid}
@@ -17,6 +22,20 @@ void MppItemEntity::Render() const
 {
     MppEntity::Render();
     Item.Render(X, Y, MppRendererLayerEntity);
+}
+
+void MppItemEntity::OnCollision(MppEntity& instigator)
+{
+    MppEntity::OnCollision(instigator);
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    if (!mob)
+    {
+        return;
+    }
+    if (mob->GetInventory()->Add(Item))
+    {
+        Kill();
+    }
 }
 
 void MppItemEntity::Visit(SavepointVisitor& visitor)

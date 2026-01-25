@@ -41,6 +41,7 @@ add_executable(minicraft++ WIN32
     src/save.cpp
     src/sprite.cpp
     src/tile.cpp
+    src/util.cpp
     src/world.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)

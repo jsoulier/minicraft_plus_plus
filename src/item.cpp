@@ -1,5 +1,5 @@
 #include <SDL3/SDL.h>
-#include <savepoint/visitor.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <memory>
 #include <string_view>
@@ -286,10 +286,13 @@ void MppItem::Add()
     Count++;
 }
 
-void MppItem::Remove()
+MppItem MppItem::Remove()
 {
     MppAssert(Count > 0);
     Count--;
+    MppItem other = *this;
+    other.Count = 1;
+    return other;
 }
 
 int MppItem::GetCount() const

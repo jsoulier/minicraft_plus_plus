@@ -1,4 +1,4 @@
-#include <savepoint/visitor.hpp>
+#include <savepoint/savepoint.hpp>
 
 #include <memory>
 
@@ -57,9 +57,4 @@ int MppMobEntity::GetSize() const
 std::shared_ptr<MppInventory> MppMobEntity::GetInventory()
 {
     return Inventory;
-}
-
-int MppMobEntity::GetMaxItems() const
-{
-    return 0;
 }

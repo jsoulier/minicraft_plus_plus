@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/savepoint.hpp>
+
 #include <memory>
 
 #include "../entity.hpp"

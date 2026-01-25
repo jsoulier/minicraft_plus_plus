@@ -22,11 +22,14 @@ public:
     virtual void OnGainFocus() {}
     virtual void OnLoseFocus() {}
     virtual void OnAction() {}
+    virtual void OnDrop() {}
     virtual void OnInventory() { MppInputResetInteraction(); }
     virtual void OnUp() {}
     virtual void OnDown() {}
     virtual void OnUpArrow() {}
     virtual void OnDownArrow() {}
+    virtual void OnLeftArrow() {}
+    virtual void OnRightArrow() {}
     virtual void OnLeft() {}
     virtual void OnRight() {}
     virtual void OnEnter() {}

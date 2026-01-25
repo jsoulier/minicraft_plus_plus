@@ -1,12 +1,12 @@
 #pragma once
 
-#include <savepoint/time.hpp>
-
 #include <cstdint>
 #include <string>
 
+// TODO: move into world
 bool MppSaveInit();
 void MppSaveQuit();
 bool MppSaveIsExisting();
 uint64_t MppSaveGetTicks();
 void MppSaveUpdate(uint64_t ticks, bool force);
+void MppSaveRemove(const std::shared_ptr<SavepointEntity>& entity);

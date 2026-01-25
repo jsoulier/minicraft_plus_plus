@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/savepoint.hpp>
+
 #include <cstdint>
 #include <memory>
 

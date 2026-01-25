@@ -3,15 +3,20 @@
 #include <algorithm>
 #include <cctype>
 #include <exception>
+#include <memory>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "color.hpp"
 #include "console.hpp"
 #include "entity.hpp"
-#include "entity/mob.hpp"
+#include "entity/chest.hpp"
+#include "entity/furnace.hpp"
+#include "entity/item.hpp"
 #include "entity/player.hpp"
+#include "entity/workbench.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "log.hpp"
@@ -90,7 +95,7 @@ void MppConsole::HandleGive(const std::vector<std::string>& tokens)
     }
     if (!item.IsValid())
     {
-        MppLog("Given item was invalid");
+        MppLog("Unknown item: %s", tokens[1].data());
         return;
     }
     int count = 1;
@@ -109,6 +114,74 @@ void MppConsole::HandleGive(const std::vector<std::string>& tokens)
     for (int i = 0; i < count; i++)
     {
         player->GetInventory()->Add(item);
+    }
+}
+
+void MppConsole::HandleSpawn(const std::vector<std::string>& tokens)
+{
+    if (tokens.size() != 4)
+    {
+        MppLog("Expected \"spawn <entity_name> <x> <y>\"");
+        return;
+    }
+    std::shared_ptr<MppEntity> entity;
+    if (tokens[1] == "chest")
+    {
+        entity = std::make_shared<MppChestEntity>();
+    }
+    else if (tokens[1] == "furnace")
+    {
+        entity = std::make_shared<MppFurnaceEntity>();
+    }
+    else if (tokens[1] == "item")
+    {
+        entity = std::make_shared<MppItemEntity>();
+    }
+    else if (tokens[1] == "player")
+    {
+        if (!GetPlayer())
+        {
+            entity = std::make_shared<MppPlayerEntity>();
+        }
+        else
+        {
+            MppLog("Tried to add another player");
+            return;
+        }
+    }
+    else if (tokens[1] == "workbench")
+    {
+        entity = std::make_shared<MppWorkbenchEntity>();
+    }
+    else
+    {
+        MppLog("Unknown entity: %s", tokens[1].data());
+        return;
+    }
+    try
+    {
+        entity->SetX(std::stoi(tokens[2]));
+        entity->SetY(std::stoi(tokens[3]));
+    }
+    catch (const std::exception& e)
+    {
+        MppLog("Invalid position: %s, %s", tokens[2].data(), tokens[3].data());
+        return;
+    }
+    MppWorldAddEntity(entity);
+}
+
+void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
+{
+    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities();
+    for (std::shared_ptr<MppEntity>& entity : entities)
+    {
+        // TODO: should enable in the future
+        std::shared_ptr<MppPlayerEntity> player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
+        if (!player)
+        {
+            entity->Kill();
+        }
     }
 }
 
@@ -133,6 +206,14 @@ void MppConsole::Handle()
     if (tokens[0] == "give")
     {
         HandleGive(tokens);
+    }
+    else if (tokens[0] == "spawn")
+    {
+        HandleSpawn(tokens);
+    }
+    else if (tokens[0] == "killall")
+    {
+        HandleKillAll(tokens);
     }
     else
     {
