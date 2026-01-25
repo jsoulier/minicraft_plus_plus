@@ -6,6 +6,27 @@
 #include <memory>
 #include <utility>
 
+#define MPP_ENTITY(T) \
+    SAVEPOINT_DERIVED(T) \
+    private: \
+        struct SavepointDerivedFunctionRegistrar \
+        { \
+            static SavepointBase* Function() \
+            { \
+                return new T(); \
+            } \
+            SavepointDerivedFunctionRegistrar() \
+            { \
+                SavepointAddDerivedFunction(#T, Function); \
+            } \
+        }; \
+        static inline SavepointDerivedFunctionRegistrar SavepointDerivedFunctionRegistrar; \
+    public: \
+        std::string_view SavepointDerivedGetString() const override \
+        { \
+            return #T; \
+        } \
+
 class MppEntity :
     public SavepointEntity,
     public SavepointBase,

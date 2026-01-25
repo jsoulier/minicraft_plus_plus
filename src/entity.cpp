@@ -8,6 +8,8 @@
 #include "tile.hpp"
 #include "world.hpp"
 
+
+
 MppEntity::MppEntity()
     : X{0}
     , Y{0}
@@ -59,7 +61,7 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     int otherY = entity->GetY() + entity->GetPhysicsHeight() / 2;
     float dx = otherX - x;
     float dy = otherY - y;
-    return std::sqrtf(dx * dx + dy * dy);
+    return std::sqrt(dx * dx + dy * dy);
 }
 
 void MppEntity::Move(int velocityX, int velocityY)

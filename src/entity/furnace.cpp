@@ -1,48 +1,12 @@
 #include <memory>
 
 #include "../color.hpp"
-#include "../input.hpp"
-#include "../inventory.hpp"
 #include "../item.hpp"
-#include "../log.hpp"
 #include "furnace.hpp"
-#include "mob.hpp"
 
-void MppFurnaceEntity::OnAction(MppEntity& instigator)
+MppFurnaceEntity::MppFurnaceEntity()
+    : MppRecipeEntity()
 {
-    MppFurnitureEntity::OnAction(instigator);
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    if (!mob)
-    {
-        MppLog("Instigator wasn't an MppMobEntity");
-        return;
-    }
-    Inventory = mob->GetInventory();
-    MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
-}
-
-void MppFurnaceEntity::OnAction()
-{
-}
-
-void MppFurnaceEntity::OnUp()
-{
-    Inventory.lock()->OnUp();
-}
-
-void MppFurnaceEntity::OnDown()
-{
-    Inventory.lock()->OnDown();
-}
-
-void MppFurnaceEntity::OnHeldUp()
-{
-    Inventory.lock()->OnHeldUp();
-}
-
-void MppFurnaceEntity::OnHeldDown()
-{
-    Inventory.lock()->OnHeldDown();
 }
 
 MppItemID MppFurnaceEntity::GetItemID() const

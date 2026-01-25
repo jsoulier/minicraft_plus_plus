@@ -4,16 +4,14 @@
 
 #include "recipe.hpp"
 
-class MppInventory;
-
-class MppFurnaceEntity final : public MppRecipeEntity
+class MppAnvilEntity final : public MppRecipeEntity
 {
-    SAVEPOINT_DERIVED(MppFurnaceEntity)
+    SAVEPOINT_DERIVED(MppAnvilEntity)
 
 public:
-    MppFurnaceEntity();
+    MppAnvilEntity();
     MppItemID GetItemID() const override;
-    
+
 protected:
     int GetSpriteX() const override;
     int GetSpriteY() const override;
@@ -23,3 +21,4 @@ protected:
     int GetColor4() const override;
     int GetColor5() const override;
 };
+

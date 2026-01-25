@@ -30,21 +30,24 @@ public:
     void Render() const override;
     bool Add(const MppItem& item);
     int GetIndex() const;
-    MppItem& Get(int index);
-    MppItem Remove(int index);
+    const MppItem& Get(int index);
+    MppItem Remove(int index, int count = 1);
+    const MppItem& GetByID(MppItemID id);
+    MppItem RemoveByID(MppItemID id, int count);
     void SetMaxItems(int max);
     bool IsEmpty() const;
     void OnAction() override;
     void OnDrop() override;
     void OnUpArrow() override;
     void OnDownArrow() override;
-    void OnHeldUp() override;
-    void OnHeldDown() override;
     void OnRender() override;
     void SetOnActionCallback(const std::function<void(int index)>& callback);
     void SetOnDropCallback(const std::function<void(int index)>& callback);
     void SetIsFocused(bool focused);
     bool IsFocused() const;
+    void Clear();
+    // TODO: dangerous
+    void ClearItems();
 
 private:
     std::vector<MppItem> Items;

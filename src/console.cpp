@@ -1,14 +1,17 @@
 #include <SDL3/SDL.h>
+#include <savepoint/savepoint.hpp>
 
 #include <algorithm>
 #include <cctype>
 #include <exception>
+#include <format>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include "assert.hpp"
 #include "color.hpp"
 #include "console.hpp"
 #include "entity.hpp"
@@ -124,40 +127,18 @@ void MppConsole::HandleSpawn(const std::vector<std::string>& tokens)
         MppLog("Expected \"spawn <entity_name> <x> <y>\"");
         return;
     }
-    std::shared_ptr<MppEntity> entity;
-    if (tokens[1] == "chest")
-    {
-        entity = std::make_shared<MppChestEntity>();
-    }
-    else if (tokens[1] == "furnace")
-    {
-        entity = std::make_shared<MppFurnaceEntity>();
-    }
-    else if (tokens[1] == "item")
-    {
-        entity = std::make_shared<MppItemEntity>();
-    }
-    else if (tokens[1] == "player")
-    {
-        if (!GetPlayer())
-        {
-            entity = std::make_shared<MppPlayerEntity>();
-        }
-        else
-        {
-            MppLog("Tried to add another player");
-            return;
-        }
-    }
-    else if (tokens[1] == "workbench")
-    {
-        entity = std::make_shared<MppWorkbenchEntity>();
-    }
-    else
+    // TODO: doesn't handle underscore separators
+    std::string name = tokens[1];
+    MppAssert(name.find('_') == std::string::npos);
+    name[0] = std::toupper(name[0]);
+    name = std::format("Mpp{}Entity", name);
+    SavepointDerivedFunction function = SavepointGetDerivedFunction(name);
+    if (!function)
     {
         MppLog("Unknown entity: %s", tokens[1].data());
         return;
     }
+    std::shared_ptr<MppEntity> entity{dynamic_cast<MppEntity*>(function())};
     try
     {
         entity->SetX(std::stoi(tokens[2]));

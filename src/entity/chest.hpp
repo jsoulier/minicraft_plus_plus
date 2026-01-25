@@ -24,8 +24,6 @@ public:
     void OnDownArrow() override;
     void OnLeftArrow() override;
     void OnRightArrow() override;
-    void OnHeldUp() override;
-    void OnHeldDown() override;
     MppItemID GetItemID() const override;
     bool IsEmpty() const override;
     void OnLoseFocus() override;

@@ -111,16 +111,6 @@ void MppChestEntity::OnRightArrow()
     }
 }
 
-void MppChestEntity::OnHeldUp()
-{
-    OnUp();
-}
-
-void MppChestEntity::OnHeldDown()
-{
-    OnDown();
-}
-
 MppItemID MppChestEntity::GetItemID() const
 {
     return MppItemIDChest;

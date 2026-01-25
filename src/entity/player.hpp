@@ -14,6 +14,7 @@ class MppPlayerEntity final
     SAVEPOINT_DERIVED(MppPlayerEntity)
 
 public:
+    MppPlayerEntity();
     void OnAddEntity() override;
     void Update(uint64_t ticks) override;
     void Render() const override;

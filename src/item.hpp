@@ -5,10 +5,15 @@
 #include <cstdint>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
+
+#include "menu.hpp"
 
 class MppFurnitureEntity;
+class MppInventory;
 class MppItemEntity;
 enum MppRendererLayer : uint8_t;
+struct MppItemRecipeData;
 
 enum MppItemID
 {
@@ -28,6 +33,7 @@ enum MppItemID
     MppItemIDHeart,
     MppItemIDEnergy,
     MppItemIDFood,
+    MppItemIDAnvil,
     MppItemIDCount,
 };
 
@@ -44,8 +50,19 @@ enum MppItemType
     MppItemTypeLeggings,
     MppItemTypeBoots,
     MppItemTypeConsumable,
-    MppItemTypeEffect,
-    MppItemTypeFurniture,
+};
+
+class MppItemRecipe : public MppMenu
+{
+public:
+    MppItemRecipe(const MppItemRecipeData& data);
+    bool CanCraft(MppItemID id) const;
+    bool CanCraft(MppItemID id, const std::shared_ptr<MppInventory>& inventory) const;
+    void Craft(const std::shared_ptr<MppInventory>& inventory) const;
+    void Render() const override;
+
+private:
+    const MppItemRecipeData& Data;
 };
 
 class MppItem
@@ -60,8 +77,9 @@ public:
     std::string_view GetName() const;
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
-    void Add();
-    MppItem Remove();
+    MppItemRecipe GetRecipe() const;
+    void Add(int count = 1);
+    MppItem Remove(int count = 1);
     int GetCount() const;
     MppItemID GetID() const;
     MppItemType GetType() const;

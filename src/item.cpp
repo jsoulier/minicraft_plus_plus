@@ -3,13 +3,16 @@
 
 #include <memory>
 #include <string_view>
+#include <unordered_map>
 
 #include "assert.hpp"
 #include "color.hpp"
+#include "entity/anvil.hpp"
 #include "entity/chest.hpp"
 #include "entity/furnace.hpp"
 #include "entity/item.hpp"
 #include "entity/workbench.hpp"
+#include "inventory.hpp"
 #include "item.hpp"
 #include "renderer.hpp"
 
@@ -30,10 +33,22 @@ static std::shared_ptr<MppFurnitureEntity> CreateChestEntity()
     return std::make_shared<MppChestEntity>();
 }
 
+static std::shared_ptr<MppFurnitureEntity> CreateAnvilEntity()
+{
+    return std::make_shared<MppAnvilEntity>();
+}
+
+struct MppItemRecipeData
+{
+    MppItemID ID;
+    std::unordered_map<MppItemID, int> Items;
+};
+
 struct
 {
     std::string_view Name;
     MppItemType Type;
+    MppItemRecipeData Recipe;
     CreateFurnitureEntityFunction CreateFurnitureEntity;
     int Color1;
     int Color2;
@@ -81,6 +96,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron helmet",
         .Type = MppItemTypeHelmet,
+        .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -91,6 +107,8 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "iron cuirass",
+        .Type = MppItemTypeCuirass,
+        .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 8}}},
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -102,6 +120,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron leggings",
         .Type = MppItemTypeLeggings,
+        .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 7}}},
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -113,6 +132,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron boots",
         .Type = MppItemTypeBoots,
+        .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -135,6 +155,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron bar",
         .Type = MppItemTypeConsumable,
+        .Recipe = {MppItemIDFurnace, {{MppItemIDIronOre, 1}}},
         .Color1 = kMppColorIron1,
         .Color2 = kMppColorIron2,
         .Color3 = kMppColorIron3,
@@ -156,7 +177,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "workbench",
-        .Type = MppItemTypeFurniture,
+        .Type = MppItemTypeNone,
         .CreateFurnitureEntity = CreateWorkbenchEntity,
         .Color1 = kMppColorWorkbench1,
         .Color2 = kMppColorWorkbench2,
@@ -168,7 +189,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "furnace",
-        .Type = MppItemTypeFurniture,
+        .Type = MppItemTypeNone,
         .CreateFurnitureEntity = CreateFurnaceEntity,
         .Color1 = kMppColorFurnace1,
         .Color2 = kMppColorFurnace2,
@@ -180,7 +201,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "chest",
-        .Type = MppItemTypeFurniture,
+        .Type = MppItemTypeNone,
         .CreateFurnitureEntity = CreateChestEntity,
         .Color1 = kMppColorChest1,
         .Color2 = kMppColorChest2,
@@ -192,7 +213,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "heart",
-        .Type = MppItemTypeEffect,
+        .Type = MppItemTypeNone,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -203,7 +224,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "energy",
-        .Type = MppItemTypeEffect,
+        .Type = MppItemTypeNone,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -214,7 +235,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "food",
-        .Type = MppItemTypeEffect,
+        .Type = MppItemTypeNone,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -223,7 +244,71 @@ static const kItems[MppItemIDCount] =
         .SpriteX = 2,
         .SpriteY = 16,
     },
+    {
+        .Name = "anvil",
+        .Type = MppItemTypeNone,
+        .CreateFurnitureEntity = CreateAnvilEntity,
+        .Color1 = kMppColorAnvil1,
+        .Color2 = kMppColorAnvil2,
+        .Color3 = kMppColorAnvil3,
+        .Color4 = kMppColorAnvil4,
+        .Color5 = kMppColorAnvil5,
+        .SpriteX = 3,
+        .SpriteY = 14,
+    },
 };
+
+MppItemRecipe::MppItemRecipe(const MppItemRecipeData& data)
+    : Data{data}
+{
+    for (auto& [id, count] : Data.Items)
+    {
+        MppItem item{id};
+        // Assumption is made in crafting that only stackables are allowed
+        MppAssert(item.GetType() == MppItemTypeConsumable);
+    }
+    SetX1(132);
+    SetX2(246);
+    SetY2(64);
+}
+
+bool MppItemRecipe::CanCraft(MppItemID id) const
+{
+    return Data.ID == id;
+}
+
+bool MppItemRecipe::CanCraft(MppItemID inID, const std::shared_ptr<MppInventory>& inventory) const
+{
+    MppAssert(CanCraft(inID));
+    MppAssert(inID != MppItemIDInvalid);
+    for (auto& [id, count] : Data.Items)
+    {
+        const MppItem& item = inventory->GetByID(id);
+        if (!item.IsValid())
+        {
+            return false;
+        }
+        if (item.GetCount() < count)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void MppItemRecipe::Craft(const std::shared_ptr<MppInventory>& inventory) const
+{
+    MppAssert(CanCraft(Data.ID, inventory));
+    for (auto& [id, count] : Data.Items)
+    {
+        inventory->RemoveByID(id, count);
+    }
+}
+
+void MppItemRecipe::Render() const
+{
+    MppMenu::Render();
+}
 
 MppItem::MppItem()
     : ID{MppItemIDInvalid}
@@ -241,7 +326,7 @@ void MppItem::Visit(SavepointVisitor& visitor)
 {
     if (visitor.IsWriting())
     {
-        SDL_assert(IsValid());
+        MppAssert(IsValid());
     }
     visitor(ID);
     visitor(Count);
@@ -280,18 +365,22 @@ std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
     return kItems[ID].CreateFurnitureEntity();
 }
 
-void MppItem::Add()
+MppItemRecipe MppItem::GetRecipe() const
 {
-    MppAssert(Count > 0);
-    Count++;
+    return MppItemRecipe{kItems[ID].Recipe};
 }
 
-MppItem MppItem::Remove()
+void MppItem::Add(int count)
 {
-    MppAssert(Count > 0);
-    Count--;
+    Count += count;
+}
+
+MppItem MppItem::Remove(int count)
+{
+    MppAssert(Count >= count);
+    Count -= count;
     MppItem other = *this;
-    other.Count = 1;
+    other.Count = count;
     return other;
 }
 

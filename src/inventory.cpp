@@ -15,14 +15,10 @@
 static constexpr int kInvalidSlot = std::numeric_limits<int>::max();
 
 MppInventory::MppInventory()
-    : Items{}
-    , Slots{}
-    , MaxItems{0}
-    , Top{0}
-    , Index{0}
+    : MaxItems{0}
     , Focused{false}
 {
-    Slots.fill(kInvalidSlot);
+    Clear();
 }
 
 void MppInventory::Visit(SavepointVisitor& visitor)
@@ -51,9 +47,17 @@ void MppInventory::Render() const
             MppMenu::Render(std::to_string(count), kMppColorMenuForeground, X1 + 16, y, MppMenuAlignmentLeft);
             MppMenu::Render(item.GetName(), kMppColorMenuForeground, X1 + 24 + offset, y, MppMenuAlignmentLeft);
         }
-        else
+        else if (count == 1)
         {
             MppMenu::Render(item.GetName(), kMppColorMenuForeground, X1 + 16, y, MppMenuAlignmentLeft);
+        }
+        else if (count == 0)
+        {
+            MppMenu::Render(item.GetName(), kMppColorMenuLockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
+        }
+        else
+        {
+            MppAssert(false);
         }
     }
     if (Focused)
@@ -71,7 +75,7 @@ bool MppInventory::Add(const MppItem& item)
         {
             if (other == item)
             {
-                other.Add();
+                other.Add(item.GetCount());
                 return true;
             }
         }
@@ -90,17 +94,18 @@ int MppInventory::GetIndex() const
     return Index;
 }
 
-MppItem& MppInventory::Get(int index)
+const MppItem& MppInventory::Get(int index)
 {
     MppAssert(!Items.empty());
     return Items[index];
 }
 
-MppItem MppInventory::Remove(int index)
+MppItem MppInventory::Remove(int index, int count)
 {
     MppAssert(index < Items.size());
-    MppItem item = Items[index];
-    if (item.GetCount() == 1)
+    MppItem& item = Items[index];
+    MppItem removedItem = item.Remove(count);
+    if (item.GetCount() == 0)
     {
         if (Index <= index)
         {
@@ -108,12 +113,32 @@ MppItem MppInventory::Remove(int index)
         }
         Items.erase(Items.begin() + index);
     }
-    else
+    return removedItem;
+}
+
+const MppItem& MppInventory::GetByID(MppItemID id)
+{
+    for (int i = 0; i < Items.size(); i++)
     {
-        item = Items[index].Remove();
+        if (Items[i] == MppItem{id})
+        {
+            return Get(i);
+        }
     }
-    MppAssert(item.GetCount() == 1);
-    return item;
+    return kMppItemInvalid;
+}
+
+MppItem MppInventory::RemoveByID(MppItemID id, int count)
+{
+    for (int i = 0; i < Items.size(); i++)
+    {
+        if (Items[i] == MppItem{id})
+        {
+            return Remove(i, count);
+        }
+    }
+    MppAssert(false);
+    return kMppItemInvalid;
 }
 
 void MppInventory::SetMaxItems(int max)
@@ -153,16 +178,6 @@ void MppInventory::OnDownArrow()
     Top = std::max(Top, Index - GetHeight() / 8 + 1);
 }
 
-void MppInventory::OnHeldUp() 
-{
-    // TODO: OnUp()
-}
-
-void MppInventory::OnHeldDown() 
-{
-    // TODO: OnHeldDown()
-}
-
 void MppInventory::OnRender()
 {
     Render();
@@ -191,4 +206,17 @@ void MppInventory::SetIsFocused(bool focused)
 bool MppInventory::IsFocused() const
 {
     return Focused;
+}
+
+void MppInventory::Clear()
+{
+    Items.clear();
+    Top = 0;
+    Index = 0;
+    Slots.fill(kInvalidSlot);
+}
+
+void MppInventory::ClearItems()
+{
+    Items.clear();
 }

@@ -2,26 +2,14 @@
 
 #include <savepoint/savepoint.hpp>
 
-#include <memory>
+#include "recipe.hpp"
 
-#include "furniture.hpp"
-#include "../input.hpp"
-
-class MppInventory;
-
-class MppWorkbenchEntity final
-    : public MppFurnitureEntity
-    , public MppInputHandler
+class MppWorkbenchEntity final : public MppRecipeEntity
 {
     SAVEPOINT_DERIVED(MppWorkbenchEntity)
 
 public:
-    void OnAction(MppEntity& instigator) override;
-    void OnAction() override;
-    void OnUp() override;
-    void OnDown() override;
-    void OnHeldUp() override;
-    void OnHeldDown() override;
+    MppWorkbenchEntity();
     MppItemID GetItemID() const override;
 
 protected:
@@ -32,7 +20,4 @@ protected:
     int GetColor3() const override;
     int GetColor4() const override;
     int GetColor5() const override;
-
-private:
-    std::weak_ptr<MppInventory> Inventory;
 };

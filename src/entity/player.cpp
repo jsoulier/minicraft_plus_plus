@@ -18,10 +18,9 @@ static constexpr int kActionOffset = 8;
 static constexpr int kActionDistance = 16;
 static constexpr int kDropDistance = 16;
 
-void MppPlayerEntity::OnAddEntity()
+MppPlayerEntity::MppPlayerEntity()
+    : MppHumanoidEntity()
 {
-    MppHumanoidEntity::OnAddEntity();
-    MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
     Inventory->SetIsFocused(true);
     Inventory->SetX2(124);
     Inventory->SetY2(136);
@@ -36,6 +35,12 @@ void MppPlayerEntity::OnAddEntity()
         item->SetY(Y + FacingY * kDropDistance);
         MppWorldAddEntity(item);
     });
+}
+
+void MppPlayerEntity::OnAddEntity()
+{
+    MppHumanoidEntity::OnAddEntity();
+    MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppPlayerEntity::Update(uint64_t ticks)
