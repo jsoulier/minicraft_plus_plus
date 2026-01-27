@@ -123,11 +123,7 @@ void MppConsole::HandleEntity(const std::vector<std::string>& tokens)
         MppLog("Expected entity <entity_name> <x> <y>");
         return;
     }
-    // TODO: doesn't handle underscore separators
-    std::string name = tokens[1];
-    MppAssert(name.find('_') == std::string::npos);
-    name[0] = std::toupper(name[0]);
-    name = std::format("Mpp{}Entity", name);
+    std::string name = GetEntityName(tokens[1]);
     SavepointDerivedFunction function = SavepointGetDerivedFunction(name);
     if (!function)
     {
@@ -188,6 +184,23 @@ void MppConsole::HandleTile(const std::vector<std::string>& tokens)
     }
 }
 
+void MppConsole::HandleKill(const std::vector<std::string>& tokens)
+{
+    if (tokens.size() != 2)
+    {
+        MppLog("Expected kill <entity_name>");
+        return;
+    }
+    std::string name = GetEntityName(tokens[1]);
+    for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
+    {
+        if (entity->GetName() == name)
+        {
+            entity->Kill();
+        }
+    }
+}
+
 void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
 {
     std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities();
@@ -232,6 +245,10 @@ void MppConsole::Handle()
     {
         HandleTile(tokens);
     }
+    else if (tokens[0] == "kill")
+    {
+        HandleKill(tokens);
+    }
     else if (tokens[0] == "killall")
     {
         HandleKillAll(tokens);
@@ -244,8 +261,7 @@ void MppConsole::Handle()
 
 std::shared_ptr<MppPlayerEntity> MppConsole::GetPlayer() const
 {
-    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities();
-    for (std::shared_ptr<MppEntity>& entity : entities)
+    for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
     {
         std::shared_ptr<MppPlayerEntity> player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
         if (player)
@@ -255,6 +271,14 @@ std::shared_ptr<MppPlayerEntity> MppConsole::GetPlayer() const
     }
     MppLog("Failed to find player");
     return nullptr;
+}
+
+std::string MppConsole::GetEntityName(std::string name) const
+{
+    // TODO: doesn't handle underscore separators
+    MppAssert(name.find('_') == std::string::npos);
+    name[0] = std::toupper(name[0]);
+    return std::format("Mpp{}Entity", name);
 }
 
 void MppConsole::OnEnter()

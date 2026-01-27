@@ -36,15 +36,19 @@ void MppMobEntity::Visit(SavepointVisitor& visitor)
 void MppMobEntity::Update(uint64_t ticks)
 {
     MppEntity::Update(ticks);
+    // TODO: apply speed here
     if (Controller)
     {
         // TODO: use controller
     }
-    MppEntity::Move(VelocityX, VelocityY);
-    if (VelocityX || VelocityY)
+    if (ticks % GetSpeed() == 0)
     {
-        FacingX = VelocityX;
-        FacingY = VelocityY;
+        MppEntity::Move(VelocityX, VelocityY);
+        if (VelocityX || VelocityY)
+        {
+            FacingX = VelocityX;
+            FacingY = VelocityY;
+        }
     }
     VelocityX = 0;
     VelocityY = 0;
@@ -65,6 +69,15 @@ std::shared_ptr<MppInventory> MppMobEntity::GetInventory()
     return Inventory;
 }
 
+int MppMobEntity::GetMaxItems() const
+{
+    return 0;
+}
+
+int MppMobEntity::GetSpeed() const
+{
+    return 1;
+}
 
 std::shared_ptr<MppMobController> MppMobEntity::GetController() const
 {

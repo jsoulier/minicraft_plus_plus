@@ -15,7 +15,7 @@ void MppHumanoidEntity::OnAddEntity()
     Animation.SetTickRate(kTickRate);
     Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
     Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
-    // TODO: having to tick here is error prone
+    // TODO: having to update here is error prone
     Animation.Update(0, FacingX, FacingY, 0);
 }
 
@@ -27,8 +27,14 @@ void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 
 void MppHumanoidEntity::Update(uint64_t ticks) 
 {
-    // TODO: pose
-    Animation.Update(0, VelocityX, VelocityY, ticks);
+    if (!HeldEntity)
+    {
+        Animation.Update(0, VelocityX, VelocityY, ticks);
+    }
+    else
+    {
+        Animation.Update(1, VelocityX, VelocityY, ticks);
+    }
     MppMobEntity::Update(ticks);
 }
 
@@ -50,6 +56,10 @@ void MppHumanoidEntity::Render() const
         Y,
         Animation.GetFlip(),
         MppRendererLayerEntity);
+    if (HeldEntity)
+    {
+        // TODO: held entity
+    }
 }
 
 int MppHumanoidEntity::GetPhysicsOffsetX() const

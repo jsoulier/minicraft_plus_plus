@@ -20,6 +20,7 @@ enum MppTileID : uint16_t
 
 enum MppTilePhysicsType
 {
+    // Physics MUST be disjoint. e.g. Cannot have Ground and Wall at the same time
     MppTilePhysicsTypeGround = 0x01,
     MppTilePhysicsTypeWall   = 0x02,
     MppTilePhysicsTypeLiquid = 0x04,

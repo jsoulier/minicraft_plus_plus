@@ -4,37 +4,42 @@
 #include "creature.hpp"
 #include "sheep.hpp"
 
-int MppSheepEntity::GetSpriteX() const
+MppSheepEntity::MppSheepEntity()
+    : MppCreatureEntity()
+{
+}
+
+int MppSheepEntity::GetSpritePoseX() const
 {
     return 8;
 }
 
-int MppSheepEntity::GetSpriteY() const
+int MppSheepEntity::GetSpritePoseY() const
 {
     return 6;
 }
 
-int MppSheepEntity::GetColor1() const
+int MppSheepEntity::GetSpriteColor1() const
 {
     return kMppColorSheep1;
 }
 
-int MppSheepEntity::GetColor2() const
+int MppSheepEntity::GetSpriteColor2() const
 {
     return kMppColorSheep2;
 }
 
-int MppSheepEntity::GetColor3() const
+int MppSheepEntity::GetSpriteColor3() const
 {
     return kMppColorSheep3;
 }
 
-int MppSheepEntity::GetColor4() const
+int MppSheepEntity::GetSpriteColor4() const
 {
     return kMppColorSheep4;
 }
 
-int MppSheepEntity::GetColor5() const
+int MppSheepEntity::GetSpriteColor5() const
 {
     return kMppColorSheep5;
 }

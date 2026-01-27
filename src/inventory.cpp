@@ -68,7 +68,6 @@ void MppInventory::Render() const
 
 bool MppInventory::Add(const MppItem& item)
 {
-    MppAssert(MaxItems > 0);
     if (item.GetType() == MppItemTypeConsumable)
     {
         for (MppItem& other : Items)

@@ -6,16 +6,19 @@
 
 class MppSheepEntity final : public MppCreatureEntity
 {
+    SAVEPOINT_DERIVED(MppSheepEntity)
+
 public:
+    MppSheepEntity();
 
 protected:
-    int GetSpriteX() const override;
-    int GetSpriteY() const override;
-    int GetColor1() const override;
-    int GetColor2() const override;
-    int GetColor3() const override;
-    int GetColor4() const override;
-    int GetColor5() const override;
+    int GetSpritePoseX() const override;
+    int GetSpritePoseY() const override;
+    int GetSpriteColor1() const override;
+    int GetSpriteColor2() const override;
+    int GetSpriteColor3() const override;
+    int GetSpriteColor4() const override;
+    int GetSpriteColor5() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;

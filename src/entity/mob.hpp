@@ -21,7 +21,10 @@ public:
     std::shared_ptr<MppInventory> GetInventory();
 
 protected:
-    virtual int GetMaxItems() const = 0;
+    virtual int GetMaxItems() const;
+    virtual int GetSpeed() const;
+
+    // Optional Mixin
     virtual std::shared_ptr<MppMobController> GetController() const;
 
 protected:

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 
 #include "util.hpp"
 
@@ -16,4 +17,12 @@ int MppGetNumberOfDigits(int value)
         count++;
     }
     return count;
+}
+
+int MppGetRandom(int min, int max)
+{
+    static std::random_device device;
+    static std::mt19937 generator(device());
+    std::uniform_int_distribution<int> distribution(min, max);
+    return distribution(generator);
 }

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -113,7 +114,7 @@ bool MppEntity::MoveAxisTest()
             continue;
         }
         tile.OnCollision(*this);
-        if (tile.GetPhysicsType() & MppTilePhysicsTypeWall)
+        if (tile.GetPhysicsType() == MppTilePhysicsTypeWall)
         {
             rejected = true;
         }
@@ -154,7 +155,7 @@ std::vector<std::pair<int, int>> MppEntity::Raycast(int x2, int y2)
         int tx = x / 16;
         int ty = y / 16;
         const MppTile& tile = MppWorldGetTile(tx, ty);
-        if (tile.GetPhysicsType() & MppTilePhysicsTypeWall)
+        if (tile.GetPhysicsType() == MppTilePhysicsTypeWall)
         {
             points.clear();
             break;
@@ -187,4 +188,9 @@ void MppEntity::Kill()
 bool MppEntity::IsDead() const
 {
     return Dead;
+}
+
+std::string MppEntity::GetName() const
+{
+    return std::string(SavepointDerivedGetString());
 }

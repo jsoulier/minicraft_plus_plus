@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -36,6 +37,7 @@ public:
     virtual int GetSize() const = 0;
     void Kill();
     bool IsDead() const;
+    std::string GetName() const;
 
 protected:
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
