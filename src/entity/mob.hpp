@@ -19,13 +19,14 @@ public:
     virtual void Render() const override;
     int GetSize() const override;
     std::shared_ptr<MppInventory> GetInventory();
+    bool IsPointInFov(int x, int y);
 
 protected:
+    void Move(int dx, int dy);
     virtual int GetMaxItems() const;
     virtual int GetSpeed() const;
-
-    // Optional Mixin
-    virtual std::shared_ptr<MppMobController> GetController() const;
+    virtual std::shared_ptr<MppMobController> GetController();
+    virtual float GetFov() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;

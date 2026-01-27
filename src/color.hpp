@@ -11,6 +11,14 @@ static constexpr int kMppColorMagenta = 909;
 static constexpr int kMppColorCyan = 99;
 static constexpr int kMppColorWhite = 999;
 
+static constexpr int kMppColorDebugNavigation = kMppColorMagenta;
+static constexpr int kMppColorDebugFurnitureEntityPhysics = kMppColorCyan;
+static constexpr int kMppColorDebugMobEntityPhysics = kMppColorYellow;
+static constexpr int kMppColorDebugPlayerEntityPhysics = kMppColorMagenta;
+static constexpr int kMppColorDebugGroundTilePhysics = kMppColorMagenta;
+static constexpr int kMppColorDebugWallTilePhysics = kMppColorGreen;
+static constexpr int kMppColorDebugLiquidTilePhysics = kMppColorBlue;
+
 static constexpr int kMppColorAnvil1 = 111;
 static constexpr int kMppColorAnvil2 = 222;
 static constexpr int kMppColorAnvil3 = 333;
@@ -57,5 +65,10 @@ static constexpr int kMppColorWorkbench2 = 311;
 static constexpr int kMppColorWorkbench3 = 533;
 static constexpr int kMppColorWorkbench4 = 755;
 static constexpr int kMppColorWorkbench5 = 966;
+static constexpr int kMppColorZombieBorder = 0;
+static constexpr int kMppColorZombiePants = 640;
+static constexpr int kMppColorZombieShirt = 640;
+static constexpr int kMppColorZombieShoes = 320;
+static constexpr int kMppColorZombieSkin = 80;
 
 SDL_Color MppColorGet(int inColor);

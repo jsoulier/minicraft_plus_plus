@@ -7,7 +7,14 @@
 #include <utility>
 #include <vector>
 
+#include "assert.hpp"
+#include "color.hpp"
+#include "console.hpp"
 #include "entity.hpp"
+#include "entity/furniture.hpp"
+#include "entity/mob.hpp"
+#include "entity/player.hpp"
+#include "renderer.hpp"
 #include "tile.hpp"
 #include "world.hpp"
 
@@ -22,6 +29,34 @@ void MppEntity::Visit(SavepointVisitor& visitor)
 {
     visitor(X);
     visitor(Y);
+}
+
+void MppEntity::Render() const
+{
+    if (MppConsole::CVarPhysics.GetBool())
+    {
+        int color = 0;
+        int x = GetPhysicsX();
+        int y = GetPhysicsY();
+        int w = GetPhysicsWidth();
+        int h = GetPhysicsHeight();
+        if (dynamic_cast<const MppPlayerEntity*>(this))
+        {
+            color = kMppColorDebugPlayerEntityPhysics;
+        }
+        else if (dynamic_cast<const MppMobEntity*>(this))
+        {
+            color = kMppColorDebugMobEntityPhysics;
+        }
+        else if (dynamic_cast<const MppFurnitureEntity*>(this))
+        {
+            color = kMppColorDebugFurnitureEntityPhysics;
+        }
+        if (color)
+        {
+            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
+        }
+    }
 }
 
 void MppEntity::SetX(int x)
@@ -65,18 +100,18 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     return std::sqrt(dx * dx + dy * dy);
 }
 
-void MppEntity::Move(int velocityX, int velocityY)
+void MppEntity::Move(int dx, int dy)
 {
-    MoveAxis(velocityX, 0);
-    MoveAxis(0, velocityY);
+    MoveAxis(dx, 0);
+    MoveAxis(0, dy);
 }
 
-void MppEntity::MoveAxis(int velocityX, int velocityY)
+void MppEntity::MoveAxis(int dx, int dy)
 {
     int x = X;
     int y = Y;
-    X += velocityX;
-    Y += velocityY;
+    X += dx;
+    Y += dy;
     if (!MoveAxisTest())
     {
         X = x;
@@ -119,8 +154,7 @@ bool MppEntity::MoveAxisTest()
             rejected = true;
         }
     }
-    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(X, Y);
-    for (std::shared_ptr<MppEntity>& entity : entities)
+    for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
     {
         int ex = entity->GetPhysicsX();
         int ey = entity->GetPhysicsY();

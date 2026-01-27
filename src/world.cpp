@@ -49,7 +49,8 @@ bool MppWorldInit()
         {
             levels[level].Tiles[x][y] = kGenerators[level](x, y, level);
         }
-        levels[level].Entities.push_back(std::make_shared<MppPlayerEntity>());
+        std::shared_ptr<MppEntity> player = std::make_shared<MppPlayerEntity>();
+        MppWorldAddEntity(player);
         level = LevelIDSurface;
     }
     return true;
@@ -142,13 +143,16 @@ void MppWorldSetTile(const MppTile& tile, int x, int y)
     MppWorldSetTile(tile, x, y, level);
 }
 
-void MppWorldAddEntity(const std::shared_ptr<MppEntity>& entity, int level)
+void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 {
     entity->OnAddEntity();
     levels[level].Entities.push_back(entity);
+    // TODO: fix when moving merging save/world
+    std::shared_ptr<SavepointEntity> savepointEntity = std::dynamic_pointer_cast<SavepointEntity>(entity);
+    MppSaveAdd(savepointEntity, level);
 }
 
-void MppWorldAddEntity(const std::shared_ptr<MppEntity>& entity)
+void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity)
 {
     MppWorldAddEntity(entity, level);
 }

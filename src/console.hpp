@@ -1,14 +1,32 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <memory>
+#include <string>
+#include <string_view>
+#include <variant>
 #include <vector>
 
 #include "input.hpp"
 #include "menu.hpp"
 
 class MppPlayerEntity;
+
+class MppConsoleVar
+{
+public:
+    explicit MppConsoleVar(const std::string_view& name, bool value);
+    explicit MppConsoleVar(const std::string_view& name, int value);
+    explicit MppConsoleVar(const std::string_view& name, float value);
+    void Handle(const std::string& token);
+    bool GetBool() const;
+    int GetInt() const;
+    float GetFloat() const;
+    const std::string_view& GetName() const;
+
+private:
+    std::string_view Name;
+    std::variant<bool, int, float> Value;
+};
 
 class MppConsole
     : public MppMenu
@@ -24,6 +42,9 @@ public:
     void OnTextInput(char character) override;
     void OnRender() override;
 
+    static inline MppConsoleVar CVarNavigation{"navigation", false};
+    static inline MppConsoleVar CVarPhysics{"physics", false};
+
 private:
     void Handle();
     void HandleGive(const std::vector<std::string>& tokens);
@@ -31,6 +52,7 @@ private:
     void HandleTile(const std::vector<std::string>& tokens);
     void HandleKill(const std::vector<std::string>& tokens);
     void HandleKillAll(const std::vector<std::string>& tokens);
+    void HandleCVar(const std::vector<std::string>& tokens);
     std::shared_ptr<MppPlayerEntity> GetPlayer() const;
     std::string GetEntityName(std::string name) const;
 

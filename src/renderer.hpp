@@ -10,9 +10,10 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerTile,
     MppRendererLayerTopTile,
     MppRendererLayerEntity,
+    MppRendererLayerDebugPhysics,
+    MppRendererLayerDebugNavigation,
     MppRendererLayerMenu,
     MppRendererLayerMenuContent,
-    MppRendererLayerDebug,
     MppRendererLayerCount,
 };
 

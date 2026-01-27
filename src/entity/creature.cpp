@@ -4,6 +4,8 @@
 #include <cstdint>
 
 #include "../assert.hpp"
+#include "../color.hpp"
+#include "../console.hpp"
 #include "../renderer.hpp"
 #include "../sprite.hpp"
 #include "../tile.hpp"
@@ -51,13 +53,11 @@ void MppCreatureEntity::Update(uint64_t ticks)
     FleeTicks--;
     Animation.Update(0, VelocityX, VelocityY, ticks);
     MppMobEntity::Update(ticks);
-    if (State == MppCreatureEntityStateIdle)
+    switch (State)
     {
-        Idle();
-    }
-    else
-    {
-        Move();
+    case MppCreatureEntityStateIdle: Idle(); break;
+    case MppCreatureEntityStateMove: Move(); break;
+    default: MppAssert(false);
     }
 }
 
@@ -170,28 +170,13 @@ void MppCreatureEntity::Move()
         State = MppCreatureEntityStateIdle;
         return;
     }
-    MppAssert(VelocityX == 0);
-    MppAssert(VelocityY == 0);
-    if (dx && std::abs(dx) < std::abs(dy))
+    if (MppConsole::CVarNavigation.GetBool())
     {
-        VelocityX = dx / std::abs(dx);
+        int x1 = X + MppTile::kSize / 2;
+        int y1 = Y + MppTile::kSize / 2;
+        int x2 = TargetX + MppTile::kSize / 2;
+        int y2 = TargetY + MppTile::kSize / 2;
+        MppRendererDrawLine(kMppColorDebugNavigation, x1, y1, x2, y2, MppRendererLayerDebugNavigation);
     }
-    else if (dy && std::abs(dy) < std::abs(dx))
-    {
-        VelocityY = dy / std::abs(dy);
-    }
-    else if (dx)
-    {
-        MppAssert(dy == 0);
-        VelocityX = dx / std::abs(dx);
-    }
-    else if (dy)
-    {
-        MppAssert(dx == 0);
-        VelocityY = dy / std::abs(dy);
-    }
-    else
-    {
-        MppAssert(false);
-    }
+    MppMobEntity::Move(dx, dy);
 }

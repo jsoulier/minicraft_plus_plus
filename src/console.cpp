@@ -28,6 +28,102 @@
 #include "tile.hpp"
 #include "world.hpp"
 
+static std::vector<MppConsoleVar*>& GetVariables()
+{
+    // SIOF
+    static std::vector<MppConsoleVar*> variables;
+    return variables;
+}
+
+MppConsoleVar::MppConsoleVar(const std::string_view& name, bool value)
+    : Name{name}
+    , Value{value}
+{
+    GetVariables().push_back(this);
+}
+
+MppConsoleVar::MppConsoleVar(const std::string_view& name, int value)
+    : Name{name}
+    , Value{value}
+{
+    GetVariables().push_back(this);
+}
+
+MppConsoleVar::MppConsoleVar(const std::string_view& name, float value)
+    : Name{name}
+    , Value{value}
+{
+    GetVariables().push_back(this);
+}
+
+void MppConsoleVar::Handle(const std::string& token)
+{
+    try
+    {
+        if (std::get_if<bool>(&Value))
+        {
+            int value = 0;
+            if (token == "true")
+            {
+                value = 1;
+            }
+            else if (token == "false")
+            {
+                value = 0;
+            }
+            else
+            {
+                value = std::stoi(token);
+                if (value != 0 && value != 1)
+                {
+                    MppLog("Failed to handle bool cvar: %s, %s", Name.data(), token.data());
+                    return;
+                }
+            }
+            Value = bool(value);
+        }
+        else if (std::get_if<int>(&Value))
+        {
+            Value = int(std::stoi(token));
+        }
+        else if (std::get_if<float>(&Value))
+        {
+            Value = float(std::stof(token));
+        }
+        else
+        {
+            MppAssert(false);
+        }
+    }
+    catch (const std::exception& e)
+    {
+        MppLog("Failed to handle cvar: %s, %s", Name.data(), token.data());
+    }
+}
+
+bool MppConsoleVar::GetBool() const
+{
+    MppAssert(std::get_if<bool>(&Value));
+    return std::get<bool>(Value);
+}
+
+int MppConsoleVar::GetInt() const
+{
+    MppAssert(std::get_if<int>(&Value));
+    return std::get<int>(Value);
+}
+
+float MppConsoleVar::GetFloat() const
+{
+    MppAssert(std::get_if<float>(&Value));
+    return std::get<float>(Value);
+}
+
+const std::string_view& MppConsoleVar::GetName() const
+{
+    return Name;
+}
+
 MppConsole::MppConsole()
     : Characters{}
 {
@@ -215,6 +311,24 @@ void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
     }
 }
 
+void MppConsole::HandleCVar(const std::vector<std::string>& tokens)
+{
+    if (tokens.size() != 3)
+    {
+        MppLog("Expected cvar <cvar_name> <value>");
+        return;
+    }
+    for (MppConsoleVar* variable : GetVariables())
+    {
+        if (variable->GetName() == tokens[1])
+        {
+            variable->Handle(tokens[2]);
+            return;
+        }
+    }
+    MppLog("Unknown cvar: %s", tokens[1].data());
+}
+
 void MppConsole::Handle()
 {
     std::vector<std::string> tokens;
@@ -252,6 +366,10 @@ void MppConsole::Handle()
     else if (tokens[0] == "killall")
     {
         HandleKillAll(tokens);
+    }
+    else if (tokens[0] == "cvar")
+    {
+        HandleCVar(tokens);
     }
     else
     {

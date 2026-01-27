@@ -9,6 +9,11 @@ MppMobController::MppMobController(const std::shared_ptr<MppMobEntity>& entity)
 {
 }
 
-void MppMobController::Update(uint64_t ticks)
+void MppMobController::Visit(SavepointVisitor& visitor)
 {
+}
+
+void MppMobController::SetEntity(const std::shared_ptr<MppMobEntity>& entity)
+{
+    Entity = entity;
 }

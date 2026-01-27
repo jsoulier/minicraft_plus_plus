@@ -6,6 +6,7 @@
 
 #include "assert.hpp"
 #include "color.hpp"
+#include "console.hpp"
 #include "entity.hpp"
 #include "item.hpp"
 #include "renderer.hpp"
@@ -53,7 +54,7 @@ static constexpr kTiles[MppTileIDCount] =
         .Color3 = 0,
         .Color4 = 0,
         .Color5 = 0,
-        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsType = MppTilePhysicsTypeWall,
         .PhysicsOffsetX = 0,
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
@@ -295,7 +296,7 @@ void MppTile::Update(int x, int y, uint64_t ticks)
     }
 }
 
-void MppTile::Render(int x, int y)
+void MppTile::Render(int x, int y) const
 {
     if (kTiles[ID].SpriteType == TileSpriteType1x1)
     {
@@ -391,6 +392,26 @@ void MppTile::Render(int x, int y)
     else
     {
         MppAssert(false);
+    }
+    if (MppConsole::CVarPhysics.GetBool())
+    {
+        int color = 0;
+        x = GetPhysicsX(x);
+        y = GetPhysicsY(y);
+        int w = GetPhysicsWidth();
+        int h = GetPhysicsHeight();
+        if (GetPhysicsType() == MppTilePhysicsTypeWall)
+        {
+            color = kMppColorDebugWallTilePhysics;
+        }
+        else if (GetPhysicsType() == MppTilePhysicsTypeLiquid)
+        {
+            color = kMppColorDebugLiquidTilePhysics;
+        }
+        if (color)
+        {
+            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
+        }
     }
 }
 

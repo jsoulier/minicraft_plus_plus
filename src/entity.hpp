@@ -20,7 +20,7 @@ public:
     virtual ~MppEntity() = default;
     virtual void OnAddEntity() {}
     virtual void Visit(SavepointVisitor& visitor) override;
-    virtual void Render() const {}
+    virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
     virtual void OnAction(MppEntity& instigator) {}
     virtual void OnCollision(MppEntity& instigator) {}
@@ -41,11 +41,11 @@ public:
 
 protected:
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
-    void Move(int velocityX, int velocityY);
+    void Move(int dx, int dy);
     std::vector<std::pair<int, int>> Raycast(int x2, int y2);
 
 private:
-    void MoveAxis(int velocityX, int velocityY);
+    void MoveAxis(int dx, int dy);
     bool MoveAxisTest();
 
 protected:

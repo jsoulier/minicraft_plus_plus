@@ -35,7 +35,7 @@ public:
     MppTile(MppTileID id);
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
-    void Render(int x, int y);
+    void Render(int x, int y) const;
     void OnAction(MppEntity& instigator);
     void OnCollision(MppEntity& instigator);
     const std::string_view& GetName() const;

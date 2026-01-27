@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/savepoint.hpp>
+
 #include <cstdint>
 #include <memory>
 
@@ -10,8 +12,10 @@ class MppMobController
 public:
     MppMobController(const std::shared_ptr<MppMobEntity>& entity);
     ~MppMobController() = default;
-    virtual void Update(uint64_t ticks);
+    void SetEntity(const std::shared_ptr<MppMobEntity>& entity);
+    virtual void Visit(SavepointVisitor& visitor);
+    virtual void Update(uint64_t ticks) = 0;
 
-private:
+protected:
     std::weak_ptr<MppMobEntity> Entity;
 };
