@@ -8,6 +8,23 @@
 #include <utility>
 #include <vector>
 
+class MppEntity;
+
+class MppEntityReference
+{
+public:
+    MppEntityReference();
+    void Visit(SavepointVisitor& visitor);
+    void SetEntity(const std::shared_ptr<MppEntity>& entity);
+    void Update();
+    std::shared_ptr<MppEntity> GetEntity() const;
+    bool IsValid() const;
+
+private:
+    std::weak_ptr<MppEntity> Entity;
+    SavepointID EntityID;
+};
+
 class MppEntity :
     public SavepointEntity,
     public SavepointBase,
@@ -18,7 +35,7 @@ protected:
 
 public:
     virtual ~MppEntity() = default;
-    virtual void OnAddEntity() {}
+    virtual void OnAddEntity();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
@@ -38,11 +55,11 @@ public:
     void Kill();
     bool IsDead() const;
     std::string GetName() const;
+    std::vector<std::pair<int, int>> Raycast(const std::shared_ptr<MppEntity>& entity);
+    int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
 
 protected:
-    int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
     void Move(int dx, int dy);
-    std::vector<std::pair<int, int>> Raycast(int x2, int y2);
 
 private:
     void MoveAxis(int dx, int dy);

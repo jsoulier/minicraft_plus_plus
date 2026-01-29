@@ -135,6 +135,7 @@ static void Move(int& x, int& y, MppRendererLayer layer)
     case MppRendererLayerEntity:
     case MppRendererLayerDebugPhysics:
     case MppRendererLayerDebugNavigation:
+    case MppRendererLayerDebugFov:
         x -= worldX;
         y -= worldY;
         break;

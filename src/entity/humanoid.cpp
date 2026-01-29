@@ -25,8 +25,9 @@ void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
     visitor(HeldEntity);
 }
 
-void MppHumanoidEntity::Update(uint64_t ticks) 
+void MppHumanoidEntity::PostUpdate(uint64_t ticks) 
 {
+    MppMobEntity::PostUpdate(ticks);
     if (!HeldEntity)
     {
         Animation.Update(0, VelocityX, VelocityY, ticks);
@@ -35,7 +36,6 @@ void MppHumanoidEntity::Update(uint64_t ticks)
     {
         Animation.Update(1, VelocityX, VelocityY, ticks);
     }
-    MppMobEntity::Update(ticks);
 }
 
 void MppHumanoidEntity::Render() const
@@ -105,4 +105,9 @@ int MppHumanoidEntity::GetSpritePose2X() const
 int MppHumanoidEntity::GetSpritePose2Y() const
 {
     return 6;
+}
+
+int MppHumanoidEntity::GetActionRange() const
+{
+    return 16;
 }

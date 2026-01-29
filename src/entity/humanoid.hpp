@@ -13,12 +13,13 @@ class MppHumanoidEntity : public MppMobEntity
 public:
     virtual void OnAddEntity() override;
     virtual void Visit(SavepointVisitor& visitor);
-    virtual void Update(uint64_t ticks) override;
+    virtual void PostUpdate(uint64_t ticks) override;
     virtual void Render() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
+    int GetActionRange() const override;
 
 protected:
     int GetMaxItems() const override;

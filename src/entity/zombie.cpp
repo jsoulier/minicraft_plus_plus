@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "../color.hpp"
-#include "hostile_controller.hpp"
+#include "controller/melee.hpp"
 #include "zombie.hpp"
 
 MppZombieEntity::MppZombieEntity()
@@ -11,9 +11,9 @@ MppZombieEntity::MppZombieEntity()
 {
 }
 
-std::shared_ptr<MppMobController> MppZombieEntity::GetController() 
+std::shared_ptr<MppController> MppZombieEntity::GetController() 
 {
-    return std::make_shared<MppHostileMobController>(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+    return std::make_shared<MppMeleeController>(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
 }
 
 int MppZombieEntity::GetSpriteBorderColor() const 

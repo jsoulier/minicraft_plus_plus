@@ -16,7 +16,7 @@ class MppPlayerEntity final
 public:
     MppPlayerEntity();
     void OnAddEntity() override;
-    void Update(uint64_t ticks) override;
+    void PostUpdate(uint64_t ticks) override;
     void Render() const override;
     void OnAction() override;
     void OnInventory() override;

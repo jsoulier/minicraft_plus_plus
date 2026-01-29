@@ -1,4 +1,5 @@
 #pragma once
 
 int MppGetNumberOfDigits(int value);
-int MppGetRandom(int min, int max);
+int MppGetRandomInt(int min, int max);
+bool MppGetRandomBool();

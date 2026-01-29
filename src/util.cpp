@@ -19,10 +19,18 @@ int MppGetNumberOfDigits(int value)
     return count;
 }
 
-int MppGetRandom(int min, int max)
+int MppGetRandomInt(int min, int max)
 {
     static std::random_device device;
     static std::mt19937 generator(device());
     std::uniform_int_distribution<int> distribution(min, max);
+    return distribution(generator);
+}
+
+bool MppGetRandomBool()
+{
+    static std::random_device device;
+    static std::mt19937 generator(device());
+    static std::bernoulli_distribution distribution(0.5);
     return distribution(generator);
 }

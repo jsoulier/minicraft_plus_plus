@@ -26,10 +26,12 @@ add_executable(minicraft++ WIN32
     src/entity/anvil.cpp
     src/entity/chest.cpp
     src/entity/controller.cpp
+    src/entity/controller/attack.cpp
+    src/entity/controller/creature.cpp
+    src/entity/controller/melee.cpp
     src/entity/creature.cpp
     src/entity/furnace.cpp
     src/entity/furniture.cpp
-    src/entity/hostile_controller.cpp
     src/entity/humanoid.cpp
     src/entity/item.cpp
     src/entity/mob.cpp

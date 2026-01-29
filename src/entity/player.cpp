@@ -1,3 +1,5 @@
+// TODO: move into MppPlayerController
+
 #include <savepoint/savepoint.hpp>
 
 #include <algorithm>
@@ -16,7 +18,6 @@
 #include "player.hpp"
 
 static constexpr int kActionOffset = 8;
-static constexpr int kActionDistance = 16;
 static constexpr int kDropDistance = 16;
 
 MppPlayerEntity::MppPlayerEntity()
@@ -44,9 +45,9 @@ void MppPlayerEntity::OnAddEntity()
     MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
-void MppPlayerEntity::Update(uint64_t ticks)
+void MppPlayerEntity::PostUpdate(uint64_t ticks)
 {
-    MppHumanoidEntity::Update(ticks);
+    MppHumanoidEntity::PostUpdate(ticks);
     MppRendererMove(X, Y, GetSize());
 }
 
@@ -73,7 +74,7 @@ void MppPlayerEntity::OnAction()
     if (!entities.empty())
     {
         std::shared_ptr<MppEntity>& entity = entities[0];
-        if (GetDistance(entity) <= kActionDistance)
+        if (GetDistance(entity) <= GetActionRange())
         {
             entity->OnAction(*this);
         }

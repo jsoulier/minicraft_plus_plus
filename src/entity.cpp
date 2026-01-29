@@ -14,15 +14,89 @@
 #include "entity/furniture.hpp"
 #include "entity/mob.hpp"
 #include "entity/player.hpp"
+#include "log.hpp"
 #include "renderer.hpp"
 #include "tile.hpp"
 #include "world.hpp"
+
+MppEntityReference::MppEntityReference()
+    : Entity{}
+    , EntityID{}
+{
+}
+
+void MppEntityReference::Visit(SavepointVisitor& visitor)
+{
+    if (visitor.IsReading())
+    {
+        MppAssert(Entity.expired());
+        MppAssert(!EntityID.IsValid());
+    }
+    visitor(EntityID);
+}
+
+void MppEntityReference::SetEntity(const std::shared_ptr<MppEntity>& entity)
+{
+    Entity = entity;
+    if (entity)
+    {
+        EntityID = entity->SavepointGetID();
+    }
+    else
+    {
+        EntityID = SavepointID{};
+    }
+}
+
+void MppEntityReference::Update()
+{
+    if (!EntityID.IsValid())
+    {
+        MppAssert(Entity.expired());
+        return;
+    }
+    if (!Entity.expired())
+    {
+        return;
+    }
+    for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
+    {
+        if (entity->SavepointGetID() == EntityID)
+        {
+            Entity = entity;
+            return;
+        }
+    }
+    MppLog("Failed to find reference on entity");
+    EntityID = SavepointID{};
+}
+
+std::shared_ptr<MppEntity> MppEntityReference::GetEntity() const
+{
+    return Entity.lock();
+}
+
+bool MppEntityReference::IsValid() const
+{
+    return !Entity.expired();
+}
 
 MppEntity::MppEntity()
     : X{0}
     , Y{0}
     , Dead{false}
 {
+}
+
+void MppEntity::OnAddEntity()
+{
+    // Validation
+    int x = GetPhysicsOffsetX();
+    int y = GetPhysicsOffsetY();
+    int w = GetPhysicsWidth();
+    int h = GetPhysicsHeight();
+    MppAssert((x * 2 + w) == MppTile::kSize);
+    MppAssert((y * 2 + h) == MppTile::kSize);
 }
 
 void MppEntity::Visit(SavepointVisitor& visitor)
@@ -172,30 +246,38 @@ bool MppEntity::MoveAxisTest()
     return !rejected;
 }
 
-std::vector<std::pair<int, int>> MppEntity::Raycast(int x2, int y2)
+std::vector<std::pair<int, int>> MppEntity::Raycast(const std::shared_ptr<MppEntity>& entity)
 {
-    int x1 = X;
-    int y1 = Y;
-    int dx = std::abs(x2 - x1);
-    int dy = std::abs(y2 - y1);
-    int sx = (x1 < x2) ? 1 : -1;
-    int sy = (y1 < y2) ? 1 : -1;
+    // TODO: adding the kSize / 2 here might be a problem
+    int x1 = X + MppTile::kSize / 2;
+    int y1 = Y + MppTile::kSize / 2;
+    int x2 = entity->GetX() + MppTile::kSize / 2;
+    int y2 = entity->GetY() + MppTile::kSize / 2;
+    int tx = x1 / MppTile::kSize;
+    int ty = y1 / MppTile::kSize;
+    int tx2 = x2 / MppTile::kSize;
+    int ty2 = y2 / MppTile::kSize;
+    int dx = std::abs(tx2 - tx);
+    int dy = std::abs(ty2 - ty);
+    int sx = (tx < tx2) ? 1 : -1;
+    int sy = (ty < ty2) ? 1 : -1;
     int error = dx - dy;
-    int x = x1;
-    int y = y1;
     std::vector<std::pair<int, int>> points;
     while (true)
     {
-        int tx = x / 16;
-        int ty = y / 16;
         const MppTile& tile = MppWorldGetTile(tx, ty);
         if (tile.GetPhysicsType() == MppTilePhysicsTypeWall)
         {
             points.clear();
             break;
         }
+        // TODO: I removed the MppTile::kSize / 2 because I don't think we want it but I also haven't tested yet
+        int x = tx * MppTile::kSize;
+        int y = ty * MppTile::kSize;
+        // int x = tx * MppTile::kSize + MppTile::kSize / 2;
+        // int y = ty * MppTile::kSize + MppTile::kSize / 2;
         points.emplace_back(x, y);
-        if (x == x2 && y == y2)
+        if (tx == tx2 && ty == ty2)
         {
             break;
         }
@@ -203,12 +285,12 @@ std::vector<std::pair<int, int>> MppEntity::Raycast(int x2, int y2)
         if (e2 > -dy)
         {
             error -= dy;
-            x += sx;
+            tx += sx;
         }
-        if (e2 < dx)
+        else if (e2 < dx)
         {
             error += dx;
-            y += sy;
+            ty += sy;
         }
     }
     return points;
@@ -226,5 +308,5 @@ bool MppEntity::IsDead() const
 
 std::string MppEntity::GetName() const
 {
-    return std::string(SavepointDerivedGetString());
+    return std::string(SavepointGetString());
 }

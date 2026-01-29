@@ -44,6 +44,7 @@ public:
 
     static inline MppConsoleVar CVarNavigation{"navigation", false};
     static inline MppConsoleVar CVarPhysics{"physics", false};
+    static inline MppConsoleVar CVarFov{"fov", false};
 
 private:
     void Handle();

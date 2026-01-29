@@ -11,13 +11,15 @@ static constexpr int kMppColorMagenta = 909;
 static constexpr int kMppColorCyan = 99;
 static constexpr int kMppColorWhite = 999;
 
-static constexpr int kMppColorDebugNavigation = kMppColorMagenta;
+static constexpr int kMppColorDebugNavigation1 = kMppColorMagenta;
+static constexpr int kMppColorDebugNavigation2 = kMppColorYellow;
 static constexpr int kMppColorDebugFurnitureEntityPhysics = kMppColorCyan;
 static constexpr int kMppColorDebugMobEntityPhysics = kMppColorYellow;
 static constexpr int kMppColorDebugPlayerEntityPhysics = kMppColorMagenta;
 static constexpr int kMppColorDebugGroundTilePhysics = kMppColorMagenta;
 static constexpr int kMppColorDebugWallTilePhysics = kMppColorGreen;
 static constexpr int kMppColorDebugLiquidTilePhysics = kMppColorBlue;
+static constexpr int kMppColorDebugFov = kMppColorRed;
 
 static constexpr int kMppColorAnvil1 = 111;
 static constexpr int kMppColorAnvil2 = 222;

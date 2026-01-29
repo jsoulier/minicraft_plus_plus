@@ -17,21 +17,15 @@
 
 struct Header
 {
-    SavepointTime CreateTime;
-    SavepointTime LastModifyTime;
     uint64_t Ticks;
 
     Header()
-        : CreateTime{}
-        , LastModifyTime{}
-        , Ticks{}
+        : Ticks{}
     {
     }
 
     void Visit(SavepointVisitor& visitor)
     {
-        visitor(CreateTime);
-        visitor(LastModifyTime);
         visitor(Ticks);
     }
 };
@@ -72,8 +66,6 @@ bool MppSaveInit()
         break;
     }
     MppLog("Save Path: %s", kSavePath.string().data());
-    MppLog("Create Time: %s", header.CreateTime.GetString().data());
-    MppLog("Last Modify Time: %s", header.LastModifyTime.GetString().data());
     uint32_t tiles = 0;
     uint32_t entities = 0;
     for (int level : savepoint.GetLevels())
@@ -124,7 +116,6 @@ void MppSaveUpdate(uint64_t inTicks, bool force)
     {
         return;
     }
-    header.LastModifyTime = SavepointTime{};
     header.Ticks = inTicks;
     savepoint.Write(header);
     int level1;
@@ -162,7 +153,6 @@ void MppSaveUpdate(uint64_t inTicks, bool force)
     }
     savepoint.Save();
     ticks = inTicks + kTicks;
-    MppLog("Saved at: %s", header.LastModifyTime.GetString().data());
     MppLog("Saved %d tiles", tiles);
     MppLog("Saved %d entities", entities);
     tileX1 = MppWorldGetSize();

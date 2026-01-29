@@ -11,19 +11,15 @@
 #include "../tile.hpp"
 #include "../util.hpp"
 #include "../world.hpp"
+#include "controller/creature.hpp"
 #include "creature.hpp"
 #include "mob.hpp"
 
 static constexpr int kTickRate = 10;
-static constexpr int kMaxMoveDistance = 6;
 
 MppCreatureEntity::MppCreatureEntity()
     : MppMobEntity()
     , Animation{}
-    , State{MppCreatureEntityStateIdle}
-    , TargetX{}
-    , TargetY{}
-    , IdleTicks{}
     , FleeTicks{}
 {
 }
@@ -40,25 +36,14 @@ void MppCreatureEntity::OnAddEntity()
 void MppCreatureEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
-    visitor(State);
-    visitor(TargetX);
-    visitor(TargetY);
-    visitor(IdleTicks);
     visitor(FleeTicks);
 }
 
-void MppCreatureEntity::Update(uint64_t ticks)
+void MppCreatureEntity::PostUpdate(uint64_t ticks)
 {
-    IdleTicks--;
+    MppMobEntity::PostUpdate(ticks);
     FleeTicks--;
     Animation.Update(0, VelocityX, VelocityY, ticks);
-    MppMobEntity::Update(ticks);
-    switch (State)
-    {
-    case MppCreatureEntityStateIdle: Idle(); break;
-    case MppCreatureEntityStateMove: Move(); break;
-    default: MppAssert(false);
-    }
 }
 
 void MppCreatureEntity::Render() const
@@ -119,64 +104,12 @@ int MppCreatureEntity::GetFleeCooldown() const
     return 300;
 }
 
-void MppCreatureEntity::Idle()
+int MppCreatureEntity::GetFleeTicks() const
 {
-    if (IdleTicks > 0)
-    {
-        return;
-    }
-    MppAssert(State == MppCreatureEntityStateIdle);
-    int dx = 0;
-    int dy = 0;
-    switch (MppGetRandom(0, 3))
-    {
-    case 0: dx = -1; break;
-    case 1: dx = 1; break;
-    case 2: dy = -1; break;
-    case 3: dy = 1; break;
-    }
-    int distance = MppGetRandom(1, kMaxMoveDistance);
-    int tx = X / MppTile::kSize;
-    int ty = Y / MppTile::kSize;
-    for (int i = 0; i < distance; i++)
-    {
-        tx += dx;
-        ty += dy;
-        const MppTile& tile = MppWorldGetTile(tx, ty);
-        if (tile.GetPhysicsType() != MppTilePhysicsTypeGround)
-        {
-            tx -= dx;
-            ty -= dy;
-            break;
-        }
-    }
-    TargetX = tx * MppTile::kSize;
-    TargetY = ty * MppTile::kSize;
-    State = MppCreatureEntityStateMove;
+    return FleeTicks;
 }
 
-void MppCreatureEntity::Move()
+std::shared_ptr<MppController> MppCreatureEntity::GetController() 
 {
-    MppAssert(State != MppCreatureEntityStateIdle);
-    int dx = TargetX - X;
-    int dy = TargetY - Y;
-    if (!dx && !dy)
-    {
-        MppAssert(IdleTicks <= 0);
-        if (FleeTicks <= 0)
-        {
-            IdleTicks = GetIdleCooldown();
-        }
-        State = MppCreatureEntityStateIdle;
-        return;
-    }
-    if (MppConsole::CVarNavigation.GetBool())
-    {
-        int x1 = X + MppTile::kSize / 2;
-        int y1 = Y + MppTile::kSize / 2;
-        int x2 = TargetX + MppTile::kSize / 2;
-        int y2 = TargetY + MppTile::kSize / 2;
-        MppRendererDrawLine(kMppColorDebugNavigation, x1, y1, x2, y2, MppRendererLayerDebugNavigation);
-    }
-    MppMobEntity::Move(dx, dy);
+    return std::make_shared<MppCreatureController>(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
 }
