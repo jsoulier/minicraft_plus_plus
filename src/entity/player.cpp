@@ -1,10 +1,6 @@
-// TODO: move into MppPlayerController
-
 #include <savepoint/savepoint.hpp>
 
-#include <algorithm>
-#include <memory>
-#include <vector>
+#include <cstdint>
 
 #include "../color.hpp"
 #include "../entity.hpp"
@@ -14,11 +10,9 @@
 #include "../renderer.hpp"
 #include "../tile.hpp"
 #include "../world.hpp"
+#include "controller/player.hpp"
 #include "item.hpp"
 #include "player.hpp"
-
-static constexpr int kActionOffset = 8;
-static constexpr int kDropDistance = 16;
 
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
@@ -26,23 +20,11 @@ MppPlayerEntity::MppPlayerEntity()
     Inventory->SetIsFocused(true);
     Inventory->SetX2(124);
     Inventory->SetY2(136);
-    Inventory->SetOnActionCallback([this](int index)
-    {
-        // TODO
-    });
-    Inventory->SetOnDropCallback([this](int index)
-    {
-        std::shared_ptr<MppEntity> item = std::make_shared<MppItemEntity>(Inventory->Remove(index));
-        item->SetX(X + FacingX * kDropDistance);
-        item->SetY(Y + FacingY * kDropDistance);
-        MppWorldAddEntity(item);
-    });
 }
 
 void MppPlayerEntity::OnAddEntity()
 {
     MppHumanoidEntity::OnAddEntity();
-    MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppPlayerEntity::PostUpdate(uint64_t ticks)
@@ -56,60 +38,9 @@ void MppPlayerEntity::Render() const
     MppHumanoidEntity::Render();
 }
 
-void MppPlayerEntity::OnAction()
+std::shared_ptr<MppController> MppPlayerEntity::GetController() 
 {
-    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(X, Y);
-    std::erase_if(entities, [&](std::shared_ptr<MppEntity>& other)
-    {
-        // TODO: remove e.g. items
-        return this == other.get();
-    });
-    X += kActionOffset * FacingX;
-    Y += kActionOffset * FacingY;
-    std::sort(entities.begin(), entities.end(), [this](std::shared_ptr<MppEntity>& lhs, std::shared_ptr<MppEntity>& rhs)
-    {
-        // TODO: sort mobs in front of furniture
-        return GetDistance(lhs) < GetDistance(rhs);
-    });
-    if (!entities.empty())
-    {
-        std::shared_ptr<MppEntity>& entity = entities[0];
-        if (GetDistance(entity) <= GetActionRange())
-        {
-            entity->OnAction(*this);
-        }
-    }
-    else
-    {
-        // TODO: tiles
-    }
-    X -= kActionOffset * FacingX;
-    Y -= kActionOffset * FacingY;
-}
-
-void MppPlayerEntity::OnInventory()
-{
-    MppInputSetInteraction(Inventory);
-}
-
-void MppPlayerEntity::OnHeldUp()
-{
-    VelocityY--;
-}
-
-void MppPlayerEntity::OnHeldDown()
-{
-    VelocityY++;
-}
-
-void MppPlayerEntity::OnHeldLeft()
-{
-    VelocityX--;
-}
-
-void MppPlayerEntity::OnHeldRight()
-{
-    VelocityX++;
+    return std::make_shared<MppPlayerController>();
 }
 
 int MppPlayerEntity::GetSpriteBorderColor() const

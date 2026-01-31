@@ -18,14 +18,9 @@ public:
     void OnAddEntity() override;
     void PostUpdate(uint64_t ticks) override;
     void Render() const override;
-    void OnAction() override;
-    void OnInventory() override;
-    void OnHeldUp() override;
-    void OnHeldDown() override;
-    void OnHeldLeft() override;
-    void OnHeldRight() override;
 
 protected:
+    std::shared_ptr<MppController> GetController();
     int GetSpriteBorderColor() const override;
     int GetSpriteSkinColor() const override;
     int GetSpriteShirtColor() const override;

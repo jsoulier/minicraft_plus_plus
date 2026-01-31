@@ -18,8 +18,8 @@
 
 static constexpr int kMaxRandomMoveDistance = 2;
 
-MppAttackController::MppAttackController(const std::shared_ptr<MppMobEntity>& entity)
-    : MppController(entity)
+MppAttackController::MppAttackController()
+    : MppController()
     , Target{}
     , State{}
     , Points{}

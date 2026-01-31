@@ -111,5 +111,5 @@ int MppCreatureEntity::GetFleeTicks() const
 
 std::shared_ptr<MppController> MppCreatureEntity::GetController() 
 {
-    return std::make_shared<MppCreatureController>(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+    return std::make_shared<MppCreatureController>();
 }

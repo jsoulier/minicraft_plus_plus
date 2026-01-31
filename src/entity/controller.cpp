@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "../assert.hpp"
+#include "../inventory.hpp"
 #include "../tile.hpp"
 #include "../util.hpp"
 #include "../world.hpp"
@@ -52,4 +53,9 @@ void MppController::PickRandomTarget(int maxDistance, int& x, int& y)
     }
     x = tx * MppTile::kSize;
     y = ty * MppTile::kSize;
+}
+
+std::shared_ptr<MppInventory> MppController::GetInventory()
+{
+    return Entity.lock()->GetInventory();
 }

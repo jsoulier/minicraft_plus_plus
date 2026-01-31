@@ -22,6 +22,10 @@ public:
     std::shared_ptr<MppInventory> GetInventory();
     virtual int GetActionRange() const;
     void Move(int dx, int dy);
+    void Push(int dx, int dy);
+    void PushNow(int dx, int dy);
+    int GetFacingX() const;
+    int GetFacingY() const;
 
 protected:
     virtual void PostUpdate(uint64_t ticks);

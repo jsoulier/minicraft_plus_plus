@@ -12,8 +12,8 @@
 
 static constexpr int kMaxRandomMoveDistance = 6;
 
-MppCreatureController::MppCreatureController(const std::shared_ptr<MppMobEntity>& entity)
-    : MppController(entity)
+MppCreatureController::MppCreatureController()
+    : MppController()
     , State{MppCreatureControllerStateIdle}
     , TargetX{}
     , TargetY{}

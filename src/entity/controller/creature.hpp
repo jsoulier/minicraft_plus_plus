@@ -16,8 +16,10 @@ enum MppCreatureControllerState
     
 class MppCreatureController : public MppController
 {
+    SAVEPOINT_DERIVED(MppCreatureController)
+
 public:
-    MppCreatureController(const std::shared_ptr<MppMobEntity>& entity);
+    MppCreatureController();
     void Visit(SavepointVisitor& visitor) override;
     void Update(uint64_t ticks) override;
 

@@ -13,7 +13,7 @@ MppZombieEntity::MppZombieEntity()
 
 std::shared_ptr<MppController> MppZombieEntity::GetController() 
 {
-    return std::make_shared<MppMeleeController>(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+    return std::make_shared<MppMeleeController>();
 }
 
 int MppZombieEntity::GetSpriteBorderColor() const 

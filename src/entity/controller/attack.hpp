@@ -19,7 +19,7 @@ enum MppAttackControllerState
 class MppAttackController : public MppController
 {
 public:
-    MppAttackController(const std::shared_ptr<MppMobEntity>& entity);
+    MppAttackController();
     void Visit(SavepointVisitor& visitor);
     void Update(uint64_t ticks) override;
 

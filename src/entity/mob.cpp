@@ -34,20 +34,20 @@ void MppMobEntity::OnAddEntity()
     {
         Controller = GetController();
     }
+    if (Controller)
+    {
+        Controller->SetEntity(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+        Controller->OnAddEntity();
+    }
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
 {
     MppEntity::Visit(visitor);
     visitor(Inventory);
+    visitor(Controller);
     visitor(FacingX);
     visitor(FacingY);
-    // Controller has state so it should be serialized as well
-    visitor(Controller);
-    if (Controller && visitor.IsReading())
-    {
-        Controller->SetEntity(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
-    }
 }
 
 void MppMobEntity::Update(uint64_t ticks)
@@ -138,6 +138,18 @@ void MppMobEntity::Move(int dx, int dy)
     }
 }
 
+void MppMobEntity::Push(int dx, int dy)
+{
+    VelocityX += dx;
+    VelocityY += dy;
+}
+
+void MppMobEntity::PushNow(int dx, int dy)
+{
+    X += dx;
+    Y += dy;
+}
+
 int MppMobEntity::GetActionRange() const
 {
     return 0;
@@ -171,4 +183,14 @@ std::shared_ptr<MppController> MppMobEntity::GetController()
 float MppMobEntity::GetFov() const
 {
     return std::numbers::pi_v<float> / 4.0f * 3.0f;
+}
+
+int MppMobEntity::GetFacingX() const
+{
+    return FacingX;
+}
+
+int MppMobEntity::GetFacingY() const
+{
+    return FacingY;
 }
