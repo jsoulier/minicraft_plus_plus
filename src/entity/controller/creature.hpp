@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-#include "../controller.hpp"
+#include "npc.hpp"
 
 class MppCreatureEntity;
 
@@ -14,7 +14,7 @@ enum MppCreatureControllerState
     MppCreatureControllerStateMove,
 };
     
-class MppCreatureController : public MppController
+class MppCreatureController : public MppNPCController
 {
     SAVEPOINT_DERIVED(MppCreatureController)
 
@@ -22,6 +22,9 @@ public:
     MppCreatureController();
     void Visit(SavepointVisitor& visitor) override;
     void Update(uint64_t ticks) override;
+    
+protected:
+    int GetMaxNavigateRandomDistance() const override;
 
 private:
     std::shared_ptr<MppCreatureEntity> GetCreature();
@@ -30,7 +33,5 @@ private:
 
 private:
     MppCreatureControllerState State;
-    int TargetX;
-    int TargetY;
     int IdleTicks;
 };

@@ -40,3 +40,18 @@ int MppZombieEntity::GetSpriteShoeColor() const
 {
     return kMppColorZombieShoes;
 }
+
+int MppZombieEntity::GetMaxHealth() const
+{
+    return 1;
+}
+
+int MppZombieEntity::GetMaxHunger() const
+{
+    return 1;
+}
+
+int MppZombieEntity::GetMaxEnergy() const
+{
+    return 1;
+}

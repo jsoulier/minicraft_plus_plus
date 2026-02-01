@@ -14,7 +14,6 @@ class MppController
 {
 public:
     MppController() = default;
-    MppController(const std::shared_ptr<MppMobEntity>& entity);
     ~MppController() = default;
     void SetEntity(const std::shared_ptr<MppMobEntity>& entity);
     virtual void OnAddEntity() {}
@@ -22,7 +21,6 @@ public:
     virtual void Update(uint64_t ticks) {}
 
 protected:
-    void PickRandomTarget(int maxDistance, int& x, int& y);
     std::shared_ptr<MppInventory> GetInventory();
 
 protected:

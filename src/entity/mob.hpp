@@ -21,7 +21,6 @@ public:
     int GetSize() const override;
     std::shared_ptr<MppInventory> GetInventory();
     virtual int GetActionRange() const;
-    void Move(int dx, int dy);
     void Push(int dx, int dy);
     void PushNow(int dx, int dy);
     int GetFacingX() const;
@@ -33,6 +32,9 @@ protected:
     virtual int GetSpeed() const;
     virtual std::shared_ptr<MppController> GetController();
     virtual float GetFov() const;
+    virtual int GetMaxHealth() const = 0;
+    virtual int GetMaxHunger() const = 0;
+    virtual int GetMaxEnergy() const = 0;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;
@@ -41,4 +43,7 @@ protected:
     int VelocityY;
     int FacingX;
     int FacingY;
+    int Health;
+    int Hunger;
+    int Energy;
 };

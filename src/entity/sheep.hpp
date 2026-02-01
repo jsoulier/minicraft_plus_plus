@@ -23,4 +23,7 @@ protected:
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
+    int GetMaxHealth() const override;
+    int GetMaxHunger() const override;
+    int GetMaxEnergy() const override;
 };

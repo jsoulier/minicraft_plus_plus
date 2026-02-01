@@ -5,11 +5,13 @@
 #include <memory>
 
 #include "../input.hpp"
+#include "../menu.hpp"
 #include "humanoid.hpp"
 
 class MppPlayerEntity final
     : public MppHumanoidEntity
     , public MppInputHandler
+    , public MppMenu
 {
     SAVEPOINT_DERIVED(MppPlayerEntity)
 
@@ -26,4 +28,7 @@ protected:
     int GetSpriteShirtColor() const override;
     int GetSpritePantColor() const override;
     int GetSpriteShoeColor() const override;
+    int GetMaxHealth() const override;
+    int GetMaxHunger() const override;
+    int GetMaxEnergy() const override;
 };

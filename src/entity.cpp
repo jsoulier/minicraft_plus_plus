@@ -4,8 +4,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
 #include "assert.hpp"
 #include "color.hpp"
@@ -25,6 +23,12 @@ MppEntityReference::MppEntityReference()
 {
 }
 
+MppEntityReference::MppEntityReference(std::shared_ptr<MppEntity>& entity)
+    : Entity{entity}
+    , EntityID{entity->SavepointGetID()}
+{
+}
+
 void MppEntityReference::Visit(SavepointVisitor& visitor)
 {
     if (visitor.IsReading())
@@ -33,19 +37,6 @@ void MppEntityReference::Visit(SavepointVisitor& visitor)
         MppAssert(!EntityID.IsValid());
     }
     visitor(EntityID);
-}
-
-void MppEntityReference::SetEntity(const std::shared_ptr<MppEntity>& entity)
-{
-    Entity = entity;
-    if (entity)
-    {
-        EntityID = entity->SavepointGetID();
-    }
-    else
-    {
-        EntityID = SavepointID{};
-    }
 }
 
 void MppEntityReference::Update()
@@ -174,6 +165,12 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     return std::sqrt(dx * dx + dy * dy);
 }
 
+MppEntityReference MppEntity::GetReference()
+{
+    std::shared_ptr<MppEntity> entity = shared_from_this();
+    return MppEntityReference(entity);
+}
+
 void MppEntity::Move(int dx, int dy)
 {
     MoveAxis(dx, 0);
@@ -244,56 +241,6 @@ bool MppEntity::MoveAxisTest()
         entity->OnCollision(*this);
     }
     return !rejected;
-}
-
-std::vector<std::pair<int, int>> MppEntity::Raycast(const std::shared_ptr<MppEntity>& entity)
-{
-    // TODO: adding the kSize / 2 here might be a problem
-    int x1 = X + MppTile::kSize / 2;
-    int y1 = Y + MppTile::kSize / 2;
-    int x2 = entity->GetX() + MppTile::kSize / 2;
-    int y2 = entity->GetY() + MppTile::kSize / 2;
-    int tx = x1 / MppTile::kSize;
-    int ty = y1 / MppTile::kSize;
-    int tx2 = x2 / MppTile::kSize;
-    int ty2 = y2 / MppTile::kSize;
-    int dx = std::abs(tx2 - tx);
-    int dy = std::abs(ty2 - ty);
-    int sx = (tx < tx2) ? 1 : -1;
-    int sy = (ty < ty2) ? 1 : -1;
-    int error = dx - dy;
-    std::vector<std::pair<int, int>> points;
-    while (true)
-    {
-        const MppTile& tile = MppWorldGetTile(tx, ty);
-        if (tile.GetPhysicsType() == MppTilePhysicsTypeWall)
-        {
-            points.clear();
-            break;
-        }
-        // TODO: I removed the MppTile::kSize / 2 because I don't think we want it but I also haven't tested yet
-        int x = tx * MppTile::kSize;
-        int y = ty * MppTile::kSize;
-        // int x = tx * MppTile::kSize + MppTile::kSize / 2;
-        // int y = ty * MppTile::kSize + MppTile::kSize / 2;
-        points.emplace_back(x, y);
-        if (tx == tx2 && ty == ty2)
-        {
-            break;
-        }
-        int e2 = error * 2;
-        if (e2 > -dy)
-        {
-            error -= dy;
-            tx += sx;
-        }
-        else if (e2 < dx)
-        {
-            error += dx;
-            ty += sy;
-        }
-    }
-    return points;
 }
 
 void MppEntity::Kill()

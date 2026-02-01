@@ -23,11 +23,14 @@ enum MppInventorySlot
 class MppInventory
     : public MppMenu
     , public MppInputHandler
+    , public SavepointBase
 {
+    SAVEPOINT_DERIVED(MppInventory)
+
 public:
     MppInventory();
     void Visit(SavepointVisitor& visitor);
-    void Render() const override;
+    void Render() const;
     bool Add(const MppItem& item);
     int GetIndex() const;
     const MppItem& Get(int index);

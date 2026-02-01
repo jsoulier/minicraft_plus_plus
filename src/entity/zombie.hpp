@@ -18,4 +18,7 @@ protected:
     int GetSpriteShirtColor() const override;
     int GetSpritePantColor() const override;
     int GetSpriteShoeColor() const override;
+    int GetMaxHealth() const override;
+    int GetMaxHunger() const override;
+    int GetMaxEnergy() const override;
 };

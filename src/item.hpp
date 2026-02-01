@@ -59,7 +59,7 @@ public:
     bool CanCraft(MppItemID id) const;
     bool CanCraft(MppItemID id, const std::shared_ptr<MppInventory>& inventory) const;
     void Craft(const std::shared_ptr<MppInventory>& inventory) const;
-    void Render() const override;
+    void Render() const;
 
 private:
     const MppItemRecipeData& Data;

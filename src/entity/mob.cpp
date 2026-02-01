@@ -22,6 +22,9 @@ MppMobEntity::MppMobEntity()
     , VelocityY{0}
     , FacingX{0}
     , FacingY{1}
+    , Health{-1}
+    , Hunger{-1}
+    , Energy{-1}
 {
 }
 
@@ -39,6 +42,17 @@ void MppMobEntity::OnAddEntity()
         Controller->SetEntity(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
         Controller->OnAddEntity();
     }
+    if (Health == -1)
+    {
+        MppAssert(Hunger == -1);
+        MppAssert(Energy == -1);
+        Health = GetMaxHealth();
+        Hunger = GetMaxHunger();
+        Energy = GetMaxEnergy();
+        MppAssert(Health > 0);
+        MppAssert(Hunger > 0);
+        MppAssert(Energy > 0);
+    }
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
@@ -48,6 +62,9 @@ void MppMobEntity::Visit(SavepointVisitor& visitor)
     visitor(Controller);
     visitor(FacingX);
     visitor(FacingY);
+    visitor(Health);
+    visitor(Hunger);
+    visitor(Energy);
 }
 
 void MppMobEntity::Update(uint64_t ticks)
@@ -122,20 +139,6 @@ bool MppMobEntity::IsInFov(const std::shared_ptr<MppEntity>& entity)
     dy /= target;
     float dot = fx * dx + fy * dy;
     return dot >= std::cos(GetFov() * 0.5f);
-}
-
-void MppMobEntity::Move(int dx, int dy)
-{
-    MppAssert(VelocityX == 0);
-    MppAssert(VelocityY == 0);
-    if (dx)
-    {
-        VelocityX = dx / std::abs(dx);
-    }
-    if (dy)
-    {
-        VelocityY = dy / std::abs(dy);
-    }
 }
 
 void MppMobEntity::Push(int dx, int dy)

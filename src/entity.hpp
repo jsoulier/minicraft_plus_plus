@@ -5,17 +5,19 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
 class MppEntity;
 
 class MppEntityReference
 {
+    friend class MppEntity;
+
+private:
+    MppEntityReference(std::shared_ptr<MppEntity>& entity);
+
 public:
     MppEntityReference();
     void Visit(SavepointVisitor& visitor);
-    void SetEntity(const std::shared_ptr<MppEntity>& entity);
     void Update();
     std::shared_ptr<MppEntity> GetEntity() const;
     bool IsValid() const;
@@ -55,8 +57,8 @@ public:
     void Kill();
     bool IsDead() const;
     std::string GetName() const;
-    std::vector<std::pair<int, int>> Raycast(const std::shared_ptr<MppEntity>& entity);
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
+    MppEntityReference GetReference();
 
 protected:
     void Move(int dx, int dy);

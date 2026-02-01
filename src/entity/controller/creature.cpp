@@ -10,13 +10,9 @@
 #include "../creature.hpp"
 #include "creature.hpp"
 
-static constexpr int kMaxRandomMoveDistance = 6;
-
 MppCreatureController::MppCreatureController()
-    : MppController()
+    : MppNPCController()
     , State{MppCreatureControllerStateIdle}
-    , TargetX{}
-    , TargetY{}
     , IdleTicks{}
 {
 }
@@ -25,13 +21,12 @@ void MppCreatureController::Visit(SavepointVisitor& visitor)
 {
     MppController::Visit(visitor);
     visitor(State);
-    visitor(TargetX);
-    visitor(TargetY);
     visitor(IdleTicks);
 }
 
 void MppCreatureController::Update(uint64_t ticks) 
 {
+    MppNPCController::Update(ticks);
     IdleTicks--;
     switch (State)
     {
@@ -39,6 +34,11 @@ void MppCreatureController::Update(uint64_t ticks)
     case MppCreatureControllerStateMove: Move(); break;
     default: MppAssert(false);
     }
+}
+
+int MppCreatureController::GetMaxNavigateRandomDistance() const
+{
+    return 6;
 }
 
 std::shared_ptr<MppCreatureEntity> MppCreatureController::GetCreature()
@@ -54,16 +54,14 @@ void MppCreatureController::Idle()
         return;
     }
     MppAssert(State == MppCreatureControllerStateIdle);
-    PickRandomTarget(kMaxRandomMoveDistance, TargetX, TargetY);
+    TryNavigateRandom();
     State = MppCreatureControllerStateMove;
 }
 
 void MppCreatureController::Move()
 {
     std::shared_ptr<MppCreatureEntity> creature = GetCreature();
-    int dx = TargetX - creature->GetX();
-    int dy = TargetY - creature->GetY();
-    if (!dx && !dy)
+    if (IsNavigationCompleted())
     {
         MppAssert(IdleTicks <= 0);
         if (creature->GetFleeTicks() <= 0)
@@ -71,16 +69,5 @@ void MppCreatureController::Move()
             IdleTicks = creature->GetIdleCooldown();
         }
         State = MppCreatureControllerStateIdle;
-        return;
     }
-    if (MppConsole::CVarNavigation.GetBool())
-    {
-        int x1 = creature->GetX() + MppTile::kSize / 2;
-        int y1 = creature->GetY() + MppTile::kSize / 2;
-        int x2 = TargetX + MppTile::kSize / 2;
-        int y2 = TargetY + MppTile::kSize / 2;
-        MppRendererDrawLine(kMppColorDebugNavigation1, x1, y1, x2, y2, MppRendererLayerDebugNavigation);
-    }
-    // creature->MoveSmallestAxis(dx, dy);
-    creature->Move(dx, dy);
 }

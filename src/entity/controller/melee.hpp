@@ -2,17 +2,37 @@
 
 #include <savepoint/savepoint.hpp>
 
+#include <cstdint>
 #include <memory>
+#include <utility>
+#include <vector>
 
-#include "attack.hpp"
+#include "../../entity.hpp"
+#include "npc.hpp"
 
-class MppMeleeController : public MppAttackController
+enum MppMeleeControllerState
+{
+    MppMeleeControllerStateIdle,
+    MppMeleeControllerStateMove,
+};
+
+class MppMeleeController : public MppNPCController
 {
     SAVEPOINT_DERIVED(MppMeleeController)
 
 public:
-    MppMeleeController() = default;
+    MppMeleeController();
+    void Visit(SavepointVisitor& visitor);
+    void Update(uint64_t ticks) override;
 
 protected:
-    void GetAttackPosition(const std::weak_ptr<MppMobEntity>& target, int& x, int& y) const override;
+    int GetMaxNavigateRandomDistance() const override;
+
+private:
+    void Idle();
+    void Move();
+
+private:
+    MppEntityReference Target;
+    MppMeleeControllerState State;
 };

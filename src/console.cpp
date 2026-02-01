@@ -128,9 +128,9 @@ MppConsole::MppConsole()
     : Characters{}
 {
     SetX1(0);
-    SetY1(128);
+    SetY1(0);
     SetX2(256);
-    SetY2(136);
+    SetY2(8);
 }
 
 void MppConsole::OnGainFocus() 

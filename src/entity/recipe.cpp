@@ -15,7 +15,7 @@ MppRecipeEntity::MppRecipeEntity()
 {
     Inventory->SetIsFocused(true);
     Inventory->SetX2(124);
-    Inventory->SetY2(136);
+    Inventory->SetY2(120);
     Inventory->SetMaxItems(MppItemIDCount);
 }
 

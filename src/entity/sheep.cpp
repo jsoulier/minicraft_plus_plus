@@ -64,3 +64,17 @@ int MppSheepEntity::GetPhysicsHeight() const
     return 14;
 }
 
+int MppSheepEntity::GetMaxHealth() const
+{
+    return 1;
+}
+
+int MppSheepEntity::GetMaxHunger() const
+{
+    return 1;
+}
+
+int MppSheepEntity::GetMaxEnergy() const
+{
+    return 1;
+}

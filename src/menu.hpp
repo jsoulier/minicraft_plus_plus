@@ -15,7 +15,7 @@ class MppMenu
 {
 public:
     MppMenu();
-    virtual void Render() const;
+    void Render() const;
     void SetX1(int x1);
     void SetY1(int y1);
     void SetX2(int x2);
