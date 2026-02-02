@@ -181,6 +181,7 @@ void MppEntity::MoveAxis(int dx, int dy)
 {
     int x = X;
     int y = Y;
+    // TODO: we need to loop here if abs(dx or dy) > 1
     X += dx;
     Y += dy;
     if (!MoveAxisTest())

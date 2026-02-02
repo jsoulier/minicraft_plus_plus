@@ -18,27 +18,27 @@ std::shared_ptr<MppController> MppZombieEntity::GetController()
 
 int MppZombieEntity::GetSpriteBorderColor() const 
 {
-    return kMppColorZombieBorder;
+    return 0;
 }
 
 int MppZombieEntity::GetSpriteSkinColor() const 
 {
-    return kMppColorZombieSkin;
+    return 40;
 }
 
 int MppZombieEntity::GetSpriteShirtColor() const 
 {
-    return kMppColorZombieShirt;
+    return 420;
 }
 
 int MppZombieEntity::GetSpritePantColor() const 
 {
-    return kMppColorZombiePants;
+    return 420;
 }
 
 int MppZombieEntity::GetSpriteShoeColor() const 
 {
-    return kMppColorZombieShoes;
+    return 210;
 }
 
 int MppZombieEntity::GetMaxHealth() const

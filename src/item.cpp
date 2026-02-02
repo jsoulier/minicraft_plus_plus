@@ -74,9 +74,9 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood",
         .Type = MppItemTypeConsumable,
-        .Color1 = kMppColorWood1,
-        .Color2 = kMppColorWood2,
-        .Color3 = kMppColorWood3,
+        .Color1 = 320,
+        .Color2 = 430,
+        .Color3 = 540,
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 3,
@@ -167,17 +167,17 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone",
         .Type = MppItemTypeConsumable,
-        .Color1 = kMppColorStone1,
-        .Color2 = kMppColorStone2,
-        .Color3 = kMppColorStone3,
-        .Color4 = kMppColorStone4,
+        .Color1 = 333,
+        .Color2 = 111,
+        .Color3 = 555,
+        .Color4 = 444,
         .Color5 = 0,
         .SpriteX = 2,
         .SpriteY = 12,
     },
     {
         .Name = "workbench",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeFurniture,
         .CreateFurnitureEntity = CreateWorkbenchEntity,
         .Color1 = kMppColorWorkbench1,
         .Color2 = kMppColorWorkbench2,
@@ -189,7 +189,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "furnace",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeFurniture,
         .CreateFurnitureEntity = CreateFurnaceEntity,
         .Color1 = kMppColorFurnace1,
         .Color2 = kMppColorFurnace2,
@@ -201,7 +201,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "chest",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeFurniture,
         .CreateFurnitureEntity = CreateChestEntity,
         .Color1 = kMppColorChest1,
         .Color2 = kMppColorChest2,
@@ -214,10 +214,10 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "heart",
         .Type = MppItemTypeNone,
-        .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
-        .Color4 = 0,
+        .Color1 = 000,
+        .Color2 = 300,
+        .Color3 = 400,
+        .Color4 = 500,
         .Color5 = 0,
         .SpriteX = 0,
         .SpriteY = 16,
@@ -226,8 +226,8 @@ static const kItems[MppItemIDCount] =
         .Name = "energy",
         .Type = MppItemTypeNone,
         .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
+        .Color2 = 550,
+        .Color3 = 330,
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 1,
@@ -237,10 +237,10 @@ static const kItems[MppItemIDCount] =
         .Name = "food",
         .Type = MppItemTypeNone,
         .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color2 = 310,
+        .Color3 = 555,
+        .Color4 = 530,
+        .Color5 = 420,
         .SpriteX = 2,
         .SpriteY = 16,
     },
@@ -397,6 +397,31 @@ MppItemID MppItem::GetID() const
 MppItemType MppItem::GetType() const
 {
     return kItems[ID].Type;
+}
+
+int MppItem::GetColor1() const
+{
+    return kItems[ID].Color1;
+}
+
+int MppItem::GetColor2() const
+{
+    return kItems[ID].Color2;
+}
+
+int MppItem::GetColor3() const
+{
+    return kItems[ID].Color3;
+}
+
+int MppItem::GetColor4() const
+{
+    return kItems[ID].Color4;
+}
+
+int MppItem::GetColor5() const
+{
+    return kItems[ID].Color5;
 }
 
 int MppItem::GetPhysicsOffsetX() const

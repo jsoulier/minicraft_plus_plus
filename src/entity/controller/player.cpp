@@ -2,8 +2,11 @@
 #include <memory>
 #include <vector>
 
+#include "../../assert.hpp"
 #include "../../inventory.hpp"
+#include "../../log.hpp"
 #include "../../world.hpp"
+#include "../furniture.hpp"
 #include "../item.hpp"
 #include "../mob.hpp"
 #include "../player.hpp"
@@ -16,7 +19,70 @@ void MppPlayerController::OnAddEntity()
 {
     GetInventory()->SetOnActionCallback([this](int index)
     {
-        // TODO
+        std::shared_ptr<MppPlayerEntity> player = GetPlayer();
+        std::shared_ptr<MppInventory> inventory = player->GetInventory();
+        const MppItem& item = inventory->Get(index);
+        if (item.GetType() & MppItemTypeEquipment)
+        {
+            MppInventorySlot slot = inventory->GetSlotFromIndex(index);
+            if (slot != MppInventorySlotNone)
+            {
+                inventory->ResetSlot(slot);
+                return;
+            }
+        }
+        if (item.GetType() == MppItemTypeNone)
+        {
+            MppLog("Tried an action on an MppItemTypeNone: %s", item.GetName().data());
+            return;
+        }
+        else if (item.GetType() & MppItemTypeArmor)
+        {
+            if (item.GetType() == MppItemTypeHelmet)
+            {
+                inventory->SetSlot(MppInventorySlotHelmet, index);
+            }
+            else if (item.GetType() == MppItemTypeCuirass)
+            {
+                inventory->SetSlot(MppInventorySlotCuirass, index);
+            }
+            else if (item.GetType() == MppItemTypeLeggings)
+            {
+                inventory->SetSlot(MppInventorySlotLeggings, index);
+            }
+            else if (item.GetType() == MppItemTypeBoots)
+            {
+                inventory->SetSlot(MppInventorySlotBoots, index);
+            }
+            else
+            {
+                MppAssert(false);
+            }
+        }
+        else if (item.GetType() == MppItemTypeConsumable)
+        {
+            // TODO:
+        }
+        else if (item.GetType() == MppItemTypeFurniture)
+        {
+            if (!player->IsHoldingEntity())
+            {
+                std::shared_ptr<MppEntity> entity = item.CreateFurnitureEntity();
+                inventory->Remove(index);
+                player->Pickup(entity);
+            }
+        }
+        else if (item.GetType() & MppItemTypeTool)
+        {
+            if (!player->IsHoldingEntity())
+            {
+                inventory->SetSlot(MppInventorySlotHeld, index);
+            }
+        }
+        else
+        {
+            MppAssert(false);
+        }
     });
     GetInventory()->SetOnDropCallback([this](int index)
     {

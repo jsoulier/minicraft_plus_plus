@@ -40,16 +40,31 @@ enum MppItemID
 enum MppItemType
 {
     MppItemTypeNone,
-    MppItemTypePickaxe,
-    MppItemTypeAxe,
-    MppItemTypeShovel,
-    MppItemTypeSword,
-    MppItemTypeHoe,
-    MppItemTypeHelmet,
-    MppItemTypeCuirass,
-    MppItemTypeLeggings,
-    MppItemTypeBoots,
-    MppItemTypeConsumable,
+    MppItemTypePickaxe = 1,
+    MppItemTypeAxe = 2,
+    MppItemTypeShovel = 4,
+    MppItemTypeSword = 8,
+    MppItemTypeHoe = 16,
+    MppItemTypeHelmet = 32,
+    MppItemTypeCuirass = 64,
+    MppItemTypeLeggings = 128,
+    MppItemTypeBoots = 256,
+    MppItemTypeFurniture = 512,
+    MppItemTypeConsumable = 1024,
+    MppItemTypeTool =
+        MppItemTypePickaxe |
+        MppItemTypeAxe |
+        MppItemTypeShovel |
+        MppItemTypeSword |
+        MppItemTypeHoe,
+    MppItemTypeArmor =
+        MppItemTypeHelmet |
+        MppItemTypeCuirass |
+        MppItemTypeLeggings |
+        MppItemTypeBoots,
+    MppItemTypeEquipment =
+        MppItemTypeTool |
+        MppItemTypeArmor,
 };
 
 class MppItemRecipe : public MppMenu
@@ -83,6 +98,11 @@ public:
     int GetCount() const;
     MppItemID GetID() const;
     MppItemType GetType() const;
+    int GetColor1() const;
+    int GetColor2() const;
+    int GetColor3() const;
+    int GetColor4() const;
+    int GetColor5() const;
     int GetPhysicsOffsetX() const;
     int GetPhysicsOffsetY() const;
     int GetPhysicsWidth() const;

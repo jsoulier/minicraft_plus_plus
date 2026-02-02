@@ -2,7 +2,9 @@
 
 #include <cstdint>
 
+#include "../assert.hpp"
 #include "../color.hpp"
+#include "../inventory.hpp"
 #include "../renderer.hpp"
 #include "../sprite.hpp"
 #include "humanoid.hpp"
@@ -56,10 +58,54 @@ void MppHumanoidEntity::Render() const
         Y,
         Animation.GetFlip(),
         MppRendererLayerEntity);
+    Render(Inventory->GetBySlot(MppInventorySlotHelmet));
+    Render(Inventory->GetBySlot(MppInventorySlotCuirass));
+    Render(Inventory->GetBySlot(MppInventorySlotLeggings));
+    Render(Inventory->GetBySlot(MppInventorySlotBoots));
     if (HeldEntity)
     {
         // TODO: held entity
     }
+}
+
+void MppHumanoidEntity::Render(const MppItem& item) const
+{
+    int offset = 0;
+    if (item.GetType() == MppItemTypeHelmet)
+    {
+        offset = 1;
+    }
+    else if (item.GetType() == MppItemTypeCuirass)
+    {
+        offset = 2;
+    }
+    else if (item.GetType() == MppItemTypeLeggings)
+    {
+        offset = 3;
+    }
+    else if (item.GetType() == MppItemTypeBoots)
+    {
+        offset = 4;
+    }
+    else
+    {
+        return;
+    }
+    MppRendererDraw(
+        MppSprite{
+            item.GetColor1(),
+            item.GetColor2(),
+            item.GetColor3(),
+            item.GetColor4(),
+            item.GetColor5(),
+            Animation.GetX(),
+            Animation.GetY() + offset,
+            GetSize(),
+        },
+        X,
+        Y,
+        Animation.GetFlip(),
+        MppRendererLayerEntityOverlay);
 }
 
 int MppHumanoidEntity::GetPhysicsOffsetX() const
@@ -110,4 +156,15 @@ int MppHumanoidEntity::GetSpritePose2Y() const
 int MppHumanoidEntity::GetActionRange() const
 {
     return 16;
+}
+
+void MppHumanoidEntity::Pickup(const std::shared_ptr<MppEntity>& entity)
+{
+    MppAssert(!HeldEntity);
+    HeldEntity = entity;
+}
+
+bool MppHumanoidEntity::IsHoldingEntity() const
+{
+    return bool(HeldEntity);
 }

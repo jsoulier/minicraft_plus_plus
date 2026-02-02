@@ -18,6 +18,7 @@ enum MppInventorySlot
     MppInventorySlotLeggings,
     MppInventorySlotBoots,
     MppInventorySlotCount,
+    MppInventorySlotNone = MppInventorySlotCount,
 };
 
 class MppInventory
@@ -33,10 +34,14 @@ public:
     void Render() const;
     bool Add(const MppItem& item);
     int GetIndex() const;
-    const MppItem& Get(int index);
+    const MppItem& Get(int index) const;
     MppItem Remove(int index, int count = 1);
-    const MppItem& GetByID(MppItemID id);
+    const MppItem& GetByID(MppItemID id) const;
     MppItem RemoveByID(MppItemID id, int count);
+    const MppItem& GetBySlot(MppInventorySlot slot) const;
+    MppInventorySlot GetSlotFromIndex(int index);
+    void SetSlot(MppInventorySlot slot, int index);
+    void ResetSlot(MppInventorySlot slot);
     void SetMaxItems(int max);
     bool IsEmpty() const;
     void OnAction() override;

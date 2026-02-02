@@ -424,7 +424,7 @@ void MppConsole::OnTextInput(char character)
 void MppConsole::OnRender()
 {
     MppMenu::Render();
-    MppMenu::Render("/", kMppColorMenuUnlockedForeground, X1, Y1, MppMenuAlignmentLeft);
-    MppMenu::Render(Characters, kMppColorMenuUnlockedForeground, X1 + 8, Y1, MppMenuAlignmentLeft);
-    MppMenu::Render("^", kMppColorMenuUnlockedForeground, X1 + Characters.size() * 8 + 8, Y1 + 8, MppMenuAlignmentLeft);
+    MppMenu::Render("/", kMppColorMenuUnlocked, X1, Y1, MppMenuAlignmentLeft);
+    MppMenu::Render(Characters, kMppColorMenuUnlocked, X1 + 8, Y1, MppMenuAlignmentLeft);
+    MppMenu::Render("^", kMppColorMenuUnlocked, X1 + Characters.size() * 8 + 8, Y1 + 8, MppMenuAlignmentLeft);
 }

@@ -133,6 +133,7 @@ static void Move(int& x, int& y, MppRendererLayer layer)
     case MppRendererLayerTile:
     case MppRendererLayerTopTile:
     case MppRendererLayerEntity:
+    case MppRendererLayerEntityOverlay:
     case MppRendererLayerDebugPhysics:
     case MppRendererLayerDebugNavigation:
     case MppRendererLayerDebugFov:

@@ -51,21 +51,18 @@ void MppNPCController::Update(uint64_t ticks)
     entity->Push(dx, dy);
     if (MppConsole::CVarNavigation.GetBool())
     {
-        static constexpr int kColors[] = {kMppColorDebugNavigation1, kMppColorDebugNavigation2};
-        int color = 0;
         int x1 = entity->GetX() + MppTile::kSize / 2;
         int y1 = entity->GetY() + MppTile::kSize / 2;
         int x2 = Points[PointIndex].first + MppTile::kSize / 2;
         int y2 = Points[PointIndex].second + MppTile::kSize / 2;
-        MppRendererDrawLine(kColors[color], x1, y1, x2, y2, MppRendererLayerDebugNavigation);
+        MppRendererDrawLine(kMppColorDebugNavigation, x1, y1, x2, y2, MppRendererLayerDebugNavigation);
         for (int i = PointIndex; i < Points.size() - 1; i++)
         {
             int x1 = Points[i + 0].first + MppTile::kSize / 2;
             int y1 = Points[i + 0].second + MppTile::kSize / 2;
             int x2 = Points[i + 1].first + MppTile::kSize / 2;
             int y2 = Points[i + 1].second + MppTile::kSize / 2;
-            color = (color + 1) % SDL_arraysize(kColors);
-            MppRendererDrawLine(kColors[color], x1, y1, x2, y2, MppRendererLayerDebugNavigation);
+            MppRendererDrawLine(kMppColorDebugNavigation, x1, y1, x2, y2, MppRendererLayerDebugNavigation);
         }
     }
 }

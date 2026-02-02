@@ -21,27 +21,27 @@ int MppSheepEntity::GetSpritePoseY() const
 
 int MppSheepEntity::GetSpriteColor1() const
 {
-    return kMppColorSheep1;
+    return 0;
 }
 
 int MppSheepEntity::GetSpriteColor2() const
 {
-    return kMppColorSheep2;
+    return 555;
 }
 
 int MppSheepEntity::GetSpriteColor3() const
 {
-    return kMppColorSheep3;
+    return 0;
 }
 
 int MppSheepEntity::GetSpriteColor4() const
 {
-    return kMppColorSheep4;
+    return 532;
 }
 
 int MppSheepEntity::GetSpriteColor5() const
 {
-    return kMppColorSheep5;
+    return 0;
 }
 
 int MppSheepEntity::GetPhysicsOffsetX() const

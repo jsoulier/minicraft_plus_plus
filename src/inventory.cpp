@@ -44,16 +44,16 @@ void MppInventory::Render() const
         if (count > 1)
         {
             int offset = MppGetNumberOfDigits(count) * 8;
-            MppMenu::Render(std::to_string(count), kMppColorMenuUnlockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
-            MppMenu::Render(item.GetName(), kMppColorMenuUnlockedForeground, X1 + 24 + offset, y, MppMenuAlignmentLeft);
+            MppMenu::Render(std::to_string(count), kMppColorMenuUnlocked, X1 + 16, y, MppMenuAlignmentLeft);
+            MppMenu::Render(item.GetName(), kMppColorMenuUnlocked, X1 + 24 + offset, y, MppMenuAlignmentLeft);
         }
         else if (count == 1)
         {
-            MppMenu::Render(item.GetName(), kMppColorMenuUnlockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
+            MppMenu::Render(item.GetName(), kMppColorMenuUnlocked, X1 + 16, y, MppMenuAlignmentLeft);
         }
         else if (count == 0)
         {
-            MppMenu::Render(item.GetName(), kMppColorMenuLockedForeground, X1 + 16, y, MppMenuAlignmentLeft);
+            MppMenu::Render(item.GetName(), kMppColorMenuLocked, X1 + 16, y, MppMenuAlignmentLeft);
         }
         else
         {
@@ -62,7 +62,19 @@ void MppInventory::Render() const
     }
     if (Focused)
     {
-        MppMenu::Render(">", kMppColorMenuUnlockedForeground, X1, Y1 + (Index - Top) * 8, MppMenuAlignmentLeft);
+        MppMenu::Render(">", kMppColorMenuUnlocked, X1, Y1 + (Index - Top) * 8, MppMenuAlignmentLeft);
+    }
+    for (int slot : Slots)
+    {
+        if (Focused && slot == Index)
+        {
+            continue;
+        }
+        if (slot < Top || slot > Top + maxRows)
+        {
+            continue;
+        }
+        MppMenu::Render("E", 333, X1, Y1 + (slot - Top) * 8, MppMenuAlignmentLeft);
     }
 }
 
@@ -93,7 +105,7 @@ int MppInventory::GetIndex() const
     return Index;
 }
 
-const MppItem& MppInventory::Get(int index)
+const MppItem& MppInventory::Get(int index) const
 {
     MppAssert(!Items.empty());
     return Items[index];
@@ -104,6 +116,7 @@ MppItem MppInventory::Remove(int index, int count)
     MppAssert(index < Items.size());
     MppItem& item = Items[index];
     MppItem removedItem = item.Remove(count);
+    bool erased = false;
     if (item.GetCount() == 0)
     {
         if (Index <= index)
@@ -111,11 +124,27 @@ MppItem MppInventory::Remove(int index, int count)
             OnUpArrow();
         }
         Items.erase(Items.begin() + index);
+        erased = true;
+    }
+    if (erased)
+    {
+        for (int& slot : Slots)
+        {
+            if (slot == index)
+            {
+                slot = kInvalidSlot;
+            }
+            else if (slot > index)
+            {
+                slot--;
+                MppAssert(slot >= 0);
+            }
+        }
     }
     return removedItem;
 }
 
-const MppItem& MppInventory::GetByID(MppItemID id)
+const MppItem& MppInventory::GetByID(MppItemID id) const
 {
     for (int i = 0; i < Items.size(); i++)
     {
@@ -138,6 +167,43 @@ MppItem MppInventory::RemoveByID(MppItemID id, int count)
     }
     MppAssert(false);
     return kMppItemInvalid;
+}
+
+const MppItem& MppInventory::GetBySlot(MppInventorySlot slot) const
+{
+    int slotIndex = Slots[slot];
+    if (slotIndex != kInvalidSlot)
+    {
+        return Items[slotIndex];
+    }
+    else
+    {
+        return kMppItemInvalid;
+    }
+}
+
+MppInventorySlot MppInventory::GetSlotFromIndex(int index)
+{
+    for (int i = 0; i < MppInventorySlotCount; i++)
+    {
+        if (Slots[i] == index)
+        {
+            return MppInventorySlot(i);
+        }
+    }
+    return MppInventorySlotNone;
+}
+
+void MppInventory::SetSlot(MppInventorySlot slot, int index)
+{
+    MppAssert(index < Items.size());
+    Slots[slot] = index;
+}
+
+void MppInventory::ResetSlot(MppInventorySlot slot)
+{
+    MppAssert(Slots[slot] != kInvalidSlot);
+    Slots[slot] = kInvalidSlot;
 }
 
 void MppInventory::SetMaxItems(int max)

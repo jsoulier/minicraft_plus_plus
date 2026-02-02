@@ -18,9 +18,6 @@
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
 {
-    Inventory->SetIsFocused(true);
-    Inventory->SetX2(124);
-    Inventory->SetY2(120);
 }
 
 void MppPlayerEntity::OnAddEntity()
@@ -30,6 +27,11 @@ void MppPlayerEntity::OnAddEntity()
     SetX2(256);
     SetY1(128);
     SetY2(144);
+    Inventory->SetIsFocused(true);
+    Inventory->SetX1(4);
+    Inventory->SetY1(4);
+    Inventory->SetX2(128);
+    Inventory->SetY2(124);
 }
 
 void MppPlayerEntity::PostUpdate(uint64_t ticks)
@@ -72,27 +74,27 @@ std::shared_ptr<MppController> MppPlayerEntity::GetController()
 
 int MppPlayerEntity::GetSpriteBorderColor() const
 {
-    return kMppColorPlayerBorder;
+    return 0;
 }
 
 int MppPlayerEntity::GetSpriteSkinColor() const
 {
-    return kMppColorPlayerSkin;
+    return 532;
 }
 
 int MppPlayerEntity::GetSpriteShirtColor() const
 {
-    return kMppColorPlayerShirt;
+    return 500;
 }
 
 int MppPlayerEntity::GetSpritePantColor() const
 {
-    return kMppColorPlayerPants;
+    return 5;
 }
 
 int MppPlayerEntity::GetSpriteShoeColor() const
 {
-    return kMppColorPlayerShoes;
+    return 211;
 }
 
 int MppPlayerEntity::GetMaxHealth() const

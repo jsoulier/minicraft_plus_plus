@@ -8,6 +8,8 @@
 #include "../sprite.hpp"
 #include "mob.hpp"
 
+class MppItem;
+
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
@@ -20,8 +22,11 @@ public:
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
     int GetActionRange() const override;
+    void Pickup(const std::shared_ptr<MppEntity>& entity);
+    bool IsHoldingEntity() const;
 
 protected:
+    void Render(const MppItem& item) const;
     int GetMaxItems() const override;
     int GetSpritePose1X() const;
     int GetSpritePose1Y() const;

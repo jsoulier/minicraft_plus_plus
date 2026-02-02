@@ -32,7 +32,7 @@ struct Header
 
 static const std::filesystem::path kPrefPath = SDL_GetPrefPath(nullptr, "minicraft++");
 static const std::filesystem::path kSavePath = kPrefPath / "minicraft++.savepoint";
-static constexpr uint64_t kTicks = 10000;
+static constexpr uint64_t kTicks = 1000;
 
 static Savepoint savepoint;
 static SavepointStatus status;

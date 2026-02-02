@@ -40,6 +40,7 @@ add_executable(minicraft++ WIN32
     src/entity/recipe.cpp
     src/entity/sheep.cpp
     src/entity/slime.cpp
+    src/entity/spider.cpp
     src/entity/workbench.cpp
     src/entity/zombie.cpp
     src/gen.cpp

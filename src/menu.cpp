@@ -6,6 +6,8 @@
 #include "menu.hpp"
 #include "renderer.hpp"
 
+static constexpr int kBackgroundColor = 5;
+
 MppMenu::MppMenu()
     : X1{8}
     , Y1{8}
@@ -16,7 +18,7 @@ MppMenu::MppMenu()
 
 void MppMenu::Render() const
 {
-    MppRendererDrawRect(kMppColorMenuBackground, X1, Y1, GetWidth(), GetHeight(), MppRendererLayerMenu);
+    MppRendererDrawRect(kBackgroundColor, X1, Y1, GetWidth(), GetHeight(), MppRendererLayerMenu);
 }
 
 void MppMenu::Render(const std::string_view& string, int color, int x, int y, MppMenuAlignment alignment) const
