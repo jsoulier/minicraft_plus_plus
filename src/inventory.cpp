@@ -134,7 +134,7 @@ MppItem MppInventory::Remove(int index, int count)
             {
                 slot = kInvalidSlot;
             }
-            else if (slot > index)
+            else if (slot > index && slot != kInvalidSlot)
             {
                 slot--;
                 MppAssert(slot >= 0);

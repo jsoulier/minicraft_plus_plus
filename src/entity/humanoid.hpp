@@ -24,6 +24,7 @@ public:
     int GetActionRange() const override;
     void Pickup(const std::shared_ptr<MppEntity>& entity);
     bool IsHoldingEntity() const;
+    void DropHeldEntity();
 
 protected:
     void Render(const MppItem& item) const;

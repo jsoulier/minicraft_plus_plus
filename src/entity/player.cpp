@@ -30,7 +30,7 @@ void MppPlayerEntity::OnAddEntity()
     Inventory->SetIsFocused(true);
     Inventory->SetX1(4);
     Inventory->SetY1(4);
-    Inventory->SetX2(128);
+    Inventory->SetX2(126);
     Inventory->SetY2(124);
 }
 
@@ -56,7 +56,7 @@ void MppPlayerEntity::Render() const
     for (int i = 0; i < hunger; i++)
     {
         int x = 176 + i * MppItem::kSize;
-        int y = 128;
+        int y = 136;
         MppItem{MppItemIDFood}.Render(x, y, MppRendererLayerMenuContent);
     }
     for (int i = 0; i < energy; i++)
@@ -64,6 +64,11 @@ void MppPlayerEntity::Render() const
         int x = i * MppItem::kSize;
         int y = 136;
         MppItem{MppItemIDEnergy}.Render(x, y, MppRendererLayerMenuContent);
+    }
+    const MppItem& held = Inventory->GetBySlot(MppInventorySlotHeld);
+    if (held.IsValid())
+    {
+        MppMenu::Render(held.GetName(), kMppColorMenuUnlocked, 256, 128, MppMenuAlignmentRight);
     }
 }
 

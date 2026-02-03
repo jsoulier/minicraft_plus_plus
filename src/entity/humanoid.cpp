@@ -7,6 +7,7 @@
 #include "../inventory.hpp"
 #include "../renderer.hpp"
 #include "../sprite.hpp"
+#include "../world.hpp"
 #include "humanoid.hpp"
 
 static constexpr int kTickRate = 10;
@@ -64,7 +65,9 @@ void MppHumanoidEntity::Render() const
     Render(Inventory->GetBySlot(MppInventorySlotBoots));
     if (HeldEntity)
     {
-        // TODO: held entity
+        HeldEntity->SetX(X);
+        HeldEntity->SetY(Y - HeldEntity->GetPhysicsHeight());
+        HeldEntity->Render();
     }
 }
 
@@ -167,4 +170,11 @@ void MppHumanoidEntity::Pickup(const std::shared_ptr<MppEntity>& entity)
 bool MppHumanoidEntity::IsHoldingEntity() const
 {
     return bool(HeldEntity);
+}
+
+void MppHumanoidEntity::DropHeldEntity()
+{
+    MppAssert(HeldEntity);
+    MppWorldAddEntity(HeldEntity);
+    HeldEntity = nullptr;
 }

@@ -98,6 +98,11 @@ void MppPlayerController::OnAddEntity()
 void MppPlayerController::OnAction()
 {
     std::shared_ptr<MppPlayerEntity> player = GetPlayer();
+    if (player->IsHoldingEntity())
+    {
+        player->DropHeldEntity();
+        return;
+    }
     std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(player->GetX(), player->GetY());
     std::erase_if(entities, [&](std::shared_ptr<MppEntity>& other)
     {
