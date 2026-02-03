@@ -16,9 +16,10 @@ static constexpr int kMaxItems = 32;
 MppChestEntity::MppChestEntity()
     : Inventory{std::make_shared<MppInventory>()}
 {
-    Inventory->SetX1(132);
+    Inventory->SetX1(130);
+    Inventory->SetY1(4);
     Inventory->SetX2(246);
-    Inventory->SetY2(136);
+    Inventory->SetY2(124);
     Inventory->SetMaxItems(kMaxItems);
 }
 

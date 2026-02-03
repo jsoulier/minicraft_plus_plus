@@ -14,8 +14,10 @@ MppRecipeEntity::MppRecipeEntity()
     : Inventory{std::make_shared<MppInventory>()}
 {
     Inventory->SetIsFocused(true);
-    Inventory->SetX2(124);
-    Inventory->SetY2(120);
+    Inventory->SetX1(4);
+    Inventory->SetY1(4);
+    Inventory->SetX2(126);
+    Inventory->SetY2(124);
     Inventory->SetMaxItems(MppItemIDCount);
 }
 

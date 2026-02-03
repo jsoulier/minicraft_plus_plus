@@ -26,7 +26,7 @@ void MppMenu::Render(const std::string_view& string, int color, int x, int y, Mp
     switch (alignment)
     {
     case MppMenuAlignmentCenter:
-        x += string.size() * 8 / 2;
+        x -= string.size() * 8 / 2;
         break;
     case MppMenuAlignmentLeft:
         x += 0;

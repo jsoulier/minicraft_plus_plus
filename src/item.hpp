@@ -34,6 +34,23 @@ enum MppItemID
     MppItemIDEnergy,
     MppItemIDFood,
     MppItemIDAnvil,
+    MppItemIDWoodSword,
+    MppItemIDWoodPickaxe,
+    MppItemIDWoodAxe,
+    MppItemIDWoodShovel,
+    MppItemIDWoodHoe,
+    MppItemIDWoodBow,
+    MppItemIDString,
+    MppItemIDStoneSword,
+    MppItemIDStonePickaxe,
+    MppItemIDStoneAxe,
+    MppItemIDStoneShovel,
+    MppItemIDStoneHoe,
+    MppItemIDIronSword,
+    MppItemIDIronPickaxe,
+    MppItemIDIronAxe,
+    MppItemIDIronShovel,
+    MppItemIDIronHoe,
     MppItemIDCount,
 };
 
@@ -51,6 +68,7 @@ enum MppItemType
     MppItemTypeBoots = 256,
     MppItemTypeFurniture = 512,
     MppItemTypeConsumable = 1024,
+    MppItemTypeBow = 2048,
     MppItemTypeTool =
         MppItemTypePickaxe |
         MppItemTypeAxe |
