@@ -18,8 +18,6 @@ void MppHumanoidEntity::OnAddEntity()
     Animation.SetTickRate(kTickRate);
     Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
     Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
-    // TODO: having to update here is error prone
-    Animation.Update(0, FacingX, FacingY, 0);
 }
 
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
@@ -31,13 +29,16 @@ void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 void MppHumanoidEntity::PostUpdate(uint64_t ticks) 
 {
     MppMobEntity::PostUpdate(ticks);
-    if (!HeldEntity)
+    if (VelocityX || VelocityY)
     {
-        Animation.Update(0, VelocityX, VelocityY, ticks);
-    }
-    else
-    {
-        Animation.Update(1, VelocityX, VelocityY, ticks);
+        if (!HeldEntity)
+        {
+            Animation.Update(0, FacingX, FacingY, ticks);
+        }
+        else
+        {
+            Animation.Update(1, FacingX, FacingY, ticks);
+        }
     }
 }
 
@@ -177,4 +178,11 @@ void MppHumanoidEntity::DropHeldEntity()
     MppAssert(HeldEntity);
     MppWorldAddEntity(HeldEntity);
     HeldEntity = nullptr;
+}
+
+void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)
+{
+    MppAssert(!HeldEntity);
+    Animation.Update(0, FacingX, FacingY);
+    entity->OnAction(*this);
 }

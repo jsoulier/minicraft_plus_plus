@@ -16,7 +16,7 @@ enum MppCreatureControllerState
     
 class MppCreatureController : public MppNPCController
 {
-    SAVEPOINT_DERIVED(MppCreatureController)
+    SAVEPOINT_POLY(MppCreatureController)
 
 public:
     MppCreatureController();

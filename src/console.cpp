@@ -220,7 +220,7 @@ void MppConsole::HandleEntity(const std::vector<std::string>& tokens)
         return;
     }
     std::string name = GetEntityName(tokens[1]);
-    SavepointDerivedFunction function = SavepointGetDerivedFunction(name);
+    SavepointPolyFunction function = SavepointGetPolyFunction(name);
     if (!function)
     {
         MppLog("Unknown entity: %s", tokens[1].data());
@@ -290,7 +290,7 @@ void MppConsole::HandleKill(const std::vector<std::string>& tokens)
     std::string name = GetEntityName(tokens[1]);
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
     {
-        if (entity->GetName() == name)
+        if (entity->GetClassName() == name)
         {
             entity->Kill();
         }

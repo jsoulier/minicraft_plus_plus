@@ -29,8 +29,6 @@ void MppCreatureEntity::OnAddEntity()
     MppMobEntity::OnAddEntity();
     Animation.SetTickRate(kTickRate);
     Animation.SetPose(0, GetSpritePoseX(), GetSpritePoseY());
-    // TODO: having to update here is error prone
-    Animation.Update(0, FacingX, FacingY, 0);
 }
 
 void MppCreatureEntity::Visit(SavepointVisitor& visitor)
@@ -43,7 +41,10 @@ void MppCreatureEntity::PostUpdate(uint64_t ticks)
 {
     MppMobEntity::PostUpdate(ticks);
     FleeTicks--;
-    Animation.Update(0, VelocityX, VelocityY, ticks);
+    if (VelocityX || VelocityY)
+    {
+        Animation.Update(0, FacingX, FacingY, ticks);
+    }
 }
 
 void MppCreatureEntity::Render() const

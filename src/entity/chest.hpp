@@ -12,7 +12,7 @@ class MppChestEntity final
     , public MppInputHandler
 
 {
-    SAVEPOINT_DERIVED(MppChestEntity)
+    SAVEPOINT_POLY(MppChestEntity)
 
 public:
     MppChestEntity();

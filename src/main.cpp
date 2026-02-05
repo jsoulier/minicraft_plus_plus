@@ -8,7 +8,6 @@
 #include "input.hpp"
 #include "log.hpp"
 #include "renderer.hpp"
-#include "save.hpp"
 #include "version.hpp"
 #include "world.hpp"
 
@@ -31,11 +30,6 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
         MppLog("Failed to initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-    if (!MppSaveInit())
-    {
-        MppLog("Failed to initialize save");
-        // Intentionally not a fatal error
-    }
     if (!MppRendererInit())
     {
         MppLog("Failed to initialize renderer");
@@ -51,7 +45,7 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
         MppLog("Failed to initialize world");
         return SDL_APP_FAILURE;
     }
-    savedTicks = MppSaveGetTicks();
+    savedTicks = MppWorldGetTicks();
     return SDL_APP_CONTINUE;
 }
 
@@ -59,11 +53,10 @@ void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     uint64_t ticks = GetTicks();
     MppInputQuit();
-    MppSaveUpdate(ticks, true);
+    MppWorldSave(ticks, true);
     MppWorldQuit();
     MppAudioQuit();
     MppRendererQuit();
-    MppSaveQuit();
     SDL_Quit();
 }
 
@@ -73,7 +66,7 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     uint64_t ticks = GetTicks();
     MppInputUpdate(ticks);
     MppWorldUpdate(ticks);
-    MppSaveUpdate(ticks, false);
+    MppWorldSave(ticks, false);
     MppWorldRender();
     MppInputRender();
     MppRendererSubmit();

@@ -8,7 +8,7 @@ class MppInventory;
 
 class MppFurnaceEntity final : public MppRecipeEntity
 {
-    SAVEPOINT_DERIVED(MppFurnaceEntity)
+    SAVEPOINT_POLY(MppFurnaceEntity)
 
 public:
     MppFurnaceEntity();

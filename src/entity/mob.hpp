@@ -25,6 +25,7 @@ public:
     void PushNow(int dx, int dy);
     int GetFacingX() const;
     int GetFacingY() const;
+    virtual void DoAction(std::shared_ptr<MppEntity>& entity) {}
 
 protected:
     virtual void PostUpdate(uint64_t ticks);

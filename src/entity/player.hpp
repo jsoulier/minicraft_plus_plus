@@ -13,7 +13,7 @@ class MppPlayerEntity final
     , public MppInputHandler
     , public MppMenu
 {
-    SAVEPOINT_DERIVED(MppPlayerEntity)
+    SAVEPOINT_POLY(MppPlayerEntity)
 
 public:
     MppPlayerEntity();

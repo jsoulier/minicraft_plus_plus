@@ -6,7 +6,7 @@
 
 class MppSheepEntity final : public MppCreatureEntity
 {
-    SAVEPOINT_DERIVED(MppSheepEntity)
+    SAVEPOINT_POLY(MppSheepEntity)
 
 public:
     MppSheepEntity();

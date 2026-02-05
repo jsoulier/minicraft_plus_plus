@@ -9,7 +9,7 @@ class MppInventory;
 class MppMobEntity;
 
 class MppController 
-    : public SavepointBase
+    : public SavepointPoly
     , public std::enable_shared_from_this<MppController>
 {
 public:

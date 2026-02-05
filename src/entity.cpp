@@ -25,7 +25,7 @@ MppEntityReference::MppEntityReference()
 
 MppEntityReference::MppEntityReference(std::shared_ptr<MppEntity>& entity)
     : Entity{entity}
-    , EntityID{entity->SavepointGetID()}
+    , EntityID{entity->GetID()}
 {
 }
 
@@ -52,7 +52,7 @@ void MppEntityReference::Update()
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
     {
-        if (entity->SavepointGetID() == EntityID)
+        if (entity->GetID() == EntityID)
         {
             Entity = entity;
             return;
@@ -184,7 +184,7 @@ void MppEntity::MoveAxis(int dx, int dy)
     // TODO: we need to loop here if abs(dx or dy) > 1
     X += dx;
     Y += dy;
-    if (!MoveAxisTest())
+    if (HasPhysics() && !MoveAxisTest())
     {
         X = x;
         Y = y;
@@ -254,7 +254,12 @@ bool MppEntity::IsDead() const
     return Dead;
 }
 
-std::string MppEntity::GetName() const
+bool MppEntity::HasPhysics() const
 {
-    return std::string(SavepointGetString());
+    return true;
+}
+
+bool MppEntity::ShouldSave() const
+{
+    return true;
 }

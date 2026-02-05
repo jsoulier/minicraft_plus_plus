@@ -10,13 +10,15 @@
 
 enum Size
 {
+    Size2,
+    Size4,
     Size8,
     Size16,
     SizeCount,
 };
 
 static constexpr uint64_t kInvalid = std::numeric_limits<uint64_t>::max();
-static constexpr int kSizes[SizeCount] = {8, 16};
+static constexpr int kSizes[SizeCount] = {2, 4, 8, 16};
 static constexpr int kAlignment = 16;
 
 MppSprite::MppSprite()
@@ -37,17 +39,17 @@ MppSprite::MppSprite(int color)
 MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int s)
     : Value{0}
 {
+    static_assert(kSizes[Size2] == 2);
+    static_assert(kSizes[Size4] == 4);
     static_assert(kSizes[Size8] == 8);
     static_assert(kSizes[Size16] == 16);
     Size size;
     switch (s)
     {
-    case 8:
-        size = Size8;
-        break;
-    case 16:
-        size = Size16;
-        break;
+    case 2: size = Size4; break;
+    case 4: size = Size4; break;
+    case 8: size = Size8; break;
+    case 16: size = Size16; break;
     default:
         size = Size8;
         MppAssert(false);
@@ -59,7 +61,7 @@ MppSprite::MppSprite(int c1, int c2, int c3, int c4, int c5, int x, int y, int s
     MppAssert(c5 < 1024);
     MppAssert(x < 64);
     MppAssert(y < 64);
-    MppAssert(size < 2);
+    MppAssert(size < 4);
     Value |= static_cast<uint64_t>(c1) << 0;
     Value |= static_cast<uint64_t>(c2) << 10;
     Value |= static_cast<uint64_t>(c3) << 20;
@@ -153,10 +155,7 @@ MppSpriteAnimation::MppSpriteAnimation()
 void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
 {
     MppAssert(pose < kMaxPoses);
-    if (!dx && !dy)
-    {
-        return;
-    }
+    MppAssert(dx || dy);
     if (ticks % TickRate == 0)
     {
         Tick = !Tick;
@@ -189,11 +188,17 @@ void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
     }
 }
 
+void MppSpriteAnimation::Update(int pose, int dx, int dy)
+{
+    Update(pose, dx, dy, TickRate);
+}
+
 void MppSpriteAnimation::SetPose(int pose, int x, int y)
 {
     MppAssert(pose < kMaxPoses);
     Poses[pose][0] = x;
     Poses[pose][1] = y;
+    Update(0, 0, 1);
 }
 
 void MppSpriteAnimation::SetTickRate(int rate)

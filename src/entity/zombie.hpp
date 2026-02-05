@@ -6,7 +6,7 @@
 
 class MppZombieEntity final : public MppHumanoidEntity
 {
-    SAVEPOINT_DERIVED(MppZombieEntity)
+    SAVEPOINT_POLY(MppZombieEntity)
 
 public:
     MppZombieEntity();

@@ -36,6 +36,7 @@ add_executable(minicraft++ WIN32
     src/entity/humanoid.cpp
     src/entity/item.cpp
     src/entity/mob.cpp
+    src/entity/particle.cpp
     src/entity/player.cpp
     src/entity/recipe.cpp
     src/entity/sheep.cpp
@@ -50,7 +51,6 @@ add_executable(minicraft++ WIN32
     src/main.cpp
     src/menu.cpp
     src/renderer.cpp
-    src/save.cpp
     src/sprite.cpp
     src/tile.cpp
     src/util.cpp

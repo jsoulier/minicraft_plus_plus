@@ -9,7 +9,7 @@ class MppPlayerController
     : public MppController
     , public MppInputHandler
 {
-    SAVEPOINT_DERIVED(MppPlayerController)
+    SAVEPOINT_POLY(MppPlayerController)
 
 public:
     MppPlayerController() = default;

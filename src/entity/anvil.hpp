@@ -6,7 +6,7 @@
 
 class MppAnvilEntity final : public MppRecipeEntity
 {
-    SAVEPOINT_DERIVED(MppAnvilEntity)
+    SAVEPOINT_POLY(MppAnvilEntity)
 
 public:
     MppAnvilEntity();

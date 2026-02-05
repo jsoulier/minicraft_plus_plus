@@ -20,14 +20,15 @@ void MppSpiderEntity::OnAddEntity()
     MppMobEntity::OnAddEntity();
     Animation.SetTickRate(kTickRate);
     Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
-    // TODO: having to update here is error prone
-    Animation.Update(0, FacingX, FacingY, 0);
 }
 
 void MppSpiderEntity::PostUpdate(uint64_t ticks)
 {
     MppMobEntity::PostUpdate(ticks);
-    Animation.Update(0, VelocityX, VelocityY, ticks);
+    if (VelocityX || VelocityY)
+    {
+        Animation.Update(0, FacingX, FacingY, ticks);
+    }
 }
 
 void MppSpiderEntity::Render() const

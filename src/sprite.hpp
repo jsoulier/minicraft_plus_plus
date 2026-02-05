@@ -40,6 +40,7 @@ private:
 public:
     MppSpriteAnimation();
     void Update(int pose, int dx, int dy, uint64_t ticks);
+    void Update(int pose, int dx, int dy);
     void SetPose(int pose, int x, int y);
     void SetTickRate(int rate);
     int GetX() const;

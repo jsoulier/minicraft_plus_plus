@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -9,6 +10,7 @@ class MppTile;
 bool MppWorldInit();
 void MppWorldQuit();
 void MppWorldUpdate(uint64_t ticks);
+void MppWorldSave(uint64_t ticks, bool force);
 void MppWorldRender();
 MppTile& MppWorldGetTile(int x, int y, int level);
 MppTile& MppWorldGetTile(int x, int y);
@@ -22,3 +24,4 @@ void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity);
 int MppWorldGetLevel();
 int MppWorldGetLevelCount();
 int MppWorldGetSize();
+uint64_t MppWorldGetTicks();

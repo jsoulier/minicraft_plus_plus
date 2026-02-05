@@ -25,6 +25,7 @@ public:
     void Pickup(const std::shared_ptr<MppEntity>& entity);
     bool IsHoldingEntity() const;
     void DropHeldEntity();
+    void DoAction(std::shared_ptr<MppEntity>& entity) override;
 
 protected:
     void Render(const MppItem& item) const;

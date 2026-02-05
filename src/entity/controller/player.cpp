@@ -120,7 +120,7 @@ void MppPlayerController::OnAction()
         std::shared_ptr<MppEntity>& entity = entities[0];
         if (player->GetDistance(entity) <= player->GetActionRange())
         {
-            entity->OnAction(*player);
+            player->DoAction(entity);
         }
     }
     else

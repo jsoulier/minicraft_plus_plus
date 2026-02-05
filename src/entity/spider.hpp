@@ -8,7 +8,7 @@
 
 class MppSpiderEntity final : public MppMobEntity
 {
-    SAVEPOINT_DERIVED(MppSpiderEntity)
+    SAVEPOINT_POLY(MppSpiderEntity)
 
 public:
     MppSpiderEntity();

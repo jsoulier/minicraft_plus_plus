@@ -18,7 +18,7 @@ enum MppMeleeControllerState
 
 class MppMeleeController : public MppNPCController
 {
-    SAVEPOINT_DERIVED(MppMeleeController)
+    SAVEPOINT_POLY(MppMeleeController)
 
 public:
     MppMeleeController();

@@ -24,9 +24,9 @@ enum MppInventorySlot
 class MppInventory
     : public MppMenu
     , public MppInputHandler
-    , public SavepointBase
+    , public SavepointPoly
 {
-    SAVEPOINT_DERIVED(MppInventory)
+    SAVEPOINT_POLY(MppInventory)
 
 public:
     MppInventory();

@@ -6,7 +6,7 @@
 
 class MppWorkbenchEntity final : public MppRecipeEntity
 {
-    SAVEPOINT_DERIVED(MppWorkbenchEntity)
+    SAVEPOINT_POLY(MppWorkbenchEntity)
 
 public:
     MppWorkbenchEntity();

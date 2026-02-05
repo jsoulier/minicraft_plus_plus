@@ -8,6 +8,8 @@
 
 class MppEntity;
 
+// For establishing references when deserialized from the Savepoint
+// TODO: Add a map of SavepointIDs to weak_ptr entities for faster lookups
 class MppEntityReference
 {
     friend class MppEntity;
@@ -29,7 +31,7 @@ private:
 
 class MppEntity :
     public SavepointEntity,
-    public SavepointBase,
+    public SavepointPoly,
     public std::enable_shared_from_this<MppEntity>
 {
 protected:
@@ -56,9 +58,10 @@ public:
     virtual int GetSize() const = 0;
     void Kill();
     bool IsDead() const;
-    std::string GetName() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
     MppEntityReference GetReference();
+    virtual bool HasPhysics() const;
+    virtual bool ShouldSave() const;
 
 protected:
     void Move(int dx, int dy);

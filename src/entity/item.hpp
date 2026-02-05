@@ -7,7 +7,7 @@
 
 class MppItemEntity final : public MppEntity
 {
-    SAVEPOINT_DERIVED(MppItemEntity)
+    SAVEPOINT_POLY(MppItemEntity)
 
 public:
     MppItemEntity();
