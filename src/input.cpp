@@ -22,6 +22,7 @@ static constexpr int kLeftArrow = SDL_SCANCODE_LEFT;
 static constexpr int kRightArrow = SDL_SCANCODE_RIGHT;
 static constexpr int kLeft = SDL_SCANCODE_A;
 static constexpr int kRight = SDL_SCANCODE_D;
+static constexpr int kCrouch = SDL_SCANCODE_LSHIFT;
 static constexpr int kExit = SDL_SCANCODE_ESCAPE;
 static constexpr int kEnter = SDL_SCANCODE_RETURN;
 static constexpr int kBackspace = SDL_SCANCODE_BACKSPACE;
@@ -110,6 +111,10 @@ void MppInputUpdate(uint64_t ticks)
     if (keys[kRight])
     {
         handler->OnHeldRight();
+    }
+    if (keys[kCrouch])
+    {
+        handler->OnHeldCrouch();
     }
 }
 

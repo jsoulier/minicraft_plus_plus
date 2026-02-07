@@ -38,6 +38,7 @@ public:
     virtual void OnHeldDown() {}
     virtual void OnHeldLeft() {}
     virtual void OnHeldRight() {}
+    virtual void OnHeldCrouch() {}
     virtual void OnTextInput(char character) {}
     virtual void OnUpdate(uint64_t ticks) {}
     virtual void OnRender() {}

@@ -19,6 +19,7 @@ static constexpr int kMppColorDebugGroundTilePhysics = kMppColorMagenta;
 static constexpr int kMppColorDebugWallTilePhysics = kMppColorGreen;
 static constexpr int kMppColorDebugLiquidTilePhysics = kMppColorBlue;
 static constexpr int kMppColorDebugFov = kMppColorRed;
+static constexpr int kMppColorDebugAction = kMppColorBlue;
 
 static constexpr int kMppColorAnvil1 = 111;
 static constexpr int kMppColorAnvil2 = 222;

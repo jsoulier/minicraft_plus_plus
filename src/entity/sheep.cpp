@@ -9,12 +9,12 @@ MppSheepEntity::MppSheepEntity()
 {
 }
 
-int MppSheepEntity::GetSpritePoseX() const
+int MppSheepEntity::GetSpritePose1X() const
 {
     return 8;
 }
 
-int MppSheepEntity::GetSpritePoseY() const
+int MppSheepEntity::GetSpritePose1Y() const
 {
     return 6;
 }

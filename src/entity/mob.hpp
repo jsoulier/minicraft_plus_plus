@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "../entity.hpp"
+#include "../sprite.hpp"
 
 class MppController;
 class MppInventory;
@@ -15,7 +16,7 @@ public:
     MppMobEntity();
     virtual void OnAddEntity() override;
     virtual void Visit(SavepointVisitor& visitor) override;
-    virtual void Update(uint64_t ticks) override final;
+    virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
     bool IsInFov(const std::shared_ptr<MppEntity>& entity);
     int GetSize() const override;
@@ -25,10 +26,13 @@ public:
     void PushNow(int dx, int dy);
     int GetFacingX() const;
     int GetFacingY() const;
-    virtual void DoAction(std::shared_ptr<MppEntity>& entity) {}
+    virtual void DoAction(std::shared_ptr<MppEntity>& entity);
+    bool IsMoving();
+    int GetHealth() const;
+    int GetHunger() const;
+    int GetEnergy() const;
 
 protected:
-    virtual void PostUpdate(uint64_t ticks);
     virtual int GetMaxItems() const;
     virtual int GetSpeed() const;
     virtual std::shared_ptr<MppController> GetController();
@@ -36,14 +40,28 @@ protected:
     virtual int GetMaxHealth() const = 0;
     virtual int GetMaxHunger() const = 0;
     virtual int GetMaxEnergy() const = 0;
+    virtual int GetPose() const;
+    virtual int GetSpriteColor1() const = 0;
+    virtual int GetSpriteColor2() const = 0;
+    virtual int GetSpriteColor3() const = 0;
+    virtual int GetSpriteColor4() const = 0;
+    virtual int GetSpriteColor5() const = 0;
+    virtual int GetSpriteTickRate() const;
+    virtual int GetSpritePose1X() const = 0;
+    virtual int GetSpritePose1Y() const = 0;
+    virtual int GetSpritePose2X() const;
+    virtual int GetSpritePose2Y() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;
     std::shared_ptr<MppController> Controller;
-    int VelocityX;
-    int VelocityY;
+    MppSpriteAnimation Animation;
+
+private:
     int FacingX;
     int FacingY;
+    int VelocityX;
+    int VelocityY;
     int Health;
     int Hunger;
     int Energy;

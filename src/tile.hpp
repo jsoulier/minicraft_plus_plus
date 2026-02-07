@@ -36,8 +36,8 @@ public:
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y) const;
-    void OnAction(MppEntity& instigator);
-    void OnCollision(MppEntity& instigator);
+    bool OnAction(MppEntity& instigator);
+    bool OnCollision(MppEntity& instigator);
     const std::string_view& GetName() const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

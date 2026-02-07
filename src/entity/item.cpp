@@ -24,18 +24,15 @@ void MppItemEntity::Render() const
     Item.Render(X, Y, MppRendererLayerEntity);
 }
 
-void MppItemEntity::OnCollision(MppEntity& instigator)
+bool MppItemEntity::OnCollision(MppEntity& instigator)
 {
     MppEntity::OnCollision(instigator);
     MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    if (!mob)
-    {
-        return;
-    }
-    if (mob->GetInventory()->Add(Item))
+    if (mob && mob->GetInventory()->Add(Item))
     {
         Kill();
     }
+    return false;
 }
 
 void MppItemEntity::Visit(SavepointVisitor& visitor)

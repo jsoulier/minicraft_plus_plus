@@ -18,13 +18,13 @@
 MppMobEntity::MppMobEntity()
     : MppEntity()
     , Inventory{std::make_shared<MppInventory>()}
-    , VelocityX{0}
-    , VelocityY{0}
-    , FacingX{0}
-    , FacingY{1}
     , Health{-1}
     , Hunger{-1}
     , Energy{-1}
+    , FacingX{0}
+    , FacingY{1}
+    , VelocityX{0}
+    , VelocityY{0}
 {
 }
 
@@ -53,6 +53,9 @@ void MppMobEntity::OnAddEntity()
         MppAssert(Hunger > 0);
         MppAssert(Energy > 0);
     }
+    Animation.SetTickRate(GetSpriteTickRate());
+    Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
+    Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
@@ -74,7 +77,10 @@ void MppMobEntity::Update(uint64_t ticks)
     {
         Controller->Update(ticks);
     }
-    PostUpdate(ticks);
+    if (IsMoving())
+    {
+        Animation.Update(GetPose(), FacingX, FacingY, ticks);
+    }
     if (ticks % GetSpeed() == 0)
     {
         MppEntity::Move(VelocityX, VelocityY);
@@ -88,14 +94,25 @@ void MppMobEntity::Update(uint64_t ticks)
     VelocityY = 0;
 }
 
-void MppMobEntity::PostUpdate(uint64_t ticks)
-{
-}
-
 void MppMobEntity::Render() const
 {
     MppAssert(FacingX || FacingY);
     MppEntity::Render();
+    MppRendererDraw(
+        MppSprite{
+            GetSpriteColor1(),
+            GetSpriteColor2(),
+            GetSpriteColor3(),
+            GetSpriteColor4(),
+            GetSpriteColor5(),
+            Animation.GetX(),
+            Animation.GetY(),
+            GetSize(),
+        },
+        X,
+        Y,
+        Animation.GetFlip(),
+        MppRendererLayerEntity);
     if (MppConsole::CVarFov.GetBool())
     {
         static constexpr float kLength = 32.0f;
@@ -197,3 +214,50 @@ int MppMobEntity::GetFacingY() const
 {
     return FacingY;
 }
+
+void MppMobEntity::DoAction(std::shared_ptr<MppEntity>& entity)
+{
+    Animation.Update(0, FacingX, FacingY);
+    entity->OnAction(*this);
+}
+
+bool MppMobEntity::IsMoving()
+{
+    return VelocityX || VelocityY;
+}
+
+int MppMobEntity::GetPose() const
+{
+    return 0;
+}
+
+int MppMobEntity::GetHealth() const
+{
+    return Health;
+}
+
+int MppMobEntity::GetHunger() const
+{
+    return Hunger;
+}
+
+int MppMobEntity::GetEnergy() const
+{
+    return Energy;
+}
+
+int MppMobEntity::GetSpriteTickRate() const
+{
+    return 10;
+}
+
+int MppMobEntity::GetSpritePose2X() const
+{
+    return 0;
+}
+
+int MppMobEntity::GetSpritePose2Y() const
+{
+    return 0;
+}
+

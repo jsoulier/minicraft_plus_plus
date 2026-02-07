@@ -7,6 +7,7 @@
 #include "../input.hpp"
 #include "../inventory.hpp"
 #include "../item.hpp"
+#include "../log.hpp"
 #include "../menu.hpp"
 #include "../renderer.hpp"
 #include "../tile.hpp"
@@ -17,6 +18,7 @@
 
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
+    , Crouching{false}
 {
 }
 
@@ -34,9 +36,15 @@ void MppPlayerEntity::OnAddEntity()
     Inventory->SetY2(124);
 }
 
-void MppPlayerEntity::PostUpdate(uint64_t ticks)
+void MppPlayerEntity::Visit(SavepointVisitor& visitor)
 {
-    MppHumanoidEntity::PostUpdate(ticks);
+    MppHumanoidEntity::Visit(visitor);
+    visitor(Crouching);
+}
+
+void MppPlayerEntity::Update(uint64_t ticks)
+{
+    MppMobEntity::Update(ticks);
     MppRendererMove(X, Y, GetSize());
 }
 
@@ -44,9 +52,9 @@ void MppPlayerEntity::Render() const
 {
     MppHumanoidEntity::Render();
     MppMenu::Render();
-    int health = std::ceil(float(Health) / 10);
-    int hunger = std::ceil(float(Hunger) / 10);
-    int energy = std::ceil(float(Energy) / 10);
+    int health = std::ceil(float(GetHealth()) / 10);
+    int hunger = std::ceil(float(GetHunger()) / 10);
+    int energy = std::ceil(float(GetEnergy()) / 10);
     for (int i = 0; i < health; i++)
     {
         int x = i * MppItem::kSize;
@@ -72,32 +80,49 @@ void MppPlayerEntity::Render() const
     }
 }
 
+void MppPlayerEntity::SetCrouching(bool crouching)
+{
+    Crouching = crouching;
+}
+
+int MppPlayerEntity::GetSpeed() const
+{
+    if (Crouching)
+    {
+        return 3;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 std::shared_ptr<MppController> MppPlayerEntity::GetController() 
 {
     return std::make_shared<MppPlayerController>();
 }
 
-int MppPlayerEntity::GetSpriteBorderColor() const
+int MppPlayerEntity::GetSpriteColor1() const
 {
     return 0;
 }
 
-int MppPlayerEntity::GetSpriteSkinColor() const
-{
-    return 532;
-}
-
-int MppPlayerEntity::GetSpriteShirtColor() const
+int MppPlayerEntity::GetSpriteColor2() const
 {
     return 500;
 }
 
-int MppPlayerEntity::GetSpritePantColor() const
+int MppPlayerEntity::GetSpriteColor3() const
 {
     return 5;
 }
 
-int MppPlayerEntity::GetSpriteShoeColor() const
+int MppPlayerEntity::GetSpriteColor4() const
+{
+    return 532;
+}
+
+int MppPlayerEntity::GetSpriteColor5() const
 {
     return 211;
 }
