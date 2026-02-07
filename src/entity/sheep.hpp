@@ -12,8 +12,8 @@ public:
     MppSheepEntity();
 
 protected:
-    int GetSpritePoseX() const override;
-    int GetSpritePoseY() const override;
+    int GetSpritePose1X() const override;
+    int GetSpritePose1Y() const override;
     int GetSpriteColor1() const override;
     int GetSpriteColor2() const override;
     int GetSpriteColor3() const override;

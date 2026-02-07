@@ -8,47 +8,14 @@
 #include "controller/melee.hpp"
 #include "spider.hpp"
 
-static constexpr int kTickRate = 10;
-
 MppSpiderEntity::MppSpiderEntity()
     : MppMobEntity()
 {
 }
 
-void MppSpiderEntity::OnAddEntity()
-{
-    MppMobEntity::OnAddEntity();
-    Animation.SetTickRate(kTickRate);
-    Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
-}
-
-void MppSpiderEntity::PostUpdate(uint64_t ticks)
-{
-    MppMobEntity::PostUpdate(ticks);
-    if (VelocityX || VelocityY)
-    {
-        Animation.Update(0, FacingX, FacingY, ticks);
-    }
-}
-
 void MppSpiderEntity::Render() const
 {
     MppMobEntity::Render();
-    MppRendererDraw(
-        MppSprite{
-            GetSpriteBorderColor(),
-            GetSpriteEyeColor(),
-            GetSpriteLegColor(),
-            GetSpriteBodyColor1(),
-            GetSpriteBodyColor2(),
-            Animation.GetX(),
-            Animation.GetY(),
-            GetSize(),
-        },
-        X,
-        Y,
-        Animation.GetFlip(),
-        MppRendererLayerEntity);
 }
 
 int MppSpiderEntity::GetSpritePose1X() const
@@ -101,27 +68,27 @@ int MppSpiderEntity::GetMaxEnergy() const
     return 1;
 }
 
-int MppSpiderEntity::GetSpriteBorderColor() const
+int MppSpiderEntity::GetSpriteColor1() const
 {
     return 0;
 }
 
-int MppSpiderEntity::GetSpriteEyeColor() const
+int MppSpiderEntity::GetSpriteColor2() const
 {
     return 500;
 }
 
-int MppSpiderEntity::GetSpriteBodyColor1() const
-{
-    return 111;
-}
-
-int MppSpiderEntity::GetSpriteBodyColor2() const
+int MppSpiderEntity::GetSpriteColor3() const
 {
     return 222;
 }
 
-int MppSpiderEntity::GetSpriteLegColor() const
+int MppSpiderEntity::GetSpriteColor4() const
+{
+    return 111;
+}
+
+int MppSpiderEntity::GetSpriteColor5() const
 {
     return 222;
 }

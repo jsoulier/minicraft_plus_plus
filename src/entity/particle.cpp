@@ -20,6 +20,21 @@ void MppParticleEntity::OnAddEntity()
 void MppParticleEntity::Render() const
 {
     MppEntity::Render();
+    MppRendererDraw(
+        MppSprite{
+            GetColor1(),
+            GetColor2(),
+            GetColor3(),
+            GetColor4(),
+            GetColor5(),
+            GetSpriteX(),
+            GetSpriteY(),
+            GetSize(),
+        },
+        X,
+        Y,
+        false,
+        MppRendererLayerParticleEntity);
 }
 
 void MppParticleEntity::Update(uint64_t ticks)
@@ -68,7 +83,7 @@ bool MppParticleEntity::HasPhysics() const
     return false;
 }
 
-bool MppParticleEntity::ShouldSave() const
+bool MppParticleEntity::CanSave() const
 {
     return false;
 }
@@ -96,4 +111,49 @@ int MppParticleEntity::GetColor4() const
 int MppParticleEntity::GetColor5() const
 {
     return 0;
+}
+
+int MppHitParticleEntity::GetSize() const
+{
+    return 16;
+}
+
+int MppHitParticleEntity::GetMaxLifetime() const
+{
+    return 32;
+}
+
+int MppHitParticleEntity::GetSpriteX() const
+{
+    return 0;
+}
+
+int MppHitParticleEntity::GetSpriteY() const
+{
+    return 18;
+}
+
+int MppHitParticleEntity::GetColor1() const
+{
+    return 555;
+}
+
+int MppHitParticleEntity::GetColor2() const
+{
+    return 555;
+}
+
+int MppHitParticleEntity::GetColor3() const
+{
+    return 555;
+}
+
+int MppHitParticleEntity::GetColor4() const
+{
+    return 555;
+}
+
+int MppHitParticleEntity::GetColor5() const
+{
+    return 555;
 }

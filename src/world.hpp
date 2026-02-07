@@ -1,5 +1,7 @@
 #pragma once
 
+#include <savepoint/savepoint.hpp>
+
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -17,6 +19,7 @@ MppTile& MppWorldGetTile(int x, int y);
 std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities(int level);
 std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities();
 std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities(int x, int y);
+std::shared_ptr<MppEntity> MppWorldGetEntity(SavepointID id);
 void MppWorldSetTile(const MppTile& tile, int x, int y, int level);
 void MppWorldSetTile(const MppTile& tile, int x, int y);
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level);

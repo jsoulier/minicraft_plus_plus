@@ -1,11 +1,13 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../../input.hpp"
 #include "../controller.hpp"
 
 class MppPlayerEntity;
 
-class MppPlayerController
+class MppPlayerController final
     : public MppController
     , public MppInputHandler
 {
@@ -14,12 +16,18 @@ class MppPlayerController
 public:
     MppPlayerController() = default;
     void OnAddEntity() override;
+    void OnUpdate(uint64_t ticks) override;
     void OnAction() override;
     void OnInventory() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
     void OnHeldLeft() override;
     void OnHeldRight() override;
+    void OnHeldCrouch() override;
+
+private:
+    void OnActionCallback(int index);
+    void OnDropCallback(int index);
 
 private:
     std::shared_ptr<MppPlayerEntity> GetPlayer();

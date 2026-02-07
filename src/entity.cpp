@@ -1,9 +1,8 @@
 #include <savepoint/savepoint.hpp>
 
+#include <algorithm>
 #include <cmath>
-#include <cstdint>
 #include <memory>
-#include <string>
 
 #include "assert.hpp"
 #include "color.hpp"
@@ -23,7 +22,7 @@ MppEntityReference::MppEntityReference()
 {
 }
 
-MppEntityReference::MppEntityReference(std::shared_ptr<MppEntity>& entity)
+MppEntityReference::MppEntityReference(const std::shared_ptr<MppEntity>& entity)
     : Entity{entity}
     , EntityID{entity->GetID()}
 {
@@ -34,7 +33,6 @@ void MppEntityReference::Visit(SavepointVisitor& visitor)
     if (visitor.IsReading())
     {
         MppAssert(Entity.expired());
-        MppAssert(!EntityID.IsValid());
     }
     visitor(EntityID);
 }
@@ -50,16 +48,13 @@ void MppEntityReference::Update()
     {
         return;
     }
-    for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
+    std::shared_ptr<MppEntity> entity = MppWorldGetEntity(EntityID);
+    Entity = entity;
+    if (!entity)
     {
-        if (entity->GetID() == EntityID)
-        {
-            Entity = entity;
-            return;
-        }
+        MppLog("Failed to find reference on entity");
+        EntityID = SavepointID{};
     }
-    MppLog("Failed to find reference on entity");
-    EntityID = SavepointID{};
 }
 
 std::shared_ptr<MppEntity> MppEntityReference::GetEntity() const
@@ -75,13 +70,12 @@ bool MppEntityReference::IsValid() const
 MppEntity::MppEntity()
     : X{0}
     , Y{0}
-    , Dead{false}
+    , Killed{false}
 {
 }
 
 void MppEntity::OnAddEntity()
 {
-    // Validation
     int x = GetPhysicsOffsetX();
     int y = GetPhysicsOffsetY();
     int w = GetPhysicsWidth();
@@ -124,6 +118,36 @@ void MppEntity::Render() const
     }
 }
 
+bool MppEntity::OnCollision(MppEntity& instigator)
+{
+    return false;
+}
+
+bool MppEntity::HasPhysics() const
+{
+    return true;
+}
+
+bool MppEntity::CanSave() const
+{
+    return true;
+}
+
+MppEntityReference MppEntity::GetReference()
+{
+    return MppEntityReference(shared_from_this());
+}
+
+void MppEntity::Kill()
+{
+    Killed = true;
+}
+
+bool MppEntity::IsKilled() const
+{
+    return Killed;
+}
+
 void MppEntity::SetX(int x)
 {
     X = x;
@@ -154,55 +178,59 @@ int MppEntity::GetPhysicsY() const
     return Y + GetPhysicsOffsetY();
 }
 
-int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
+void MppEntity::GetCenter(int& x, int& y) const
 {
-    int x = GetPhysicsX() + GetPhysicsWidth() / 2;
-    int y = GetPhysicsY() + GetPhysicsHeight() / 2;
-    int otherX = entity->GetX() + entity->GetPhysicsWidth() / 2;
-    int otherY = entity->GetY() + entity->GetPhysicsHeight() / 2;
-    float dx = otherX - x;
-    float dy = otherY - y;
-    return std::sqrt(dx * dx + dy * dy);
+    x = GetPhysicsX() + GetPhysicsWidth() / 2;
+    y = GetPhysicsY() + GetPhysicsHeight() / 2;
 }
 
-MppEntityReference MppEntity::GetReference()
+int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
 {
-    std::shared_ptr<MppEntity> entity = shared_from_this();
-    return MppEntityReference(entity);
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+    GetCenter(x1, y1);
+    entity->GetCenter(x2, y2);
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    return std::sqrt(dx * dx + dy * dy);
 }
 
 void MppEntity::Move(int dx, int dy)
 {
-    MoveAxis(dx, 0);
-    MoveAxis(0, dy);
-}
-
-void MppEntity::MoveAxis(int dx, int dy)
-{
-    int x = X;
-    int y = Y;
-    // TODO: we need to loop here if abs(dx or dy) > 1
-    X += dx;
-    Y += dy;
-    if (HasPhysics() && !MoveAxisTest())
+    while (dx || dy)
     {
-        X = x;
-        Y = y;
+        if (dx)
+        {
+            int step = dx / std::abs(dx);
+            MoveTest(step, 0);
+            dx -= step;
+        }
+        if (dy)
+        {
+            int step = dy / std::abs(dy);
+            MoveTest(0, step);
+            dy -= step;
+        }
     }
 }
 
-static bool Test(float x1, float y1, int w1, int h1, float x2, float y2, int w2, int h2)
+void MppEntity::MoveTest(int dx, int dy)
 {
-    return (x1 + w1 > x2) && (x1 < x2 + w2) && (y1 + h1 > y2) && (y1 < y2 + h2);
-}
-
-bool MppEntity::MoveAxisTest()
-{
+    int entityX = X;
+    int entityY = Y;
+    X += dx;
+    Y += dy;
     int size = GetSize();
     int x = GetPhysicsX();
     int y = GetPhysicsY();
     int w = GetPhysicsWidth();
     int h = GetPhysicsHeight();
+    auto test = [&](float x2, float y2, int w2, int h2)
+    {
+        return (x + w > x2) && (x < x2 + w2) && (y + h > y2) && (y < y2 + h2);
+    };
     int tileX1 = x / MppTile::kSize;
     int tileY1 = y / MppTile::kSize;
     int tileX2 = (x + w) / MppTile::kSize;
@@ -216,15 +244,11 @@ bool MppEntity::MoveAxisTest()
         int ty = tile.GetPhysicsY(tileY);
         int tw = tile.GetPhysicsWidth();
         int th = tile.GetPhysicsHeight();
-        if (!Test(x, y, w, h, tx, ty, tw, th))
+        if (!test(tx, ty, tw, th))
         {
             continue;
         }
-        tile.OnCollision(*this);
-        if (tile.GetPhysicsType() == MppTilePhysicsTypeWall)
-        {
-            rejected = true;
-        }
+        rejected |= tile.OnCollision(*this);
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
     {
@@ -232,34 +256,15 @@ bool MppEntity::MoveAxisTest()
         int ey = entity->GetPhysicsY();
         int ew = entity->GetPhysicsWidth();
         int eh = entity->GetPhysicsHeight();
-        if (!Test(x, y, w, h, ex, ey, ew, eh))
+        if (!test(ex, ey, ew, eh))
         {
             continue;
         }
-        // TODO: handle collisions
-        // or... we can handle them in OnCollision.
-        // furniture can inherit mob velocity and immediately call MppEntity::Move
-        entity->OnCollision(*this);
+        rejected |= entity->OnCollision(*this);
     }
-    return !rejected;
-}
-
-void MppEntity::Kill()
-{
-    Dead = true;
-}
-
-bool MppEntity::IsDead() const
-{
-    return Dead;
-}
-
-bool MppEntity::HasPhysics() const
-{
-    return true;
-}
-
-bool MppEntity::ShouldSave() const
-{
-    return true;
+    if (rejected)
+    {
+        X = entityX;
+        Y = entityY;
+    }
 }

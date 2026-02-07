@@ -51,6 +51,7 @@ enum MppItemID
     MppItemIDIronAxe,
     MppItemIDIronShovel,
     MppItemIDIronHoe,
+    MppItemIDHands,
     MppItemIDCount,
 };
 
@@ -69,6 +70,7 @@ enum MppItemType
     MppItemTypeFurniture = 512,
     MppItemTypeConsumable = 1024,
     MppItemTypeBow = 2048,
+    MppItemTypeHands = 4096,
     MppItemTypeTool =
         MppItemTypePickaxe |
         MppItemTypeAxe |
@@ -84,6 +86,16 @@ enum MppItemType
         MppItemTypeTool |
         MppItemTypeArmor,
 };
+
+inline constexpr MppItemType operator|(MppItemType lhs, MppItemType rhs)
+{
+    return MppItemType(int(lhs) | int(rhs));
+}
+
+inline constexpr MppItemType operator&(MppItemType lhs, MppItemType rhs)
+{
+    return MppItemType(int(lhs) & int(rhs));
+}
 
 class MppItemRecipe : public MppMenu
 {

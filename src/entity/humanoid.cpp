@@ -10,56 +10,15 @@
 #include "../world.hpp"
 #include "humanoid.hpp"
 
-static constexpr int kTickRate = 10;
-
-void MppHumanoidEntity::OnAddEntity()
-{
-    MppMobEntity::OnAddEntity();
-    Animation.SetTickRate(kTickRate);
-    Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
-    Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
-}
-
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
     visitor(HeldEntity);
 }
 
-void MppHumanoidEntity::PostUpdate(uint64_t ticks) 
-{
-    MppMobEntity::PostUpdate(ticks);
-    if (VelocityX || VelocityY)
-    {
-        if (!HeldEntity)
-        {
-            Animation.Update(0, FacingX, FacingY, ticks);
-        }
-        else
-        {
-            Animation.Update(1, FacingX, FacingY, ticks);
-        }
-    }
-}
-
 void MppHumanoidEntity::Render() const
 {
     MppMobEntity::Render();
-    MppRendererDraw(
-        MppSprite{
-            GetSpriteBorderColor(),
-            GetSpriteShirtColor(),
-            GetSpritePantColor(),
-            GetSpriteSkinColor(),
-            GetSpriteShoeColor(),
-            Animation.GetX(),
-            Animation.GetY(),
-            GetSize(),
-        },
-        X,
-        Y,
-        Animation.GetFlip(),
-        MppRendererLayerEntity);
     Render(Inventory->GetBySlot(MppInventorySlotHelmet));
     Render(Inventory->GetBySlot(MppInventorySlotCuirass));
     Render(Inventory->GetBySlot(MppInventorySlotLeggings));
@@ -93,6 +52,7 @@ void MppHumanoidEntity::Render(const MppItem& item) const
     }
     else
     {
+        MppAssert(!item.IsValid());
         return;
     }
     MppRendererDraw(
@@ -183,6 +143,17 @@ void MppHumanoidEntity::DropHeldEntity()
 void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)
 {
     MppAssert(!HeldEntity);
-    Animation.Update(0, FacingX, FacingY);
-    entity->OnAction(*this);
+    MppMobEntity::DoAction(entity);
+}
+
+int MppHumanoidEntity::GetPose() const
+{
+    if (HeldEntity)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

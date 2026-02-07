@@ -475,6 +475,17 @@ static const kItems[MppItemIDCount] =
         .SpriteX = 8,
         .SpriteY = 13,
     },
+    {
+        .Name = "hands",
+        .Type = MppItemTypeHands,
+        .Color1 = 0,
+        .Color2 = 0,
+        .Color3 = 0,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 0,
+        .SpriteY = 0,
+    },
 };
 
 MppItemRecipe::MppItemRecipe(const MppItemRecipeData& data)

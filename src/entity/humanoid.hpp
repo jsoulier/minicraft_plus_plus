@@ -13,9 +13,7 @@ class MppItem;
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
-    virtual void OnAddEntity() override;
     virtual void Visit(SavepointVisitor& visitor);
-    virtual void PostUpdate(uint64_t ticks) override;
     virtual void Render() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
@@ -30,17 +28,12 @@ public:
 protected:
     void Render(const MppItem& item) const;
     int GetMaxItems() const override;
-    int GetSpritePose1X() const;
-    int GetSpritePose1Y() const;
-    int GetSpritePose2X() const;
-    int GetSpritePose2Y() const;
-    virtual int GetSpriteBorderColor() const = 0;
-    virtual int GetSpriteSkinColor() const = 0;
-    virtual int GetSpriteShirtColor() const = 0;
-    virtual int GetSpritePantColor() const = 0;
-    virtual int GetSpriteShoeColor() const = 0;
+    int GetSpritePose1X() const override;
+    int GetSpritePose1Y() const override;
+    int GetSpritePose2X() const override;
+    int GetSpritePose2Y() const override;
+    int GetPose() const override;
 
 protected:
     std::shared_ptr<MppEntity> HeldEntity;
-    MppSpriteAnimation Animation;
 };

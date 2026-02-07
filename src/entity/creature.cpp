@@ -15,20 +15,10 @@
 #include "creature.hpp"
 #include "mob.hpp"
 
-static constexpr int kTickRate = 10;
-
 MppCreatureEntity::MppCreatureEntity()
     : MppMobEntity()
-    , Animation{}
     , FleeTicks{}
 {
-}
-
-void MppCreatureEntity::OnAddEntity()
-{
-    MppMobEntity::OnAddEntity();
-    Animation.SetTickRate(kTickRate);
-    Animation.SetPose(0, GetSpritePoseX(), GetSpritePoseY());
 }
 
 void MppCreatureEntity::Visit(SavepointVisitor& visitor)
@@ -37,34 +27,10 @@ void MppCreatureEntity::Visit(SavepointVisitor& visitor)
     visitor(FleeTicks);
 }
 
-void MppCreatureEntity::PostUpdate(uint64_t ticks)
+void MppCreatureEntity::Update(uint64_t ticks)
 {
-    MppMobEntity::PostUpdate(ticks);
+    MppMobEntity::Update(ticks);
     FleeTicks--;
-    if (VelocityX || VelocityY)
-    {
-        Animation.Update(0, FacingX, FacingY, ticks);
-    }
-}
-
-void MppCreatureEntity::Render() const
-{
-    MppMobEntity::Render();
-    MppRendererDraw(
-        MppSprite{
-            GetSpriteColor1(),
-            GetSpriteColor2(),
-            GetSpriteColor3(),
-            GetSpriteColor4(),
-            GetSpriteColor5(),
-            Animation.GetX(),
-            Animation.GetY(),
-            GetSize(),
-        },
-        X,
-        Y,
-        Animation.GetFlip(),
-        MppRendererLayerEntity);
 }
 
 void MppCreatureEntity::OnAction(MppEntity& instigator)

@@ -8,11 +8,14 @@
 #include "color.hpp"
 #include "console.hpp"
 #include "entity.hpp"
+#include "entity/particle.hpp"
+#include "entity/mob.hpp"
 #include "item.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
 #include "tile.hpp"
 #include "world.hpp"
+#include "inventory.hpp"
 
 static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
 static constexpr int kDirtColor = 420;
@@ -41,6 +44,8 @@ struct
     int PhysicsOffsetY;
     int PhysicsWidth;
     int PhysicsHeight;
+    MppTileID ChildTile;
+    MppItemType ItemTypes;
 }
 static constexpr kTiles[MppTileIDCount] =
 {
@@ -60,6 +65,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
     },
     {
         .Name = "grass",
@@ -77,6 +84,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypeShovel | MppItemTypeHoe,
     },
     {
         .Name = "dirt",
@@ -94,6 +103,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
     },
     {
         .Name = "stone wall",
@@ -111,6 +122,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypePickaxe | MppItemTypeHands,
     },
     {
         .Name = "tree",
@@ -128,6 +141,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDGrass,
+        .ItemTypes = MppItemTypeAxe | MppItemTypeHands,
     },
     {
         .Name = "sand",
@@ -145,6 +160,8 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
         .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypeShovel,
     },
 };
 
@@ -416,12 +433,30 @@ void MppTile::Render(int x, int y) const
     }
 }
 
-void MppTile::OnAction(MppEntity& instigator)
+bool MppTile::OnAction(MppEntity& instigator)
 {
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    MppAssert(mob);
+    MppItem item = mob->GetInventory()->GetBySlot(MppInventorySlotHeld);
+    if (!item.IsValid())
+    {
+        item = MppItem{MppItemIDHands};
+    }
+    if ((item.GetType() & kTiles[ID].ItemTypes) == MppItemTypeNone)
+    {
+        return false;
+    }
+    MppTileID child = kTiles[ID].ChildTile;
+    if (child != MppTileIDInvalid)
+    {
+        *this = MppTile(child);
+    }
+    return true;
 }
 
-void MppTile::OnCollision(MppEntity& instigator)
+bool MppTile::OnCollision(MppEntity& instigator)
 {
+    return kTiles[ID].PhysicsType == MppTilePhysicsTypeWall;
 }
 
 const std::string_view& MppTile::GetName() const

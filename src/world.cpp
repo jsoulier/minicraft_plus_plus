@@ -8,6 +8,7 @@
 #include <memory>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -66,6 +67,7 @@ static const std::filesystem::path kSavePath = kPrefPath / "minicraft++.savepoin
 static constexpr uint64_t kSaveRate = 1000;
 
 static std::array<Level, LevelIDCount> levels;
+static std::unordered_map<SavepointID, std::weak_ptr<MppEntity>> references;
 static LevelID level;
 static Savepoint savepoint;
 static SavepointStatus savepointStatus;
@@ -140,6 +142,7 @@ void MppWorldQuit()
     {
         levels[level].Entities.clear();
     }
+    references.clear();
 }
 
 void MppWorldUpdate(uint64_t ticks)
@@ -148,9 +151,9 @@ void MppWorldUpdate(uint64_t ticks)
     for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
     {
         entity->Update(ticks);
-        if (entity->IsDead())
+        if (entity->IsKilled())
         {
-            if (entity->ShouldSave())
+            if (entity->CanSave())
             {
                 savepoint.Delete(*entity);
             }
@@ -213,7 +216,7 @@ void MppWorldSave(uint64_t inTicks, bool force)
         }
         for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(level))
         {
-            if (entity->ShouldSave())
+            if (entity->CanSave())
             {
                 savepoint.Write(entity, level);
                 entities++;
@@ -276,6 +279,23 @@ std::vector<std::shared_ptr<MppEntity>> MppWorldGetEntities(int x, int y)
     return MppWorldGetEntities(level);
 }
 
+std::shared_ptr<MppEntity> MppWorldGetEntity(SavepointID id)
+{
+    auto it = references.find(id);
+    if (it != references.end())
+    {
+        if (it->second.expired())
+        {
+            references.erase(it);
+        }
+        else
+        {
+            return it->second.lock();
+        }
+    }
+    return nullptr;
+}
+
 void MppWorldSetTile(const MppTile& tile, int x, int y, int level)
 {
     levels[level].Tiles[x][y] = tile;
@@ -290,10 +310,11 @@ void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 {
     entity->OnAddEntity();
     levels[level].Entities.push_back(entity);
-    if (entity->ShouldSave())
+    if (entity->CanSave())
     {
         savepoint.Write(entity, level);
     }
+    references[entity->GetID()] = entity;
 }
 
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity)
