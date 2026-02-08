@@ -17,7 +17,7 @@ class MppChestEntity final
 public:
     MppChestEntity();
     void Visit(SavepointVisitor& visitor);
-    void OnAction(MppEntity& instigator) override;
+    bool OnInteraction(MppEntity& instigator) override;
     void OnAction() override;
     void OnRender() override;
     void OnUpArrow() override;

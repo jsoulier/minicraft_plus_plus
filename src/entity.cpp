@@ -112,6 +112,7 @@ void MppEntity::OnAddEntity()
     int h = GetPhysicsHeight();
     MppAssert((x * 2 + w) == MppTile::kSize);
     MppAssert((y * 2 + h) == MppTile::kSize);
+    Killed = false;
 }
 
 void MppEntity::Visit(SavepointVisitor& visitor)

@@ -2,6 +2,7 @@
 
 #include "../renderer.hpp"
 #include "furniture.hpp"
+#include "humanoid.hpp"
 
 void MppFurnitureEntity::Render() const
 {
@@ -20,6 +21,20 @@ void MppFurnitureEntity::Render() const
         Y,
         false,
         MppRendererLayerEntity);
+}
+
+void MppFurnitureEntity::OnAction(MppEntity& instigator)
+{
+    MppHumanoidEntity* humanoid = dynamic_cast<MppHumanoidEntity*>(&instigator);
+    if (humanoid)
+    {
+        humanoid->HoldEntity(shared_from_this());
+    }
+}
+
+bool MppFurnitureEntity::OnInteraction(MppEntity& instigator)
+{
+    return false;
 }
 
 int MppFurnitureEntity::GetPhysicsOffsetX() const

@@ -21,9 +21,10 @@ public:
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
     int GetActionRange() const override;
-    void Pickup(const std::shared_ptr<MppEntity>& entity);
-    bool IsHoldingEntity() const;
+    void HoldEntity(const std::shared_ptr<MppEntity>& entity);
     void DropHeldEntity();
+    void MoveHeldEntityToInventory();
+    std::shared_ptr<MppEntity> GetHeldEntity() const;
     void DoAction(std::shared_ptr<MppEntity>& entity) override;
 
 protected:

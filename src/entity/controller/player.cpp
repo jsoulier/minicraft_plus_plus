@@ -36,7 +36,7 @@ void MppPlayerController::OnUpdate(uint64_t ticks)
 void MppPlayerController::OnAction()
 {
     std::shared_ptr<MppPlayerEntity> player = GetPlayer();
-    if (player->IsHoldingEntity())
+    if (player->GetHeldEntity())
     {
         player->DropHeldEntity();
         return;
@@ -100,17 +100,35 @@ void MppPlayerController::OnAction()
                 MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
             }
         }
-        else if (tile1.IsValid())
-        {
-            // if no preferred tool
-        }
     }
     player->PushNow(-kActionOffset * player->GetFacingX(), -kActionOffset * player->GetFacingY());
 }
 
 void MppPlayerController::OnInventory()
 {
-    MppInputSetInteraction(GetPlayer()->GetInventory());
+    std::shared_ptr<MppPlayerEntity> player = GetPlayer();
+    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(player->GetX(), player->GetY());
+    std::erase_if(entities, [&](std::shared_ptr<MppEntity>& other)
+    {
+        return !bool(std::dynamic_pointer_cast<MppFurnitureEntity>(other));
+    });
+    bool didInteraction = false;
+    for (std::shared_ptr<MppEntity>& entity : entities)
+    {
+        std::shared_ptr<MppFurnitureEntity> furniture = std::static_pointer_cast<MppFurnitureEntity>(entity);
+        if (player->GetDistance(entity) <= player->GetActionRange())
+        {
+            didInteraction = furniture->OnInteraction(*player);
+            if (didInteraction)
+            {
+                break;
+            }
+        }
+    }
+    if (!didInteraction)
+    {
+        MppInputSetInteraction(GetPlayer()->GetInventory());
+    }
 }
 
 void MppPlayerController::OnHeldUp()
@@ -147,6 +165,19 @@ void MppPlayerController::OnActionCallback(int index)
 {
     std::shared_ptr<MppPlayerEntity> player = GetPlayer();
     std::shared_ptr<MppInventory> inventory = player->GetInventory();
+    std::shared_ptr<MppFurnitureEntity> furniture = std::dynamic_pointer_cast<MppFurnitureEntity>(player->GetHeldEntity());
+    if (furniture)
+    {
+        if (furniture->IsEmpty())
+        {
+            player->MoveHeldEntityToInventory();
+        }
+        else
+        {
+            // TODO: need to play an error noise here
+            return;
+        }
+    }
     const MppItem& item = inventory->Get(index);
     if (item.GetType() & MppItemTypeEquipment)
     {
@@ -191,16 +222,16 @@ void MppPlayerController::OnActionCallback(int index)
     }
     else if (item.GetType() == MppItemTypeFurniture)
     {
-        if (!player->IsHoldingEntity())
+        if (!player->GetHeldEntity())
         {
             std::shared_ptr<MppEntity> entity = item.CreateFurnitureEntity();
             inventory->Remove(index);
-            player->Pickup(entity);
+            player->HoldEntity(entity);
         }
     }
     else if (item.GetType() & MppItemTypeTool)
     {
-        if (!player->IsHoldingEntity())
+        if (!player->GetHeldEntity())
         {
             inventory->SetSlot(MppInventorySlotHeld, index);
         }

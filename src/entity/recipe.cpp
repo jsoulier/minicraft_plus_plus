@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "../assert.hpp"
 #include "../color.hpp"
 #include "../input.hpp"
 #include "../inventory.hpp"
@@ -21,18 +22,14 @@ MppRecipeEntity::MppRecipeEntity()
     Inventory->SetMaxItems(MppItemIDCount);
 }
 
-void MppRecipeEntity::OnAction(MppEntity& instigator)
+bool MppRecipeEntity::OnInteraction(MppEntity& instigator)
 {
-    MppFurnitureEntity::OnAction(instigator);
     MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    if (!mob)
-    {
-        MppLog("Instigator wasn't an MppMobEntity");
-        return;
-    }
+    MppAssert(mob);
     Other = mob->GetInventory();
     Build();
     MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    return true;
 }
 
 void MppRecipeEntity::OnAction()

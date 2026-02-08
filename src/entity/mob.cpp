@@ -57,6 +57,7 @@ void MppMobEntity::OnAddEntity()
     Animation.SetTickRate(GetSpriteTickRate());
     Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
     Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
+    SetTickAnimation();
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)

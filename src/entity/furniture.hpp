@@ -13,6 +13,8 @@ class MppFurnitureEntity : public MppEntity
 {
 public:
     virtual void Render() const override;
+    virtual void OnAction(MppEntity& instigator) override;
+    virtual bool OnInteraction(MppEntity& instigator);
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;

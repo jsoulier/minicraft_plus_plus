@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 
+#include "../assert.hpp"
 #include "../color.hpp"
 #include "../input.hpp"
 #include "../inventory.hpp"
@@ -29,19 +30,15 @@ void MppChestEntity::Visit(SavepointVisitor& visitor)
     visitor(Inventory);
 }
 
-void MppChestEntity::OnAction(MppEntity& instigator)
+bool MppChestEntity::OnInteraction(MppEntity& instigator)
 {
-    MppFurnitureEntity::OnAction(instigator);
     MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    if (!mob)
-    {
-        MppLog("Instigator wasn't an MppMobEntity");
-        return;
-    }
+    MppAssert(mob);
     Other = mob->GetInventory();
     Other.lock()->SetIsFocused(true);
     Inventory->SetIsFocused(false);
     MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    return true;
 }
 
 void MppChestEntity::OnAction()

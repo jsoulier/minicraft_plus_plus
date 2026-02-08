@@ -15,7 +15,7 @@ class MppRecipeEntity
 {
 public:
     MppRecipeEntity();
-    void OnAction(MppEntity& instigator) override;
+    bool OnInteraction(MppEntity& instigator) override;
     void OnAction() override;
     void OnUpArrow() override;
     void OnDownArrow() override;

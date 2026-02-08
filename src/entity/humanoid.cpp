@@ -8,13 +8,12 @@
 #include "../renderer.hpp"
 #include "../sprite.hpp"
 #include "../world.hpp"
+#include "furniture.hpp"
 #include "humanoid.hpp"
 
 void MppHumanoidEntity::OnAddEntity()
 {
     MppMobEntity::OnAddEntity();
-    // We could be holding something so always force an animation tick
-    SetTickAnimation();
 }
 
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
@@ -129,24 +128,37 @@ int MppHumanoidEntity::GetActionRange() const
     return 16;
 }
 
-void MppHumanoidEntity::Pickup(const std::shared_ptr<MppEntity>& entity)
+void MppHumanoidEntity::HoldEntity(const std::shared_ptr<MppEntity>& entity)
 {
     MppAssert(!HeldEntity);
     HeldEntity = entity;
+    HeldEntity->Kill();
     SetTickAnimation();
-}
-
-bool MppHumanoidEntity::IsHoldingEntity() const
-{
-    return bool(HeldEntity);
 }
 
 void MppHumanoidEntity::DropHeldEntity()
 {
     MppAssert(HeldEntity);
+    HeldEntity->SetX(X + GetFacingX() * GetSize());
+    HeldEntity->SetY(Y + GetFacingY() * GetSize());
     MppWorldAddEntity(HeldEntity);
     HeldEntity = nullptr;
     SetTickAnimation();
+}
+
+void MppHumanoidEntity::MoveHeldEntityToInventory()
+{
+    MppAssert(HeldEntity);
+    std::shared_ptr<MppFurnitureEntity> furniture = std::dynamic_pointer_cast<MppFurnitureEntity>(HeldEntity);
+    MppAssert(furniture->IsEmpty());
+    Inventory->Add(furniture->GetItemID());
+    HeldEntity = nullptr;
+    SetTickAnimation();
+}
+
+std::shared_ptr<MppEntity> MppHumanoidEntity::GetHeldEntity() const
+{
+    return HeldEntity;
 }
 
 void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)
