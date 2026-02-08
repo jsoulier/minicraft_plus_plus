@@ -47,13 +47,9 @@ void MppPlayerController::OnAction()
         // TODO: remove e.g. items
         return player == other;
     });
-    int centerX1;
-    int centerY1;
-    int centerX2;
-    int centerY2;
-    player->GetCenter(centerX1, centerY1);
+    auto [centerX1, centerY1] = player->GetCenter();
     player->PushNow(kActionOffset * player->GetFacingX(), kActionOffset * player->GetFacingY());
-    player->GetCenter(centerX2, centerY2);
+    auto [centerX2, centerY2] = player->GetCenter();
     if (MppConsole::CVarAction.GetBool())
     {
         MppRendererDrawLine(kMppColorDebugAction, centerX1, centerY1, centerX2, centerY2, MppRendererLayerDebugAction);

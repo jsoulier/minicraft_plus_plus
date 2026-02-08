@@ -139,8 +139,17 @@ void MppHumanoidEntity::HoldEntity(const std::shared_ptr<MppEntity>& entity)
 void MppHumanoidEntity::DropHeldEntity()
 {
     MppAssert(HeldEntity);
+    int heldX = HeldEntity->GetX();
+    int heldY = HeldEntity->GetY();
     HeldEntity->SetX(X + GetFacingX() * GetSize());
     HeldEntity->SetY(Y + GetFacingY() * GetSize());
+    if (!HeldEntity->IsColliding())
+    {
+        HeldEntity->SetX(heldX);
+        HeldEntity->SetY(heldY);
+        // TODO: need to play a sound
+        return;
+    }
     MppWorldAddEntity(HeldEntity);
     HeldEntity = nullptr;
     SetTickAnimation();

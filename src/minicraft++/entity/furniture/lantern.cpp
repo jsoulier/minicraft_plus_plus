@@ -8,12 +8,8 @@ static constexpr int kRadius = 36;
 void MppLanternEntity::Render() const
 {
     MppFurnitureEntity::Render();
-    int centerX;
-    int centerY;
-    GetCenter(centerX, centerY);
-    MppRendererDrawLight(411, centerX, centerY, kRadius, 3);
-    MppRendererDrawLight(114, centerX + 36, centerY, kRadius, 3);
-    MppRendererDrawLight(141, centerX + 18, centerY + 18, kRadius, 3);
+    auto [x, y] = GetCenter();
+    MppRendererDrawLight(500, x, y, kRadius, 3);
 }
 
 MppItemID MppLanternEntity::GetItemID() const

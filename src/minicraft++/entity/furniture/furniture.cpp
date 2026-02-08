@@ -1,8 +1,21 @@
 #include <savepoint/savepoint.hpp>
 
-#include <minicraft++/renderer.hpp>
+#include <cstdint>
+
 #include <minicraft++/entity/furniture/furniture.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
+#include <minicraft++/renderer.hpp>
+
+MppFurnitureEntity::MppFurnitureEntity()
+    : MppEntity()
+{
+}
+
+void MppFurnitureEntity::Update(uint64_t ticks)
+{
+    MppEntity::Update(ticks);
+}
 
 void MppFurnitureEntity::Render() const
 {
@@ -30,6 +43,17 @@ void MppFurnitureEntity::OnAction(MppEntity& instigator)
     {
         humanoid->HoldEntity(shared_from_this());
     }
+}
+
+bool MppFurnitureEntity::OnCollision(MppEntity& instigator, int dx, int dy)
+{
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    MppFurnitureEntity* furniture = dynamic_cast<MppFurnitureEntity*>(&instigator);
+    if (mob || furniture)
+    {
+        Move(dx, dy);
+    }
+    return true;
 }
 
 bool MppFurnitureEntity::OnInteraction(MppEntity& instigator)

@@ -50,11 +50,6 @@ void MppPlayerEntity::Update(uint64_t ticks)
 
 void MppPlayerEntity::Render() const
 {
-    // TODO: remove lighting
-    int centerX;
-    int centerY;
-    GetCenter(centerX, centerY);
-    MppRendererDrawLight(333, centerX, centerY, 16, 5);
     MppHumanoidEntity::Render();
     MppMenu::Render();
     int health = std::ceil(float(GetHealth()) / 10);

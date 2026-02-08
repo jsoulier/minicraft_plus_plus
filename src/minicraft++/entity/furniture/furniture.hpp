@@ -2,6 +2,7 @@
 
 #include <savepoint/savepoint.hpp>
 
+#include <cstdint>
 #include <memory>
 
 #include <minicraft++/entity/entity.hpp>
@@ -12,8 +13,11 @@ class MppInventory;
 class MppFurnitureEntity : public MppEntity
 {
 public:
+    MppFurnitureEntity();
+    virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
     virtual void OnAction(MppEntity& instigator) override;
+    virtual bool OnCollision(MppEntity& instigator, int dx, int dy) override;
     virtual bool OnInteraction(MppEntity& instigator);
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;

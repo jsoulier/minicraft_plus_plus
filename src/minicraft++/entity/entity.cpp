@@ -149,7 +149,7 @@ void MppEntity::Render() const
     }
 }
 
-bool MppEntity::OnCollision(MppEntity& instigator)
+bool MppEntity::OnCollision(MppEntity& instigator, int dx, int dy)
 {
     return false;
 }
@@ -167,6 +167,11 @@ bool MppEntity::CanSave() const
 MppEntityReference MppEntity::GetReference()
 {
     return MppEntityReference(shared_from_this());
+}
+
+bool MppEntity::IsColliding()
+{
+    return MoveTest(0, 0);
 }
 
 void MppEntity::Kill()
@@ -209,20 +214,15 @@ int MppEntity::GetPhysicsY() const
     return Y + GetPhysicsOffsetY();
 }
 
-void MppEntity::GetCenter(int& x, int& y) const
+std::pair<int, int> MppEntity::GetCenter() const
 {
-    x = GetPhysicsX() + GetPhysicsWidth() / 2;
-    y = GetPhysicsY() + GetPhysicsHeight() / 2;
+    return std::make_pair(GetPhysicsX() + GetPhysicsWidth() / 2, GetPhysicsY() + GetPhysicsHeight() / 2);
 }
 
 int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
 {
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-    GetCenter(x1, y1);
-    entity->GetCenter(x2, y2);
+    auto [x1, y1] = GetCenter();
+    auto [x2, y2] = entity->GetCenter();
     float dx = x2 - x1;
     float dy = y2 - y1;
     return std::sqrt(dx * dx + dy * dy);
@@ -247,7 +247,7 @@ void MppEntity::Move(int dx, int dy)
     }
 }
 
-void MppEntity::MoveTest(int dx, int dy)
+bool MppEntity::MoveTest(int dx, int dy)
 {
     int entityX = X;
     int entityY = Y;
@@ -283,6 +283,10 @@ void MppEntity::MoveTest(int dx, int dy)
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
     {
+        if (this == entity.get())
+        {
+            continue;
+        }
         int ex = entity->GetPhysicsX();
         int ey = entity->GetPhysicsY();
         int ew = entity->GetPhysicsWidth();
@@ -291,11 +295,12 @@ void MppEntity::MoveTest(int dx, int dy)
         {
             continue;
         }
-        rejected |= entity->OnCollision(*this);
+        rejected |= entity->OnCollision(*this, dx, dy);
     }
     if (rejected)
     {
         X = entityX;
         Y = entityY;
     }
+    return !rejected;
 }

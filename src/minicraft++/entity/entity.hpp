@@ -46,10 +46,11 @@ public:
     virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
     virtual void OnAction(MppEntity& instigator) {}
-    virtual bool OnCollision(MppEntity& instigator);
+    virtual bool OnCollision(MppEntity& instigator, int dx, int dy);
     virtual bool HasPhysics() const;
     virtual bool CanSave() const;
     MppEntityReference GetReference();
+    bool IsColliding();
     void Kill();
     bool IsKilled() const;
     void SetX(int x);
@@ -63,14 +64,14 @@ public:
     virtual int GetPhysicsWidth() const = 0;
     virtual int GetPhysicsHeight() const = 0;
     virtual int GetSize() const = 0;
-    void GetCenter(int& x, int& y) const;
+    std::pair<int, int> GetCenter() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
 
 protected:
     void Move(int dx, int dy);
 
 private:
-    void MoveTest(int dx, int dy);
+    bool MoveTest(int dx, int dy);
 
 protected:
     int X;
