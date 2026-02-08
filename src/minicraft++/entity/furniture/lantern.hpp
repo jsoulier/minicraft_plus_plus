@@ -2,17 +2,18 @@
 
 #include <savepoint/savepoint.hpp>
 
-#include <minicraft++/entity/particle/particle.hpp>
+#include <minicraft++/entity/furniture/furniture.hpp>
+#include <minicraft++/item.hpp>
 
-class MppHitEntity : public MppParticleEntity
+class MppLanternEntity : public MppFurnitureEntity
 {
-    SAVEPOINT_POLY(MppHitEntity)
-    
-public:
-    int GetSize() const override;
+    SAVEPOINT_POLY(MppLanternEntity)
 
-protected:
-    int GetMaxLifetime() const override;
+public:
+    void Render() const override;
+    MppItemID GetItemID() const override;
+    
+private:
     int GetSpriteX() const override;
     int GetSpriteY() const override;
     int GetColor1() const override;

@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 
 #include <algorithm>
+#include <cmath>
 #include <filesystem>
 #include <format>
 #include <string>
@@ -45,8 +46,41 @@ struct Line
     int Y2;
 };
 
+struct Light
+{
+    int Color;
+    int X;
+    int Y;
+    int Radius;
+    int Strength;
+};
+
+static void DrawSprite(Sprite& sprite, MppRendererLayer layer);
+static void DrawQuad(Quad& quad, MppRendererLayer layer);
+static void DrawLine(Line& line, MppRendererLayer layer);
+
 struct Commands
 {
+    void Draw(MppRendererLayer layer)
+    {
+        std::sort(Sprites.begin(), Sprites.end());
+        for (Sprite& sprite : Sprites)
+        {
+            DrawSprite(sprite, MppRendererLayer(layer));
+        }
+        for (Quad& quad : Quads)
+        {
+            DrawQuad(quad, MppRendererLayer(layer));
+        }
+        for (Line& line : Lines)
+        {
+            DrawLine(line, MppRendererLayer(layer));
+        }
+        Sprites.clear();
+        Quads.clear();
+        Lines.clear();
+    }
+
     std::vector<Sprite> Sprites;
     std::vector<Quad> Quads;
     std::vector<Line> Lines;
@@ -60,9 +94,12 @@ static const std::filesystem::path kSpritesheet = kBasePath / "spritesheet.png";
 static SDL_Window* window;
 static SDL_Renderer* renderer;
 static SDL_Surface* spritesheet;
+static SDL_Texture* lightTexture;
 static std::unordered_map<size_t, SDL_Palette*> palettes;
 static std::unordered_map<size_t, SDL_Surface*> surfaces;
 static std::unordered_map<size_t, SDL_Texture*> textures;
+static std::unordered_map<int, SDL_Texture*> lights;
+static std::vector<Light> lightCommands;
 static std::array<Commands, MppRendererLayerCount> layers;
 static int worldX;
 static int worldY;
@@ -89,6 +126,12 @@ bool MppRendererInit()
     SDL_SetRenderLogicalPresentation(renderer, kWidth, kHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     SDL_SetRenderVSync(renderer, true);
     SDL_SetDefaultTextureScaleMode(renderer, SDL_SCALEMODE_NEAREST);
+    lightTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, kWidth, kHeight);
+    if (!lightTexture)
+    {
+        MppLog("Failed to create light texture: %s", SDL_GetError());
+        return false;
+    }
     return true;
 }
 
@@ -110,9 +153,11 @@ void MppRendererQuit()
     palettes.clear();
     surfaces.clear();
     textures.clear();
+    SDL_DestroyTexture(lightTexture);
     SDL_DestroySurface(spritesheet);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    lightTexture = nullptr;
     spritesheet = nullptr;
     renderer = nullptr;
     window = nullptr;
@@ -127,26 +172,10 @@ void MppRendererMove(int x, int y, int size)
 
 static void Move(int& x, int& y, MppRendererLayer layer)
 {
-    switch (layer)
+    if (layer < MppRendererLayerMenu)
     {
-    case MppRendererLayerBottomTile:
-    case MppRendererLayerTile:
-    case MppRendererLayerTopTile:
-    case MppRendererLayerEntity:
-    case MppRendererLayerEntityOverlay:
-    case MppRendererLayerParticleEntity:
-    case MppRendererLayerDebugPhysics:
-    case MppRendererLayerDebugNavigation:
-    case MppRendererLayerDebugFov:
-    case MppRendererLayerDebugAction:
         x -= worldX;
         y -= worldY;
-        break;
-    case MppRendererLayerMenu:
-    case MppRendererLayerMenuContent:
-        break;
-    default:
-        MppAssert(false);
     }
 }
 
@@ -256,30 +285,82 @@ static void DrawLine(Line& line, MppRendererLayer layer)
     SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
-void MppRendererSubmit()
+static void DrawLight(Light light)
+{
+    int size = light.Radius * 2;
+    auto lightIt = lights.find(light.Radius);
+    if (lightIt == lights.end())
+    {
+        SDL_Surface* surface = SDL_CreateSurface(size, size, SDL_PIXELFORMAT_RGBA32);
+        if (!surface)
+        {
+            MppLog("Failed to create surface: %s", SDL_GetError());
+            return;
+        }
+        SDL_ClearSurface(surface, 0.0f, 0.0f, 0.0f, 0.0f);
+        SDL_LockSurface(surface);
+        for (int x = 0; x < size; x++)
+        for (int y = 0; y < size; y++)
+        {
+            float dx = light.Radius - x;
+            float dy = light.Radius - y;
+            float distance = std::sqrt(dx * dx + dy * dy);
+            if (distance <= light.Radius)
+            {
+                SDL_WriteSurfacePixel(surface, x, y, 255, 255, 255, 255);
+            }
+        }
+        SDL_UnlockSurface(surface);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_DestroySurface(surface);
+        if (!texture)
+        {
+            MppLog("Failed to create texture: %s", SDL_GetError());
+            return;
+        }
+        lightIt = lights.emplace(light.Radius, texture).first;
+    }
+    Move(light.X, light.Y, MppRendererLayerEntity);
+    SDL_Texture* texture = lightIt->second;
+    SDL_Color color = MppColorGet(light.Color);
+    SDL_FRect rect;
+    rect.x = light.X - light.Radius;
+    rect.y = light.Y - light.Radius;
+    rect.w = size;
+    rect.h = size;
+    MppAssert(light.Strength >= 0 && light.Strength <= 5);
+    SDL_SetTextureAlphaMod(texture, light.Strength * 255 / 5);
+    SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
+    SDL_RenderTexture(renderer, texture, nullptr, &rect);
+}
+
+void MppRendererSubmit(int inLightColor)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     SDL_RenderClear(renderer);
-    for (int layer = 0; layer < MppRendererLayerCount; layer++)
+    for (int layer = 0; layer < MppRendererLayerUI; layer++)
     {
-        Commands& commands = layers[layer];
-        std::sort(commands.Sprites.begin(), commands.Sprites.end());
-        for (Sprite& sprite : commands.Sprites)
-        {
-            DrawSprite(sprite, MppRendererLayer(layer));
-        }
-        for (Quad& quad : commands.Quads)
-        {
-            DrawQuad(quad, MppRendererLayer(layer));
-        }
-        for (Line& line : commands.Lines)
-        {
-            DrawLine(line, MppRendererLayer(layer));
-        }
-        commands.Sprites.clear();
-        commands.Quads.clear();
-        commands.Lines.clear();
+        layers[layer].Draw(MppRendererLayer(layer));
     }
+    SDL_Color lightColor = MppColorGet(inLightColor);
+    SDL_SetRenderTarget(renderer, lightTexture);
+    SDL_SetRenderDrawColor(renderer, lightColor.r, lightColor.g, lightColor.b, lightColor.a);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    for (Light& light : lightCommands)
+    {
+        DrawLight(light);
+    }
+    SDL_SetTextureBlendMode(lightTexture, SDL_BLENDMODE_MOD);
+    SDL_SetRenderTarget(renderer, nullptr);
+    SDL_RenderTexture(renderer, lightTexture, nullptr, nullptr);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+    for (int layer = MppRendererLayerUI; layer < MppRendererLayerCount; layer++)
+    {
+        layers[layer].Draw(MppRendererLayer(layer));
+    }
+    lightCommands.clear();
     SDL_RenderPresent(renderer);
     int min = 0;
     int max = MppWorldGetSize() - 1;
@@ -302,6 +383,11 @@ void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRend
 void MppRendererDrawLine(int color, int x1, int y1, int x2, int y2, MppRendererLayer layer)
 {
     layers[layer].Lines.emplace_back(color, x1, y1, x2, y2);
+}
+
+void MppRendererDrawLight(int color, int x, int y, int radius, int strength)
+{
+    lightCommands.emplace_back(color, x, y, radius, strength);
 }
 
 int MppRendererGetTileX1()

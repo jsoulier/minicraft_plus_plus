@@ -52,6 +52,7 @@ enum MppItemID
     MppItemIDIronShovel,
     MppItemIDIronHoe,
     MppItemIDHands,
+    MppItemIDLantern,
     MppItemIDCount,
 };
 

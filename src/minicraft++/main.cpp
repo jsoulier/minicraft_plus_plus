@@ -69,7 +69,7 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     MppWorldSave(ticks, false);
     MppWorldRender();
     MppInputRender();
-    MppRendererSubmit();
+    MppRendererSubmit(555);
     return SDL_APP_CONTINUE;
 }
 

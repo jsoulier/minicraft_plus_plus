@@ -10,6 +10,7 @@
 #include <minicraft++/entity/furniture/anvil.hpp>
 #include <minicraft++/entity/furniture/chest.hpp>
 #include <minicraft++/entity/furniture/furnace.hpp>
+#include <minicraft++/entity/furniture/lantern.hpp>
 #include <minicraft++/entity/furniture/workbench.hpp>
 #include <minicraft++/entity/item.hpp>
 #include <minicraft++/inventory.hpp>
@@ -52,6 +53,11 @@ static std::shared_ptr<MppFurnitureEntity> CreateChestEntity()
 static std::shared_ptr<MppFurnitureEntity> CreateAnvilEntity()
 {
     return std::make_shared<MppAnvilEntity>();
+}
+
+static std::shared_ptr<MppFurnitureEntity> CreateLanternEntity()
+{
+    return std::make_shared<MppLanternEntity>();
 }
 
 struct MppItemRecipeData
@@ -485,6 +491,18 @@ static const kItems[MppItemIDCount] =
         .Color5 = 0,
         .SpriteX = 0,
         .SpriteY = 0,
+    },
+    {
+        .Name = "lantern",
+        .Type = MppItemTypeFurniture,
+        .CreateFurnitureEntity = CreateLanternEntity,
+        .Color1 = kMppColorLantern1,
+        .Color2 = kMppColorLantern2,
+        .Color3 = kMppColorLantern3,
+        .Color4 = kMppColorLantern4,
+        .Color5 = kMppColorLantern5,
+        .SpriteX = 4,
+        .SpriteY = 14,
     },
 };
 

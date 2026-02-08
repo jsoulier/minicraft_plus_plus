@@ -518,7 +518,7 @@ bool MppTile::OnAction(MppEntity& instigator, int x, int y)
     if (child != MppTileIDInvalid)
     {
         *this = MppTile(child);
-        std::shared_ptr<MppEntity> entity = std::make_shared<MppHitParticleEntity>();
+        std::shared_ptr<MppEntity> entity = std::make_shared<MppHitEntity>();
         entity->SetX(x * kSize);
         entity->SetY(y * kSize);
         MppWorldAddEntity(entity);

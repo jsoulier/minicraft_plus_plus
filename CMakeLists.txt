@@ -32,7 +32,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/furniture/chest.cpp
     src/minicraft++/entity/furniture/furnace.cpp
     src/minicraft++/entity/furniture/furniture.cpp
-    src/minicraft++/entity/furniture/light.cpp
+    src/minicraft++/entity/furniture/lantern.cpp
     src/minicraft++/entity/furniture/recipe.cpp
     src/minicraft++/entity/furniture/workbench.cpp
     src/minicraft++/entity/item.cpp

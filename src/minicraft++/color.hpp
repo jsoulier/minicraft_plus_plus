@@ -43,5 +43,10 @@ static constexpr int kMppColorWorkbench2 = 211;
 static constexpr int kMppColorWorkbench3 = 322;
 static constexpr int kMppColorWorkbench4 = 433;
 static constexpr int kMppColorWorkbench5 = 544;
+static constexpr int kMppColorLantern1 = 0;
+static constexpr int kMppColorLantern2 = 111;
+static constexpr int kMppColorLantern3 = 0;
+static constexpr int kMppColorLantern4 = 310;
+static constexpr int kMppColorLantern5 = 550;
 
 SDL_Color MppColorGet(int inColor);
