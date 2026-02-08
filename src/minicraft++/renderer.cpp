@@ -25,7 +25,7 @@ struct Sprite
     MppSprite Sprite;
     int X;
     int Y;
-    bool Flip;
+    MppRendererFlip Flip;
 };
 
 struct Quad
@@ -249,13 +249,25 @@ static void DrawSprite(Sprite& sprite, MppRendererLayer layer)
     rect.y = sprite.Y;
     rect.w = size;
     rect.h = size;
-    if (sprite.Flip)
+    if (sprite.Flip == MppRendererFlipNone)
+    {
+        SDL_RenderTexture(renderer, texture, nullptr, &rect);
+    }
+    else if (sprite.Flip == MppRendererFlipVertical)
     {
         SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_VERTICAL);
     }
+    else if (sprite.Flip == MppRendererFlipHorizontal)
+    {
+        SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_HORIZONTAL);
+    }
+    else if (sprite.Flip == MppRendererFlipBoth)
+    {
+        SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_HORIZONTAL_AND_VERTICAL);
+    }
     else
     {
-        SDL_RenderTexture(renderer, texture, nullptr, &rect);
+        MppAssert(false);
     }
 }
 
@@ -370,7 +382,7 @@ void MppRendererSubmit(int inLightColor)
     tileY2 = std::clamp((worldY + kHeight) / MppTile::kSize + 1, min, max);
 }
 
-void MppRendererDraw(MppSprite sprite, int x, int y, bool flip, MppRendererLayer layer)
+void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererFlip flip, MppRendererLayer layer)
 {
     layers[layer].Sprites.emplace_back(sprite, x, y, flip);
 }

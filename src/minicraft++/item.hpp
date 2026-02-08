@@ -12,6 +12,7 @@
 class MppFurnitureEntity;
 class MppInventory;
 class MppItemEntity;
+class MppProjectileEntity;
 enum MppRendererLayer : uint8_t;
 struct MppItemRecipeData;
 
@@ -53,6 +54,7 @@ enum MppItemID
     MppItemIDIronHoe,
     MppItemIDHands,
     MppItemIDLantern,
+    MppItemIDArrow,
     MppItemIDCount,
 };
 
@@ -86,6 +88,13 @@ enum MppItemType
     MppItemTypeEquipment =
         MppItemTypeTool |
         MppItemTypeArmor,
+};
+
+enum MppItemActionType
+{
+    MppItemActionTypeNone,
+    MppItemActionTypeAttackOrInteract,
+    MppItemActionTypeProjectile,
 };
 
 inline constexpr MppItemType operator|(MppItemType lhs, MppItemType rhs)
@@ -123,12 +132,15 @@ public:
     const std::string_view& GetName() const;
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
+    std::shared_ptr<MppProjectileEntity> CreateProjectileEntity() const;
     MppItemRecipe GetRecipe() const;
+    MppItemRecipe GetActionRecipe() const;
     void Add(int count = 1);
     MppItem Remove(int count = 1);
     int GetCount() const;
     MppItemID GetID() const;
     MppItemType GetType() const;
+    MppItemActionType GetActionType() const;
     int GetColor1() const;
     int GetColor2() const;
     int GetColor3() const;
@@ -146,4 +158,6 @@ private:
     int Count;
 };
 
-static MppItem kMppItemInvalid;
+static MppItem kMppItemInvalid{MppItemIDInvalid};
+static MppItem kMppItemHands{MppItemIDHands};
+

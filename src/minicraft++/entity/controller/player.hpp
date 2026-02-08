@@ -24,6 +24,7 @@ public:
     void OnHeldLeft() override;
     void OnHeldRight() override;
     void OnHeldCrouch() override;
+    bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const override;
 
 private:
     void OnActionCallback(int index);

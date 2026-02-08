@@ -106,12 +106,6 @@ std::string MppEntity::GetName() const
 
 void MppEntity::OnAddEntity()
 {
-    int x = GetPhysicsOffsetX();
-    int y = GetPhysicsOffsetY();
-    int w = GetPhysicsWidth();
-    int h = GetPhysicsHeight();
-    MppAssert((x * 2 + w) == MppTile::kSize);
-    MppAssert((y * 2 + h) == MppTile::kSize);
     Killed = false;
 }
 
@@ -228,23 +222,25 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     return std::sqrt(dx * dx + dy * dy);
 }
 
-void MppEntity::Move(int dx, int dy)
+bool MppEntity::Move(int dx, int dy)
 {
+    bool accepted = true;
     while (dx || dy)
     {
         if (dx)
         {
             int step = dx / std::abs(dx);
-            MoveTest(step, 0);
+            accepted &= MoveTest(step, 0);
             dx -= step;
         }
         if (dy)
         {
             int step = dy / std::abs(dy);
-            MoveTest(0, step);
+            accepted &= MoveTest(0, step);
             dy -= step;
         }
     }
+    return accepted;
 }
 
 bool MppEntity::MoveTest(int dx, int dy)

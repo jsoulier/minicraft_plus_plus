@@ -13,6 +13,8 @@
 #include <minicraft++/entity/furniture/lantern.hpp>
 #include <minicraft++/entity/furniture/workbench.hpp>
 #include <minicraft++/entity/item.hpp>
+#include <minicraft++/entity/projectile/arrow.hpp>
+#include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/item.hpp>
 #include <minicraft++/renderer.hpp>
@@ -34,6 +36,7 @@ static constexpr int kWoodColor4 = 540;
 static constexpr int kWoodColor5 = 540;
 
 using CreateFurnitureEntityFunction = std::shared_ptr<MppFurnitureEntity>(*)();
+using CreateProjectileEntityFunction = std::shared_ptr<MppProjectileEntity>(*)();
 
 static std::shared_ptr<MppFurnitureEntity> CreateWorkbenchEntity()
 {
@@ -60,6 +63,11 @@ static std::shared_ptr<MppFurnitureEntity> CreateLanternEntity()
     return std::make_shared<MppLanternEntity>();
 }
 
+static std::shared_ptr<MppProjectileEntity> CreateArrowEntity()
+{
+    return std::make_shared<MppArrowEntity>();
+}
+
 struct MppItemRecipeData
 {
     MppItemID ID;
@@ -70,8 +78,11 @@ struct
 {
     std::string_view Name;
     MppItemType Type;
+    MppItemActionType ActionType;
     MppItemRecipeData Recipe;
+    MppItemRecipeData ActionRecipe;
     CreateFurnitureEntityFunction CreateFurnitureEntity;
+    CreateProjectileEntityFunction CreateProjectileEntity;
     int Color1;
     int Color2;
     int Color3;
@@ -85,6 +96,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "invalid",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -96,6 +108,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
         .Color3 = kWoodColor3,
@@ -107,6 +120,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "apple",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 500,
         .Color2 = 700,
         .Color3 = 900,
@@ -118,6 +132,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron helmet",
         .Type = MppItemTypeHelmet,
+        .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -130,6 +145,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron cuirass",
         .Type = MppItemTypeCuirass,
+        .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 8}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -142,6 +158,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron leggings",
         .Type = MppItemTypeLeggings,
+        .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 7}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -154,6 +171,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron boots",
         .Type = MppItemTypeBoots,
+        .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -166,6 +184,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron ore",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
         .Color3 = kIronColor3,
@@ -177,6 +196,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron bar",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDFurnace, {{MppItemIDIronOre, 1}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -189,6 +209,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
         .Color3 = kStoneColor3,
@@ -200,6 +221,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "workbench",
         .Type = MppItemTypeFurniture,
+        .ActionType = MppItemActionTypeNone,
         .CreateFurnitureEntity = CreateWorkbenchEntity,
         .Color1 = kMppColorWorkbench1,
         .Color2 = kMppColorWorkbench2,
@@ -212,6 +234,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "furnace",
         .Type = MppItemTypeFurniture,
+        .ActionType = MppItemActionTypeNone,
         .CreateFurnitureEntity = CreateFurnaceEntity,
         .Color1 = kMppColorFurnace1,
         .Color2 = kMppColorFurnace2,
@@ -224,6 +247,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "chest",
         .Type = MppItemTypeFurniture,
+        .ActionType = MppItemActionTypeNone,
         .CreateFurnitureEntity = CreateChestEntity,
         .Color1 = kMppColorChest1,
         .Color2 = kMppColorChest2,
@@ -236,6 +260,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "heart",
         .Type = MppItemTypeNone,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 000,
         .Color2 = 300,
         .Color3 = 400,
@@ -247,6 +272,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "energy",
         .Type = MppItemTypeNone,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 0,
         .Color2 = 550,
         .Color3 = 330,
@@ -258,6 +284,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "food",
         .Type = MppItemTypeNone,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 0,
         .Color2 = 310,
         .Color3 = 555,
@@ -269,6 +296,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "anvil",
         .Type = MppItemTypeNone,
+        .ActionType = MppItemActionTypeNone,
         .CreateFurnitureEntity = CreateAnvilEntity,
         .Color1 = kMppColorAnvil1,
         .Color2 = kMppColorAnvil2,
@@ -281,6 +309,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood sword",
         .Type = MppItemTypeSword,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 3}}},
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
@@ -293,6 +322,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood pickaxe",
         .Type = MppItemTypePickaxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 5}}},
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
@@ -305,6 +335,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood axe",
         .Type = MppItemTypeAxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 4}}},
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
@@ -317,6 +348,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood shovel",
         .Type = MppItemTypeShovel,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 3}}},
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
@@ -329,6 +361,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood hoe",
         .Type = MppItemTypeHoe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 4}}},
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
@@ -341,7 +374,10 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "wood bow",
         .Type = MppItemTypeBow,
+        .ActionType = MppItemActionTypeProjectile,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 3}, {MppItemIDString, 3}}},
+        .ActionRecipe = {MppItemIDInvalid, {{MppItemIDArrow, 1}}},
+        .CreateProjectileEntity = CreateArrowEntity,
         .Color1 = kWoodColor1,
         .Color2 = kWoodColor2,
         .Color3 = kWoodColor3,
@@ -353,6 +389,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "string",
         .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeNone,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -364,6 +401,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone sword",
         .Type = MppItemTypeSword,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDStone, 3}}},
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
@@ -376,6 +414,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone pickaxe",
         .Type = MppItemTypePickaxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDStone, 5}}},
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
@@ -388,6 +427,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone axe",
         .Type = MppItemTypeAxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDStone, 4}}},
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
@@ -400,6 +440,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone shovel",
         .Type = MppItemTypeShovel,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDStone, 3}}},
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
@@ -412,6 +453,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "stone hoe",
         .Type = MppItemTypeHoe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDStone, 4}}},
         .Color1 = kStoneColor1,
         .Color2 = kStoneColor2,
@@ -424,6 +466,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron sword",
         .Type = MppItemTypeSword,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 3}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -436,6 +479,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron pickaxe",
         .Type = MppItemTypePickaxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 5}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -448,6 +492,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron axe",
         .Type = MppItemTypeAxe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -460,6 +505,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron shovel",
         .Type = MppItemTypeShovel,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 3}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -472,6 +518,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "iron hoe",
         .Type = MppItemTypeHoe,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
         .Color1 = kIronColor1,
         .Color2 = kIronColor2,
@@ -484,6 +531,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "hands",
         .Type = MppItemTypeHands,
+        .ActionType = MppItemActionTypeAttackOrInteract,
         .Color1 = 0,
         .Color2 = 0,
         .Color3 = 0,
@@ -495,6 +543,7 @@ static const kItems[MppItemIDCount] =
     {
         .Name = "lantern",
         .Type = MppItemTypeFurniture,
+        .ActionType = MppItemActionTypeNone,
         .CreateFurnitureEntity = CreateLanternEntity,
         .Color1 = kMppColorLantern1,
         .Color2 = kMppColorLantern2,
@@ -503,6 +552,18 @@ static const kItems[MppItemIDCount] =
         .Color5 = kMppColorLantern5,
         .SpriteX = 4,
         .SpriteY = 14,
+    },
+    {
+        .Name = "arrow",
+        .Type = MppItemTypeNone,
+        .ActionType = MppItemActionTypeNone,
+        .Color1 = 0,
+        .Color2 = 0,
+        .Color3 = 0,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 4,
+        .SpriteY = 12,
     },
 };
 
@@ -529,7 +590,6 @@ bool MppItemRecipe::CanCraft(MppItemID id) const
 bool MppItemRecipe::CanCraft(MppItemID inID, const std::shared_ptr<MppInventory>& inventory) const
 {
     MppAssert(CanCraft(inID));
-    MppAssert(inID != MppItemIDInvalid);
     for (auto& [id, count] : Data.Items)
     {
         const MppItem& item = inventory->GetByID(id);
@@ -595,7 +655,7 @@ void MppItem::Render(int x, int y, MppRendererLayer layer) const
         },
         x,
         y,
-        false,
+        MppRendererFlipNone,
         layer);
 }
 
@@ -614,9 +674,19 @@ std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
     return kItems[ID].CreateFurnitureEntity();
 }
 
+std::shared_ptr<MppProjectileEntity> MppItem::CreateProjectileEntity() const
+{
+    return kItems[ID].CreateProjectileEntity();
+}
+
 MppItemRecipe MppItem::GetRecipe() const
 {
     return MppItemRecipe{kItems[ID].Recipe};
+}
+
+MppItemRecipe MppItem::GetActionRecipe() const
+{
+    return MppItemRecipe{kItems[ID].ActionRecipe};
 }
 
 void MppItem::Add(int count)
@@ -646,6 +716,11 @@ MppItemID MppItem::GetID() const
 MppItemType MppItem::GetType() const
 {
     return kItems[ID].Type;
+}
+
+MppItemActionType MppItem::GetActionType() const
+{
+    return kItems[ID].ActionType;
 }
 
 int MppItem::GetColor1() const

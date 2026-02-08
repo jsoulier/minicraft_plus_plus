@@ -12,6 +12,7 @@
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/mob/player.hpp>
 #include <minicraft++/inventory.hpp>
+#include <minicraft++/item.hpp>
 #include <minicraft++/log.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
@@ -35,69 +36,7 @@ void MppPlayerController::OnUpdate(uint64_t ticks)
 
 void MppPlayerController::OnAction()
 {
-    std::shared_ptr<MppPlayerEntity> player = GetPlayer();
-    if (player->GetHeldEntity())
-    {
-        player->DropHeldEntity();
-        return;
-    }
-    std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(player->GetX(), player->GetY());
-    std::erase_if(entities, [&](std::shared_ptr<MppEntity>& other)
-    {
-        // TODO: remove e.g. items
-        return player == other;
-    });
-    auto [centerX1, centerY1] = player->GetCenter();
-    player->PushNow(kActionOffset * player->GetFacingX(), kActionOffset * player->GetFacingY());
-    auto [centerX2, centerY2] = player->GetCenter();
-    if (MppConsole::CVarAction.GetBool())
-    {
-        MppRendererDrawLine(kMppColorDebugAction, centerX1, centerY1, centerX2, centerY2, MppRendererLayerDebugAction);
-    }
-    std::sort(entities.begin(), entities.end(), [&player](std::shared_ptr<MppEntity>& lhs, std::shared_ptr<MppEntity>& rhs)
-    {
-        // TODO: sort mobs in front of furniture
-        return player->GetDistance(lhs) < player->GetDistance(rhs);
-    });
-    bool didAction = false;
-    if (!entities.empty())
-    {
-        std::shared_ptr<MppEntity>& entity = entities[0];
-        if (player->GetDistance(entity) <= player->GetActionRange())
-        {
-            player->DoAction(entity);
-            didAction = true;
-        }
-    }
-    if (!didAction)
-    {
-        int tileX1 = centerX1 / MppTile::kSize;
-        int tileY1 = centerY1 / MppTile::kSize;
-        int tileX2 = centerX2 / MppTile::kSize;
-        int tileY2 = centerY2 / MppTile::kSize;
-        MppTile& tile1 = MppWorldGetTile(tileX1, tileY1);
-        MppTile& tile2 = MppWorldGetTile(tileX2, tileY2);
-        int size = MppTile::kSize;
-        if (tile1.IsValid() && tile1.OnAction(*player, tileX1, tileY1))
-        {
-            if (MppConsole::CVarAction.GetBool())
-            {
-                int tx = tileX1 * size;
-                int ty = tileY1 * size;
-                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
-            }
-        }
-        else if (tile2.IsValid() && tile2.OnAction(*player, tileX2, tileY2))
-        {
-            if (MppConsole::CVarAction.GetBool())
-            {
-                int tx = tileX2 * size;
-                int ty = tileY2 * size;
-                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
-            }
-        }
-    }
-    player->PushNow(-kActionOffset * player->GetFacingX(), -kActionOffset * player->GetFacingY());
+    GetPlayer()->DoAction();
 }
 
 void MppPlayerController::OnInventory()
@@ -245,4 +184,9 @@ void MppPlayerController::OnDropCallback(int index)
     item->SetX(player->GetX() + player->GetFacingX() * kDropDistance);
     item->SetY(player->GetY() + player->GetFacingY() * kDropDistance);
     MppWorldAddEntity(item);
+}
+
+bool MppPlayerController::ActionFilter(const std::shared_ptr<MppEntity>& entity) const
+{
+    return !entity->IsA<MppMobEntity>() && !entity->IsA<MppFurnitureEntity>();
 }

@@ -18,12 +18,12 @@ public:
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
+    virtual void DoAction();
     bool IsInFov(const std::shared_ptr<MppEntity>& entity);
     int GetSize() const override;
     std::shared_ptr<MppInventory> GetInventory();
     virtual int GetActionRange() const;
     void Push(int dx, int dy);
-    void PushNow(int dx, int dy);
     int GetFacingX() const;
     int GetFacingY() const;
     virtual void DoAction(std::shared_ptr<MppEntity>& entity);
@@ -52,6 +52,7 @@ protected:
     virtual int GetSpritePose2X() const;
     virtual int GetSpritePose2Y() const;
     void SetTickAnimation();
+    virtual int GetActionOffset() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;

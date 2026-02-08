@@ -22,11 +22,19 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerUI = MppRendererLayerMenu,
 };
 
+enum MppRendererFlip : uint8_t
+{
+    MppRendererFlipNone,
+    MppRendererFlipHorizontal,
+    MppRendererFlipVertical,
+    MppRendererFlipBoth,
+};
+
 bool MppRendererInit();
 void MppRendererQuit();
 void MppRendererSubmit(int lightColor);
 void MppRendererMove(int x, int y, int size);
-void MppRendererDraw(MppSprite sprite, int x, int y, bool flip, MppRendererLayer layer);
+void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererFlip flip, MppRendererLayer layer);
 void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRendererLayer layer);
 void MppRendererDrawLine(int color, int x1, int y1, int x2, int y2, MppRendererLayer layer);
 void MppRendererDrawLight(int color, int x, int y, int radius, int strength);

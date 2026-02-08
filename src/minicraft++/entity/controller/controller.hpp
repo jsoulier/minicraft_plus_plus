@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 
+class MppEntity;
 class MppInventory;
 class MppMobEntity;
 
@@ -19,6 +20,7 @@ public:
     virtual void OnAddEntity() {}
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Update(uint64_t ticks) {}
+    virtual bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const;
 
 protected:
     std::shared_ptr<MppInventory> GetInventory();

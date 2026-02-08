@@ -6,6 +6,7 @@
 
 #include <minicraft++/assert.hpp>
 #include <minicraft++/color.hpp>
+#include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 
 enum Size
@@ -148,7 +149,7 @@ MppSpriteAnimation::MppSpriteAnimation()
     , Tick{false}
     , X{0}
     , Y{0}
-    , Flip{false}
+    , Flip{MppRendererFlipNone}
 {
 }
 
@@ -162,29 +163,24 @@ void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
     }
     X = Poses[pose][0];
     Y = Poses[pose][1];
+    bool flip = false;
     if (dy)
     {
-        Flip = Tick;
-        if (dy > 0)
-        {
-            X += 0;
-        }
-        else
-        {
-            X += 1;
-        }
+        flip = Tick;
+        X += dy < 0;
     }
     else
     {
-        Flip = dx < 0;
-        if (Tick)
-        {
-            X += 2;
-        }
-        else
-        {
-            X += 3;
-        }
+        flip = dx < 0;
+        X += 2 + Tick;
+    }
+    if (flip)
+    {
+        Flip = MppRendererFlipVertical;
+    }
+    else
+    {
+        Flip = MppRendererFlipNone;
     }
 }
 
@@ -216,7 +212,7 @@ int MppSpriteAnimation::GetY() const
     return Y;
 }
 
-bool MppSpriteAnimation::GetFlip() const
+MppRendererFlip MppSpriteAnimation::GetFlip() const
 {
     return Flip;
 }

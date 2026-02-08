@@ -67,8 +67,14 @@ public:
     std::pair<int, int> GetCenter() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
 
+    template<typename T>
+    bool IsA() const
+    {
+        return dynamic_cast<const T*>(this) != nullptr;
+    }
+
 protected:
-    void Move(int dx, int dy);
+    bool Move(int dx, int dy);
 
 private:
     bool MoveTest(int dx, int dy);

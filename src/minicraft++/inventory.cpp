@@ -178,7 +178,14 @@ const MppItem& MppInventory::GetBySlot(MppInventorySlot slot) const
     }
     else
     {
-        return kMppItemInvalid;
+        if (slot == MppInventorySlotHeld)
+        {
+            return kMppItemHands;
+        }
+        else
+        {
+            return kMppItemInvalid;
+        }
     }
 }
 

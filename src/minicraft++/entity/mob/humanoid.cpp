@@ -170,6 +170,16 @@ std::shared_ptr<MppEntity> MppHumanoidEntity::GetHeldEntity() const
     return HeldEntity;
 }
 
+void MppHumanoidEntity::DoAction() 
+{
+    if (GetHeldEntity())
+    {
+        DropHeldEntity();
+        return;
+    }
+    MppMobEntity::DoAction();
+}
+
 void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)
 {
     MppAssert(!HeldEntity);

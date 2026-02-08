@@ -8,12 +8,13 @@
 #include <minicraft++/assert.hpp>
 #include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
+#include <minicraft++/entity/controller/controller.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
 #include <minicraft++/util.hpp>
-#include <minicraft++/entity/controller/controller.hpp>
-#include <minicraft++/entity/mob/mob.hpp>
+#include <minicraft++/world.hpp>
 
 MppMobEntity::MppMobEntity()
     : MppEntity()
@@ -33,7 +34,6 @@ void MppMobEntity::OnAddEntity()
 {
     MppEntity::OnAddEntity();
     Inventory->SetMaxItems(GetMaxItems());
-    // Don't override if attained from visiting
     if (!Controller)
     {
         Controller = GetController();
@@ -136,6 +136,90 @@ void MppMobEntity::Render() const
     }
 }
 
+void MppMobEntity::DoAction()
+{
+    const MppItem& held = Inventory->GetBySlot(MppInventorySlotHeld);
+    MppItemRecipe actionRecipe = held.GetActionRecipe();
+    if (!actionRecipe.CanCraft(MppItemIDInvalid, Inventory))
+    {
+        // TODO: play a sound (e.g. "out of arrows")
+        return;
+    }
+    if (held.GetActionType() == MppItemActionTypeAttackOrInteract)
+    {
+        auto [centerX1, centerY1] = GetCenter();
+        int thisX = X;
+        int thisY = Y;
+        X += GetActionOffset() * GetFacingX();
+        Y += GetActionOffset() * GetFacingY();
+        auto [centerX2, centerY2] = GetCenter();
+        if (MppConsole::CVarAction.GetBool())
+        {
+            MppRendererDrawLine(kMppColorDebugAction, centerX1, centerY1, centerX2, centerY2, MppRendererLayerDebugAction);
+        }
+        std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(GetX(), GetY());
+        std::erase_if(entities, [this](const std::shared_ptr<MppEntity>& other)
+        {
+            return this == other.get() || Controller->ActionFilter(other);
+        });
+        std::sort(entities.begin(), entities.end(), [this](std::shared_ptr<MppEntity>& lhs, std::shared_ptr<MppEntity>& rhs)
+        {
+            // TODO: sort mobs in front of furniture
+            return GetDistance(lhs) < GetDistance(rhs);
+        });
+        bool didAction = false;
+        if (!entities.empty())
+        {
+            std::shared_ptr<MppEntity>& entity = entities[0];
+            if (GetDistance(entity) <= GetActionRange())
+            {
+                DoAction(entity);
+                didAction = true;
+            }
+        }
+        if (!didAction)
+        {
+            int tileX1 = centerX1 / MppTile::kSize;
+            int tileY1 = centerY1 / MppTile::kSize;
+            int tileX2 = centerX2 / MppTile::kSize;
+            int tileY2 = centerY2 / MppTile::kSize;
+            MppTile& tile1 = MppWorldGetTile(tileX1, tileY1);
+            MppTile& tile2 = MppWorldGetTile(tileX2, tileY2);
+            int size = MppTile::kSize;
+            if (tile1.IsValid() && tile1.OnAction(*this, tileX1, tileY1))
+            {
+                if (MppConsole::CVarAction.GetBool())
+                {
+                    int tx = tileX1 * size;
+                    int ty = tileY1 * size;
+                    MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
+                }
+            }
+            else if (tile2.IsValid() && tile2.OnAction(*this, tileX2, tileY2))
+            {
+                if (MppConsole::CVarAction.GetBool())
+                {
+                    int tx = tileX2 * size;
+                    int ty = tileY2 * size;
+                    MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
+                }
+            }
+        }
+        X = thisX;
+        Y = thisY;
+    }
+    else if (held.GetActionType() == MppItemActionTypeProjectile)
+    {
+        // TODO:
+        std::shared_ptr<MppProjectileEntity> projectile = held.CreateProjectileEntity();
+    }
+    else
+    {
+        MppAssert(false);
+    }
+    actionRecipe.Craft(GetInventory());
+}
+
 bool MppMobEntity::IsInFov(const std::shared_ptr<MppEntity>& entity)
 {
     int x1 = this->X + MppTile::kSize / 2;
@@ -165,12 +249,6 @@ void MppMobEntity::Push(int dx, int dy)
 {
     VelocityX += dx;
     VelocityY += dy;
-}
-
-void MppMobEntity::PushNow(int dx, int dy)
-{
-    X += dx;
-    Y += dy;
 }
 
 int MppMobEntity::GetActionRange() const
@@ -267,4 +345,9 @@ int MppMobEntity::GetSpritePose2Y() const
 void MppMobEntity::SetTickAnimation()
 {
     TickAnimation = true;
+}
+
+int MppMobEntity::GetActionOffset() const
+{
+    return 12;
 }

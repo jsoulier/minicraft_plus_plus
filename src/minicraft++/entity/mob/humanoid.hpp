@@ -25,6 +25,7 @@ public:
     void DropHeldEntity();
     void MoveHeldEntityToInventory();
     std::shared_ptr<MppEntity> GetHeldEntity() const;
+    void DoAction() override;
     void DoAction(std::shared_ptr<MppEntity>& entity) override;
 
 protected:

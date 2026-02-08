@@ -381,7 +381,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            false,
+            MppRendererFlipNone,
             MppRendererLayerTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteType2x2)
@@ -404,7 +404,7 @@ void MppTile::Render(int x, int y) const
                 },
                 x * MppTile::kSize,
                 y * MppTile::kSize,
-                false,
+                MppRendererFlipNone,
                 MppRendererLayerBottomTile);
         }
         MppRendererDraw(
@@ -420,7 +420,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            false,
+            MppRendererFlipNone,
             MppRendererLayerTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteType1x2_2x1)
@@ -439,7 +439,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            false,
+            MppRendererFlipNone,
             MppRendererLayerTile);
         MppRendererDraw(
             MppSprite{
@@ -454,7 +454,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            false,
+            MppRendererFlipNone,
             MppRendererLayerTopTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteTypeNoLinks)
@@ -472,7 +472,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            false,
+            MppRendererFlipNone,
             MppRendererLayerTile);
     }
     else
@@ -506,10 +506,7 @@ bool MppTile::OnAction(MppEntity& instigator, int x, int y)
     MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
     MppAssert(mob);
     MppItem item = mob->GetInventory()->GetBySlot(MppInventorySlotHeld);
-    if (!item.IsValid())
-    {
-        item = MppItem{MppItemIDHands};
-    }
+    MppAssert(item.IsValid());
     if ((item.GetType() & kTiles[ID].ItemTypes) == MppItemTypeNone)
     {
         return false;

@@ -33,7 +33,7 @@ void MppParticleEntity::Render() const
         },
         X,
         Y,
-        false,
+        MppRendererFlipNone,
         MppRendererLayerParticleEntity);
 }
 

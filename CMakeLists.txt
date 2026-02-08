@@ -46,6 +46,8 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/mob/zombie.cpp
     src/minicraft++/entity/particle/hit.cpp
     src/minicraft++/entity/particle/particle.cpp
+    src/minicraft++/entity/projectile/arrow.cpp
+    src/minicraft++/entity/projectile/projectile.cpp
     src/minicraft++/gen.cpp
     src/minicraft++/input.cpp
     src/minicraft++/inventory.cpp
