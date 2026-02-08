@@ -287,7 +287,7 @@ static void DrawLine(Line& line, MppRendererLayer layer)
 
 static void DrawLight(Light light)
 {
-    int size = light.Radius * 2;
+    int size = light.Radius * 2 + 1;
     auto lightIt = lights.find(light.Radius);
     if (lightIt == lights.end())
     {
