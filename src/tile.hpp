@@ -15,6 +15,8 @@ enum MppTileID : uint16_t
     MppTileIDStoneWall,
     MppTileIDTree,
     MppTileIDSand,
+    MppTileIDStairsDown,
+    MppTileIDStairsUp,
     MppTileIDCount,
 };
 
@@ -36,8 +38,8 @@ public:
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y) const;
-    bool OnAction(MppEntity& instigator);
-    bool OnCollision(MppEntity& instigator);
+    bool OnAction(MppEntity& instigator, int x, int y);
+    bool OnCollision(MppEntity& instigator, int x, int y);
     const std::string_view& GetName() const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

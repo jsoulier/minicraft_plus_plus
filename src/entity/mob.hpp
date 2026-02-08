@@ -51,6 +51,7 @@ protected:
     virtual int GetSpritePose1Y() const = 0;
     virtual int GetSpritePose2X() const;
     virtual int GetSpritePose2Y() const;
+    void SetTickAnimation();
 
 protected:
     std::shared_ptr<MppInventory> Inventory;
@@ -65,4 +66,5 @@ private:
     int Health;
     int Hunger;
     int Energy;
+    bool TickAnimation;
 };

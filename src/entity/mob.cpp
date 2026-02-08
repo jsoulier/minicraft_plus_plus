@@ -25,6 +25,7 @@ MppMobEntity::MppMobEntity()
     , FacingY{1}
     , VelocityX{0}
     , VelocityY{0}
+    , TickAnimation{false}
 {
 }
 
@@ -77,9 +78,10 @@ void MppMobEntity::Update(uint64_t ticks)
     {
         Controller->Update(ticks);
     }
-    if (IsMoving())
+    if (IsMoving() || TickAnimation)
     {
         Animation.Update(GetPose(), FacingX, FacingY, ticks);
+        TickAnimation = false;
     }
     if (ticks % GetSpeed() == 0)
     {
@@ -261,3 +263,7 @@ int MppMobEntity::GetSpritePose2Y() const
     return 0;
 }
 
+void MppMobEntity::SetTickAnimation()
+{
+    TickAnimation = true;
+}

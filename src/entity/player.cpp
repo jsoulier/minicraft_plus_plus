@@ -74,7 +74,11 @@ void MppPlayerEntity::Render() const
         MppItem{MppItemIDEnergy}.Render(x, y, MppRendererLayerMenuContent);
     }
     const MppItem& held = Inventory->GetBySlot(MppInventorySlotHeld);
-    if (held.IsValid())
+    if (HeldEntity)
+    {
+        MppMenu::Render(HeldEntity->GetName(), kMppColorMenuUnlocked, 256, 128, MppMenuAlignmentRight);
+    }
+    else if (held.IsValid())
     {
         MppMenu::Render(held.GetName(), kMppColorMenuUnlocked, 256, 128, MppMenuAlignmentRight);
     }

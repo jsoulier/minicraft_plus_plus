@@ -1,8 +1,11 @@
 #include <savepoint/savepoint.hpp>
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <memory>
+#include <string>
+#include <string_view>
 
 #include "assert.hpp"
 #include "color.hpp"
@@ -72,6 +75,33 @@ MppEntity::MppEntity()
     , Y{0}
     , Killed{false}
 {
+}
+
+std::string MppEntity::GetName() const
+{
+    std::string_view className = GetClassName();
+    static constexpr const char kPrefix[] = "Mpp";
+    static constexpr const char kSuffix[] = "Entity";
+    MppAssert(className.starts_with(kPrefix));
+    MppAssert(className.ends_with(kSuffix));
+    std::string string;
+    string.reserve(className.size());
+    for (int i = sizeof(kPrefix) - 1; i < className.size() - sizeof(kSuffix) + 1; i++)
+    {
+        if (std::islower(className[i]))
+        {
+            string.push_back(className[i]);
+        }
+        else
+        {
+            if (i > 3)
+            {
+                string.push_back('_');
+            }
+            string.push_back(std::tolower(className[i]));
+        }
+    }
+    return string;
 }
 
 void MppEntity::OnAddEntity()
@@ -248,7 +278,7 @@ void MppEntity::MoveTest(int dx, int dy)
         {
             continue;
         }
-        rejected |= tile.OnCollision(*this);
+        rejected |= tile.OnCollision(*this, tileX, tileY);
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
     {

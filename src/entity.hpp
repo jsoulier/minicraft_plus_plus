@@ -3,6 +3,7 @@
 #include <savepoint/savepoint.hpp>
 
 #include <memory>
+#include <string>
 
 class MppEntity;
 
@@ -39,6 +40,7 @@ public:
     MppEntity& operator=(const MppEntity& other) = delete;
     MppEntity(MppEntity&& other) = delete;
     MppEntity& operator=(MppEntity&& other) = delete;
+    std::string GetName() const;
     virtual void OnAddEntity();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Render() const;

@@ -10,6 +10,13 @@
 #include "../world.hpp"
 #include "humanoid.hpp"
 
+void MppHumanoidEntity::OnAddEntity()
+{
+    MppMobEntity::OnAddEntity();
+    // We could be holding something so always force an animation tick
+    SetTickAnimation();
+}
+
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
@@ -126,6 +133,7 @@ void MppHumanoidEntity::Pickup(const std::shared_ptr<MppEntity>& entity)
 {
     MppAssert(!HeldEntity);
     HeldEntity = entity;
+    SetTickAnimation();
 }
 
 bool MppHumanoidEntity::IsHoldingEntity() const
@@ -138,6 +146,7 @@ void MppHumanoidEntity::DropHeldEntity()
     MppAssert(HeldEntity);
     MppWorldAddEntity(HeldEntity);
     HeldEntity = nullptr;
+    SetTickAnimation();
 }
 
 void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)

@@ -120,7 +120,7 @@ int MppHitParticleEntity::GetSize() const
 
 int MppHitParticleEntity::GetMaxLifetime() const
 {
-    return 32;
+    return 8;
 }
 
 int MppHitParticleEntity::GetSpriteX() const

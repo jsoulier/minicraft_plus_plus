@@ -13,6 +13,7 @@ class MppItem;
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
+    virtual void OnAddEntity() override;
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Render() const override;
     int GetPhysicsOffsetX() const override;

@@ -82,18 +82,22 @@ void MppPlayerController::OnAction()
         MppTile& tile1 = MppWorldGetTile(tileX1, tileY1);
         MppTile& tile2 = MppWorldGetTile(tileX2, tileY2);
         int size = MppTile::kSize;
-        if (tile1.IsValid() && tile1.OnAction(*player))
+        if (tile1.IsValid() && tile1.OnAction(*player, tileX1, tileY1))
         {
             if (MppConsole::CVarAction.GetBool())
             {
-                MppRendererDrawRect(kMppColorDebugAction, tileX1 * size, tileY1 * size, size, size, MppRendererLayerDebugAction);
+                int tx = tileX1 * size;
+                int ty = tileY1 * size;
+                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
             }
         }
-        else if (tile2.IsValid() && tile2.OnAction(*player))
+        else if (tile2.IsValid() && tile2.OnAction(*player, tileX2, tileY2))
         {
             if (MppConsole::CVarAction.GetBool())
             {
-                MppRendererDrawRect(kMppColorDebugAction, tileX2 * size, tileY2 * size, size, size, MppRendererLayerDebugAction);
+                int tx = tileX2 * size;
+                int ty = tileY2 * size;
+                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
             }
         }
         else if (tile1.IsValid())

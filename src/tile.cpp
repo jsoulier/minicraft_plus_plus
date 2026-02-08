@@ -2,20 +2,22 @@
 
 #include <cstdint>
 #include <limits>
+#include <memory>
 #include <string_view>
 
 #include "assert.hpp"
 #include "color.hpp"
 #include "console.hpp"
 #include "entity.hpp"
-#include "entity/particle.hpp"
 #include "entity/mob.hpp"
+#include "entity/particle.hpp"
+#include "inventory.hpp"
 #include "item.hpp"
+#include "log.hpp"
 #include "renderer.hpp"
 #include "sprite.hpp"
 #include "tile.hpp"
 #include "world.hpp"
-#include "inventory.hpp"
 
 static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
 static constexpr int kDirtColor = 420;
@@ -25,12 +27,14 @@ enum TileSpriteType
     TileSpriteType1x1,
     TileSpriteType2x2,
     TileSpriteType1x2_2x1,
+    TileSpriteTypeNoLinks,
 };
 
 struct
 {
     std::string_view Name;
     TileSpriteType SpriteType;
+    int SpriteX;
     int SpriteY;
     int TopSpriteY;
     MppTileID BottomTile;
@@ -52,6 +56,7 @@ static constexpr kTiles[MppTileIDCount] =
     {
         .Name = "invalid",
         .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
         .SpriteY = 0,
         .TopSpriteY = 0,
         .BottomTile = MppTileIDCount,
@@ -71,6 +76,7 @@ static constexpr kTiles[MppTileIDCount] =
     {
         .Name = "grass",
         .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
         .SpriteY = 0,
         .TopSpriteY = 0,
         .BottomTile = MppTileIDCount,
@@ -109,6 +115,7 @@ static constexpr kTiles[MppTileIDCount] =
     {
         .Name = "stone wall",
         .SpriteType = TileSpriteType1x2_2x1,
+        .SpriteX = 0,
         .SpriteY = 3,
         .TopSpriteY = 4,
         .BottomTile = MppTileIDCount,
@@ -128,6 +135,7 @@ static constexpr kTiles[MppTileIDCount] =
     {
         .Name = "tree",
         .SpriteType = TileSpriteType2x2,
+        .SpriteX = 0,
         .SpriteY = 5,
         .TopSpriteY = 0,
         .BottomTile = MppTileIDGrass,
@@ -147,6 +155,7 @@ static constexpr kTiles[MppTileIDCount] =
     {
         .Name = "sand",
         .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
         .SpriteY = 0,
         .TopSpriteY = 0,
         .BottomTile = MppTileIDCount,
@@ -162,6 +171,46 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsHeight = MppTile::kSize,
         .ChildTile = MppTileIDDirt,
         .ItemTypes = MppItemTypeShovel,
+    },
+    {
+        .Name = "stairs down",
+        .SpriteType = TileSpriteTypeNoLinks,
+        .SpriteX = 0,
+        .SpriteY = 19,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 0,
+        .Color2 = 222,
+        .Color3 = 333,
+        .Color4 = 0,
+        .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
+    },
+    {
+        .Name = "stairs up",
+        .SpriteType = TileSpriteTypeNoLinks,
+        .SpriteX = 1,
+        .SpriteY = 19,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 0,
+        .Color2 = 222,
+        .Color3 = 333,
+        .Color4 = 0,
+        .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
     },
 };
 
@@ -325,7 +374,7 @@ void MppTile::Render(int x, int y) const
                 kTiles[ID].Color3,
                 kTiles[ID].Color4,
                 kTiles[ID].Color5,
-                GetSprite1x1(ID, x, y),
+                kTiles[ID].SpriteX + GetSprite1x1(ID, x, y),
                 kTiles[ID].SpriteY,
                 MppTile::kSize,
             },
@@ -348,7 +397,7 @@ void MppTile::Render(int x, int y) const
                     kTiles[id].Color3,
                     kTiles[id].Color4,
                     kTiles[id].Color5,
-                    GetSprite1x1(id, x, y),
+                    kTiles[id].SpriteX + GetSprite1x1(id, x, y),
                     kTiles[id].SpriteY,
                     MppTile::kSize,
                 },
@@ -364,7 +413,7 @@ void MppTile::Render(int x, int y) const
                 kTiles[ID].Color3,
                 kTiles[ID].Color4,
                 kTiles[ID].Color5,
-                GetSprite2x2(ID, x, y),
+                kTiles[ID].SpriteX + GetSprite2x2(ID, x, y),
                 kTiles[ID].SpriteY,
                 MppTile::kSize,
             },
@@ -383,7 +432,7 @@ void MppTile::Render(int x, int y) const
                 kTiles[ID].Color3,
                 kTiles[ID].Color4,
                 kTiles[ID].Color5,
-                GetSprite1x1(ID, x, y),
+                kTiles[ID].SpriteX + GetSprite1x1(ID, x, y),
                 kTiles[ID].SpriteY,
                 MppTile::kSize,
             },
@@ -398,7 +447,7 @@ void MppTile::Render(int x, int y) const
                 kTiles[ID].Color3,
                 kTiles[ID].Color4,
                 kTiles[ID].Color5,
-                GetSprite1x2_2x1(ID, x, y),
+                kTiles[ID].SpriteX + GetSprite1x2_2x1(ID, x, y),
                 kTiles[ID].TopSpriteY,
                 MppTile::kSize,
             },
@@ -406,6 +455,24 @@ void MppTile::Render(int x, int y) const
             y * MppTile::kSize,
             false,
             MppRendererLayerTopTile);
+    }
+    else if (kTiles[ID].SpriteType == TileSpriteTypeNoLinks)
+    {
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX,
+                kTiles[ID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTile);
     }
     else
     {
@@ -433,7 +500,7 @@ void MppTile::Render(int x, int y) const
     }
 }
 
-bool MppTile::OnAction(MppEntity& instigator)
+bool MppTile::OnAction(MppEntity& instigator, int x, int y)
 {
     MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
     MppAssert(mob);
@@ -450,11 +517,19 @@ bool MppTile::OnAction(MppEntity& instigator)
     if (child != MppTileIDInvalid)
     {
         *this = MppTile(child);
+        std::shared_ptr<MppEntity> entity = std::make_shared<MppHitParticleEntity>();
+        entity->SetX(x * kSize);
+        entity->SetY(y * kSize);
+        MppWorldAddEntity(entity);
+    }
+    else
+    {
+        MppLog("Tile can be hit by tool but has no child: %s", GetName().data());
     }
     return true;
 }
 
-bool MppTile::OnCollision(MppEntity& instigator)
+bool MppTile::OnCollision(MppEntity& instigator, int x, int y)
 {
     return kTiles[ID].PhysicsType == MppTilePhysicsTypeWall;
 }
