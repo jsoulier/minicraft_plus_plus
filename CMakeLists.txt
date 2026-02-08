@@ -19,44 +19,47 @@ add_subdirectory(lib/SDL)
 add_subdirectory(lib/savepoint)
 
 add_executable(minicraft++ WIN32
-    src/audio.cpp
-    src/color.cpp
-    src/console.cpp
-    src/entity.cpp
-    src/entity/anvil.cpp
-    src/entity/chest.cpp
-    src/entity/controller.cpp
-    src/entity/controller/creature.cpp
-    src/entity/controller/melee.cpp
-    src/entity/controller/npc.cpp
-    src/entity/controller/player.cpp
-    src/entity/creature.cpp
-    src/entity/furnace.cpp
-    src/entity/furniture.cpp
-    src/entity/humanoid.cpp
-    src/entity/item.cpp
-    src/entity/mob.cpp
-    src/entity/particle.cpp
-    src/entity/player.cpp
-    src/entity/recipe.cpp
-    src/entity/sheep.cpp
-    src/entity/slime.cpp
-    src/entity/spider.cpp
-    src/entity/workbench.cpp
-    src/entity/zombie.cpp
-    src/gen.cpp
-    src/input.cpp
-    src/inventory.cpp
-    src/item.cpp
-    src/main.cpp
-    src/menu.cpp
-    src/renderer.cpp
-    src/sprite.cpp
-    src/tile.cpp
-    src/util.cpp
-    src/world.cpp
+    src/minicraft++/audio.cpp
+    src/minicraft++/color.cpp
+    src/minicraft++/console.cpp
+    src/minicraft++/entity/controller/controller.cpp
+    src/minicraft++/entity/controller/creature.cpp
+    src/minicraft++/entity/controller/melee.cpp
+    src/minicraft++/entity/controller/npc.cpp
+    src/minicraft++/entity/controller/player.cpp
+    src/minicraft++/entity/entity.cpp
+    src/minicraft++/entity/furniture/anvil.cpp
+    src/minicraft++/entity/furniture/chest.cpp
+    src/minicraft++/entity/furniture/furnace.cpp
+    src/minicraft++/entity/furniture/furniture.cpp
+    src/minicraft++/entity/furniture/light.cpp
+    src/minicraft++/entity/furniture/recipe.cpp
+    src/minicraft++/entity/furniture/workbench.cpp
+    src/minicraft++/entity/item.cpp
+    src/minicraft++/entity/mob/creature.cpp
+    src/minicraft++/entity/mob/humanoid.cpp
+    src/minicraft++/entity/mob/mob.cpp
+    src/minicraft++/entity/mob/player.cpp
+    src/minicraft++/entity/mob/sheep.cpp
+    src/minicraft++/entity/mob/slime.cpp
+    src/minicraft++/entity/mob/spider.cpp
+    src/minicraft++/entity/mob/zombie.cpp
+    src/minicraft++/entity/particle/hit.cpp
+    src/minicraft++/entity/particle/particle.cpp
+    src/minicraft++/gen.cpp
+    src/minicraft++/input.cpp
+    src/minicraft++/inventory.cpp
+    src/minicraft++/item.cpp
+    src/minicraft++/main.cpp
+    src/minicraft++/menu.cpp
+    src/minicraft++/renderer.cpp
+    src/minicraft++/sprite.cpp
+    src/minicraft++/tile.cpp
+    src/minicraft++/util.cpp
+    src/minicraft++/world.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)
+target_include_directories(minicraft++ PRIVATE src)
 target_link_libraries(minicraft++ PRIVATE
     FastNoiseLite::FastNoiseLite
     SDL3::SDL3

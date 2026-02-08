@@ -1,0 +1,581 @@
+#include <savepoint/savepoint.hpp>
+
+#include <cstdint>
+#include <limits>
+#include <memory>
+#include <string_view>
+
+#include <minicraft++/assert.hpp>
+#include <minicraft++/color.hpp>
+#include <minicraft++/console.hpp>
+#include <minicraft++/entity/entity.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
+#include <minicraft++/entity/particle/hit.hpp>
+#include <minicraft++/entity/particle/particle.hpp>
+#include <minicraft++/inventory.hpp>
+#include <minicraft++/item.hpp>
+#include <minicraft++/log.hpp>
+#include <minicraft++/renderer.hpp>
+#include <minicraft++/sprite.hpp>
+#include <minicraft++/tile.hpp>
+#include <minicraft++/world.hpp>
+
+static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
+static constexpr int kDirtColor = 420;
+
+enum TileSpriteType
+{
+    TileSpriteType1x1,
+    TileSpriteType2x2,
+    TileSpriteType1x2_2x1,
+    TileSpriteTypeNoLinks,
+};
+
+struct
+{
+    std::string_view Name;
+    TileSpriteType SpriteType;
+    int SpriteX;
+    int SpriteY;
+    int TopSpriteY;
+    MppTileID BottomTile;
+    int Color1;
+    int Color2;
+    int Color3;
+    int Color4;
+    int Color5;
+    MppTilePhysicsType PhysicsType;
+    int PhysicsOffsetX;
+    int PhysicsOffsetY;
+    int PhysicsWidth;
+    int PhysicsHeight;
+    MppTileID ChildTile;
+    MppItemType ItemTypes;
+}
+static constexpr kTiles[MppTileIDCount] =
+{
+    {
+        .Name = "invalid",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 0,
+        .Color2 = 0,
+        .Color3 = 0,
+        .Color4 = 0,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeWall,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
+    },
+    {
+        .Name = "grass",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 32,
+        .Color2 = 52,
+        .Color3 = 20,
+        .Color4 = kDirtColor,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypeShovel | MppItemTypeHoe,
+    },
+    {
+        .Name = "dirt",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = kDirtColor,
+        .Color2 = kDirtColor,
+        .Color3 = kDirtColor,
+        .Color4 = kDirtColor,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
+    },
+    {
+        .Name = "stone wall",
+        .SpriteType = TileSpriteType1x2_2x1,
+        .SpriteX = 0,
+        .SpriteY = 3,
+        .TopSpriteY = 4,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 333,
+        .Color2 = 111,
+        .Color3 = 555,
+        .Color4 = 444,
+        .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeWall,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypePickaxe | MppItemTypeHands,
+    },
+    {
+        .Name = "tree",
+        .SpriteType = TileSpriteType2x2,
+        .SpriteX = 0,
+        .SpriteY = 5,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDGrass,
+        .Color1 = 20,
+        .Color2 = 52,
+        .Color3 = 430,
+        .Color4 = 320,
+        .Color5 = 252,
+        .PhysicsType = MppTilePhysicsTypeWall,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDGrass,
+        .ItemTypes = MppItemTypeAxe | MppItemTypeHands,
+    },
+    {
+        .Name = "sand",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 550,
+        .Color2 = 550,
+        .Color3 = 550,
+        .Color4 = kDirtColor,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDDirt,
+        .ItemTypes = MppItemTypeShovel,
+    },
+    {
+        .Name = "stairs down",
+        .SpriteType = TileSpriteTypeNoLinks,
+        .SpriteX = 0,
+        .SpriteY = 19,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 0,
+        .Color2 = 222,
+        .Color3 = 333,
+        .Color4 = 0,
+        .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
+    },
+    {
+        .Name = "stairs up",
+        .SpriteType = TileSpriteTypeNoLinks,
+        .SpriteX = 1,
+        .SpriteY = 19,
+        .TopSpriteY = 0,
+        .BottomTile = MppTileIDCount,
+        .Color1 = 0,
+        .Color2 = 222,
+        .Color3 = 333,
+        .Color4 = 0,
+        .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemTypes = MppItemTypeNone,
+    },
+};
+
+/**
+ * 0: has north neighbor
+ * 1: has south neighbor
+ * 2: has east neighbor
+ * 3: has west neighbor
+ */
+static constexpr int kSprites[] =
+{
+    /* 0b0000 */ 15,
+    /* 0b0001 */ 14,
+    /* 0b0010 */ 13,
+    /* 0b0011 */ 9,
+    /* 0b0100 */ 11,
+    /* 0b0101 */ 2,
+    /* 0b0110 */ 1,
+    /* 0b0111 */ 5,
+    /* 0b1000 */ 12,
+    /* 0b1001 */ 3,
+    /* 0b1010 */ 4,
+    /* 0b1011 */ 6,
+    /* 0b1100 */ 10,
+    /* 0b1101 */ 8,
+    /* 0b1110 */ 7,
+    /* 0b1111 */ 0,
+};
+
+static bool Equals1x1(MppTileID lhs, MppTileID rhs)
+{
+    return lhs == rhs || kTiles[lhs].BottomTile == rhs || lhs == kTiles[rhs].BottomTile;
+}
+
+static int GetSprite1x1(MppTileID lhs, int x, int y)
+{
+    int hash = 0;
+    hash |= Equals1x1(lhs, MppWorldGetTile(x + 0, y - 1).GetID()) << 0;
+    hash |= Equals1x1(lhs, MppWorldGetTile(x + 0, y + 1).GetID()) << 1;
+    hash |= Equals1x1(lhs, MppWorldGetTile(x + 1, y + 0).GetID()) << 2;
+    hash |= Equals1x1(lhs, MppWorldGetTile(x - 1, y + 0).GetID()) << 3;
+    return kSprites[hash];
+}
+
+/**
+ * 0: has north-west neighbor
+ * 1: has south-west neighbor
+ * 2: has south-east neighbor
+ * 3: has north-east neighbor
+ */
+static constexpr int kSprites2x2[] =
+{
+    /* 0b0000 */ 0,
+    /* 0b0001 */ 1,
+    /* 0b0010 */ 2,
+    /* 0b0011 */ 5,
+    /* 0b0100 */ 3,
+    /* 0b0101 */ 10,
+    /* 0b0110 */ 8,
+    /* 0b0111 */ 13,
+    /* 0b1000 */ 4,
+    /* 0b1001 */ 7,
+    /* 0b1010 */ 9,
+    /* 0b1011 */ 11,
+    /* 0b1100 */ 6,
+    /* 0b1101 */ 12,
+    /* 0b1110 */ 14,
+    /* 0b1111 */ 15,
+};
+
+static bool Equals2x2(MppTileID lhs, MppTileID rhs)
+{
+    return lhs == rhs;
+}
+
+static int GetSprite2x2(MppTileID lhs, int x, int y)
+{
+    int hash = 0;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y - 1).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x - 1, y - 1).GetID())) << 0;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y + 1).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x - 1, y + 1).GetID())) << 1;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y + 1).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 1, y + 1).GetID())) << 2;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y - 1).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 1, y - 1).GetID())) << 3;
+    return kSprites2x2[hash];
+}
+
+static int GetSprite1x2_2x1(MppTileID lhs, int x, int y)
+{
+    int hash = 0;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y - 1).GetID()) &&
+        !Equals2x2(lhs, MppWorldGetTile(x - 1, y - 1).GetID())) << 0;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x - 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y + 1).GetID()) &&
+        !Equals2x2(lhs, MppWorldGetTile(x - 1, y + 1).GetID())) << 1;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y + 1).GetID()) &&
+        !Equals2x2(lhs, MppWorldGetTile(x + 1, y + 1).GetID())) << 2;
+    hash |=
+        (Equals2x2(lhs, MppWorldGetTile(x + 1, y + 0).GetID()) &&
+         Equals2x2(lhs, MppWorldGetTile(x + 0, y - 1).GetID()) &&
+        !Equals2x2(lhs, MppWorldGetTile(x + 1, y - 1).GetID())) << 3;
+    return kSprites2x2[hash];
+}
+
+MppTile::MppTile()
+    : ID{MppTileIDInvalid}
+    , Ticks{kInvalidTicks}
+{
+}
+
+MppTile::MppTile(MppTileID id)
+    : ID{id}
+    , Ticks{kInvalidTicks}
+{
+}
+
+void MppTile::Visit(SavepointVisitor& visitor)
+{
+    visitor(ID);
+    visitor(Ticks);
+}
+
+void MppTile::Update(int x, int y, uint64_t ticks)
+{
+    if (Ticks == kInvalidTicks)
+    {
+        Ticks = ticks;
+    }
+    while (Ticks < ticks)
+    {
+        // TODO:
+        // Ticks += time until next tick
+        // TODO: remove
+        Ticks = ticks;
+    }
+}
+
+void MppTile::Render(int x, int y) const
+{
+    if (kTiles[ID].SpriteType == TileSpriteType1x1)
+    {
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX + GetSprite1x1(ID, x, y),
+                kTiles[ID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTile);
+    }
+    else if (kTiles[ID].SpriteType == TileSpriteType2x2)
+    {
+        SDL_assert(kTiles[ID].TopSpriteY == 0);
+        if (kTiles[ID].BottomTile != MppTileIDCount)
+        {
+            MppTileID id = kTiles[ID].BottomTile;
+            SDL_assert(kTiles[id].SpriteType == TileSpriteType1x1);
+            MppRendererDraw(
+                MppSprite{
+                    kTiles[id].Color1,
+                    kTiles[id].Color2,
+                    kTiles[id].Color3,
+                    kTiles[id].Color4,
+                    kTiles[id].Color5,
+                    kTiles[id].SpriteX + GetSprite1x1(id, x, y),
+                    kTiles[id].SpriteY,
+                    MppTile::kSize,
+                },
+                x * MppTile::kSize,
+                y * MppTile::kSize,
+                false,
+                MppRendererLayerBottomTile);
+        }
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX + GetSprite2x2(ID, x, y),
+                kTiles[ID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTile);
+    }
+    else if (kTiles[ID].SpriteType == TileSpriteType1x2_2x1)
+    {
+        SDL_assert(kTiles[ID].BottomTile == MppTileIDCount);
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX + GetSprite1x1(ID, x, y),
+                kTiles[ID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTile);
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX + GetSprite1x2_2x1(ID, x, y),
+                kTiles[ID].TopSpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTopTile);
+    }
+    else if (kTiles[ID].SpriteType == TileSpriteTypeNoLinks)
+    {
+        MppRendererDraw(
+            MppSprite{
+                kTiles[ID].Color1,
+                kTiles[ID].Color2,
+                kTiles[ID].Color3,
+                kTiles[ID].Color4,
+                kTiles[ID].Color5,
+                kTiles[ID].SpriteX,
+                kTiles[ID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            false,
+            MppRendererLayerTile);
+    }
+    else
+    {
+        MppAssert(false);
+    }
+    if (MppConsole::CVarPhysics.GetBool())
+    {
+        int color = 0;
+        x = GetPhysicsX(x);
+        y = GetPhysicsY(y);
+        int w = GetPhysicsWidth();
+        int h = GetPhysicsHeight();
+        if (GetPhysicsType() == MppTilePhysicsTypeWall)
+        {
+            color = kMppColorDebugWallTilePhysics;
+        }
+        else if (GetPhysicsType() == MppTilePhysicsTypeLiquid)
+        {
+            color = kMppColorDebugLiquidTilePhysics;
+        }
+        if (color)
+        {
+            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
+        }
+    }
+}
+
+bool MppTile::OnAction(MppEntity& instigator, int x, int y)
+{
+    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    MppAssert(mob);
+    MppItem item = mob->GetInventory()->GetBySlot(MppInventorySlotHeld);
+    if (!item.IsValid())
+    {
+        item = MppItem{MppItemIDHands};
+    }
+    if ((item.GetType() & kTiles[ID].ItemTypes) == MppItemTypeNone)
+    {
+        return false;
+    }
+    MppTileID child = kTiles[ID].ChildTile;
+    if (child != MppTileIDInvalid)
+    {
+        *this = MppTile(child);
+        std::shared_ptr<MppEntity> entity = std::make_shared<MppHitParticleEntity>();
+        entity->SetX(x * kSize);
+        entity->SetY(y * kSize);
+        MppWorldAddEntity(entity);
+    }
+    else
+    {
+        MppLog("Tile can be hit by tool but has no child: %s", GetName().data());
+    }
+    return true;
+}
+
+bool MppTile::OnCollision(MppEntity& instigator, int x, int y)
+{
+    return kTiles[ID].PhysicsType == MppTilePhysicsTypeWall;
+}
+
+const std::string_view& MppTile::GetName() const
+{
+    return kTiles[ID].Name;
+}
+
+MppTileID MppTile::GetID() const
+{
+    return ID;
+}
+
+MppTilePhysicsType MppTile::GetPhysicsType() const
+{
+    return kTiles[ID].PhysicsType;
+}
+
+int MppTile::GetPhysicsX(int x) const
+{
+    return x * kSize + kTiles[ID].PhysicsOffsetX;
+}
+
+int MppTile::GetPhysicsY(int y) const
+{
+    return y * kSize + kTiles[ID].PhysicsOffsetY;
+}
+
+int MppTile::GetPhysicsWidth() const
+{
+    return kTiles[ID].PhysicsWidth;
+}
+
+int MppTile::GetPhysicsHeight() const
+{
+    return kTiles[ID].PhysicsHeight;
+}
+
+bool MppTile::operator==(const MppTile& other) const
+{
+    return ID == other.ID;
+}
+
+bool MppTile::IsValid() const
+{
+    return ID != MppTileIDInvalid;
+}
