@@ -25,7 +25,7 @@ struct Sprite
     MppSprite Sprite;
     int X;
     int Y;
-    MppRendererFlip Flip;
+    MppRendererMod Mod;
 };
 
 struct Quad
@@ -249,21 +249,25 @@ static void DrawSprite(Sprite& sprite, MppRendererLayer layer)
     rect.y = sprite.Y;
     rect.w = size;
     rect.h = size;
-    if (sprite.Flip == MppRendererFlipNone)
+    if (sprite.Mod == MppRendererModNone)
     {
         SDL_RenderTexture(renderer, texture, nullptr, &rect);
     }
-    else if (sprite.Flip == MppRendererFlipVertical)
+    else if (sprite.Mod == MppRendererModFlipHorizontally)
     {
         SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_VERTICAL);
     }
-    else if (sprite.Flip == MppRendererFlipHorizontal)
+    else if (sprite.Mod == MppRendererModFlipVertically)
     {
         SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_HORIZONTAL);
     }
-    else if (sprite.Flip == MppRendererFlipBoth)
+    else if (sprite.Mod == MppRendererModRotate90CW)
     {
-        SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 180.0f, nullptr, SDL_FLIP_HORIZONTAL_AND_VERTICAL);
+        SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, -90.0f, nullptr, SDL_FLIP_VERTICAL);
+    }
+    else if (sprite.Mod == MppRendererModRotate90CCW)
+    {
+        SDL_RenderTextureRotated(renderer, texture, nullptr, &rect, 90.0f, nullptr, SDL_FLIP_VERTICAL);
     }
     else
     {
@@ -382,9 +386,9 @@ void MppRendererSubmit(int inLightColor)
     tileY2 = std::clamp((worldY + kHeight) / MppTile::kSize + 1, min, max);
 }
 
-void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererFlip flip, MppRendererLayer layer)
+void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererMod mod, MppRendererLayer layer)
 {
-    layers[layer].Sprites.emplace_back(sprite, x, y, flip);
+    layers[layer].Sprites.emplace_back(sprite, x, y, mod);
 }
 
 void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRendererLayer layer)

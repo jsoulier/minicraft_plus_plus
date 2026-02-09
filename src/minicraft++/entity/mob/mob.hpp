@@ -26,7 +26,6 @@ public:
     void Push(int dx, int dy);
     int GetFacingX() const;
     int GetFacingY() const;
-    virtual void DoAction(std::shared_ptr<MppEntity>& entity);
     bool IsMoving();
     int GetHealth() const;
     int GetHunger() const;

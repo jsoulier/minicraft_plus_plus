@@ -373,7 +373,7 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "wood bow",
-        .Type = MppItemTypeBow,
+        .Type = MppItemTypeHeld,
         .ActionType = MppItemActionTypeProjectile,
         .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 3}, {MppItemIDString, 3}}},
         .ActionRecipe = {MppItemIDInvalid, {{MppItemIDArrow, 1}}},
@@ -555,13 +555,13 @@ static const kItems[MppItemIDCount] =
     },
     {
         .Name = "arrow",
-        .Type = MppItemTypeNone,
+        .Type = MppItemTypeConsumable,
         .ActionType = MppItemActionTypeNone,
-        .Color1 = 0,
-        .Color2 = 0,
-        .Color3 = 0,
-        .Color4 = 0,
-        .Color5 = 0,
+        .Color1 = kMppColorArrow1,
+        .Color2 = kMppColorArrow2,
+        .Color3 = kMppColorArrow3,
+        .Color4 = kMppColorArrow4,
+        .Color5 = kMppColorArrow5,
         .SpriteX = 4,
         .SpriteY = 12,
     },
@@ -655,7 +655,7 @@ void MppItem::Render(int x, int y, MppRendererLayer layer) const
         },
         x,
         y,
-        MppRendererFlipNone,
+        MppRendererModNone,
         layer);
 }
 

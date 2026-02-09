@@ -32,7 +32,7 @@ void MppFurnitureEntity::Render() const
         },
         X,
         Y,
-        MppRendererFlipNone,
+        MppRendererModNone,
         MppRendererLayerEntity);
 }
 

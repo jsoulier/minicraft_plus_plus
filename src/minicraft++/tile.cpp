@@ -381,7 +381,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            MppRendererFlipNone,
+            MppRendererModNone,
             MppRendererLayerTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteType2x2)
@@ -404,7 +404,7 @@ void MppTile::Render(int x, int y) const
                 },
                 x * MppTile::kSize,
                 y * MppTile::kSize,
-                MppRendererFlipNone,
+                MppRendererModNone,
                 MppRendererLayerBottomTile);
         }
         MppRendererDraw(
@@ -420,7 +420,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            MppRendererFlipNone,
+            MppRendererModNone,
             MppRendererLayerTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteType1x2_2x1)
@@ -439,7 +439,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            MppRendererFlipNone,
+            MppRendererModNone,
             MppRendererLayerTile);
         MppRendererDraw(
             MppSprite{
@@ -454,7 +454,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            MppRendererFlipNone,
+            MppRendererModNone,
             MppRendererLayerTopTile);
     }
     else if (kTiles[ID].SpriteType == TileSpriteTypeNoLinks)
@@ -472,7 +472,7 @@ void MppTile::Render(int x, int y) const
             },
             x * MppTile::kSize,
             y * MppTile::kSize,
-            MppRendererFlipNone,
+            MppRendererModNone,
             MppRendererLayerTile);
     }
     else

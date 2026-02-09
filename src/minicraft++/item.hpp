@@ -72,9 +72,8 @@ enum MppItemType
     MppItemTypeBoots = 256,
     MppItemTypeFurniture = 512,
     MppItemTypeConsumable = 1024,
-    MppItemTypeBow = 2048,
-    MppItemTypeHands = 4096,
-    MppItemTypeTool =
+    MppItemTypeHands = 2048,
+    MppItemTypeHeld =
         MppItemTypePickaxe |
         MppItemTypeAxe |
         MppItemTypeShovel |
@@ -86,7 +85,7 @@ enum MppItemType
         MppItemTypeLeggings |
         MppItemTypeBoots,
     MppItemTypeEquipment =
-        MppItemTypeTool |
+        MppItemTypeHeld |
         MppItemTypeArmor,
 };
 

@@ -14,6 +14,7 @@
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/mob/player.hpp>
+#include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/log.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
@@ -124,17 +125,21 @@ void MppEntity::Render() const
         int y = GetPhysicsY();
         int w = GetPhysicsWidth();
         int h = GetPhysicsHeight();
-        if (dynamic_cast<const MppPlayerEntity*>(this))
+        if (IsA<MppPlayerEntity>())
         {
             color = kMppColorDebugPlayerEntityPhysics;
         }
-        else if (dynamic_cast<const MppMobEntity*>(this))
+        else if (IsA<MppMobEntity>())
         {
             color = kMppColorDebugMobEntityPhysics;
         }
-        else if (dynamic_cast<const MppFurnitureEntity*>(this))
+        else if (IsA<MppFurnitureEntity>())
         {
             color = kMppColorDebugFurnitureEntityPhysics;
+        }
+        else if (IsA<MppProjectileEntity>())
+        {
+            color = kMppColorDebugProjectileEntityPhysics;
         }
         if (color)
         {

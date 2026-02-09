@@ -1,36 +1,37 @@
+#include <minicraft++/color.hpp>
 #include <minicraft++/entity/projectile/arrow.hpp>
 
 int MppArrowEntity::GetSpriteX() const
 {
-    return 0;
+    return 4;
 }
 
 int MppArrowEntity::GetSpriteY() const
 {
-    return 20;
+    return 12;
 }
 
 int MppArrowEntity::GetColor1() const
 {
-    return 0;
+    return kMppColorArrow1;
 }
 
 int MppArrowEntity::GetColor2() const
 {
-    return 0;
+    return kMppColorArrow2;
 }
 
 int MppArrowEntity::GetColor3() const
 {
-    return 0;
+    return kMppColorArrow3;
 }
 
 int MppArrowEntity::GetColor4() const
 {
-    return 0;
+    return kMppColorArrow4;
 }
 
 int MppArrowEntity::GetColor5() const
 {
-    return 0;
+    return kMppColorArrow5;
 }

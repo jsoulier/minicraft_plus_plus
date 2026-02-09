@@ -25,10 +25,6 @@ void MppInventory::Visit(SavepointVisitor& visitor)
 {
     visitor(Items);
     visitor(Slots);
-    if (visitor.IsReading() && Items.size() > MaxItems)
-    {
-        MppLog("Read more then the max number of items");
-    }
 }
 
 void MppInventory::Render() const

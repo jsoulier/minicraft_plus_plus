@@ -74,7 +74,7 @@ void MppHumanoidEntity::Render(const MppItem& item) const
         },
         X,
         Y,
-        Animation.GetFlip(),
+        Animation.GetMod(),
         MppRendererLayerEntityOverlay);
 }
 
@@ -178,12 +178,6 @@ void MppHumanoidEntity::DoAction()
         return;
     }
     MppMobEntity::DoAction();
-}
-
-void MppHumanoidEntity::DoAction(std::shared_ptr<MppEntity>& entity)
-{
-    MppAssert(!HeldEntity);
-    MppMobEntity::DoAction(entity);
 }
 
 int MppHumanoidEntity::GetPose() const

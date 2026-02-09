@@ -164,7 +164,7 @@ void MppPlayerController::OnActionCallback(int index)
             player->HoldEntity(entity);
         }
     }
-    else if (item.GetType() & MppItemTypeTool)
+    else if (item.GetType() & MppItemTypeHeld)
     {
         if (!player->GetHeldEntity())
         {

@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <utility>
 
-enum MppRendererFlip : uint8_t;
+enum MppRendererMod : uint8_t;
 
 class MppSprite
 {
@@ -47,7 +47,7 @@ public:
     void SetTickRate(int rate);
     int GetX() const;
     int GetY() const;
-    MppRendererFlip GetFlip() const;
+    MppRendererMod GetMod() const;
 
 private:
     int Poses[kMaxPoses][2];
@@ -55,5 +55,5 @@ private:
     bool Tick;
     int X;
     int Y;
-    MppRendererFlip Flip;
+    MppRendererMod Mod;
 };

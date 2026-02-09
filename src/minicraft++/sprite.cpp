@@ -149,7 +149,7 @@ MppSpriteAnimation::MppSpriteAnimation()
     , Tick{false}
     , X{0}
     , Y{0}
-    , Flip{MppRendererFlipNone}
+    , Mod{MppRendererModNone}
 {
 }
 
@@ -163,24 +163,24 @@ void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
     }
     X = Poses[pose][0];
     Y = Poses[pose][1];
-    bool flip = false;
+    bool mod = false;
     if (dy)
     {
-        flip = Tick;
+        mod = Tick;
         X += dy < 0;
     }
     else
     {
-        flip = dx < 0;
+        mod = dx < 0;
         X += 2 + Tick;
     }
-    if (flip)
+    if (mod)
     {
-        Flip = MppRendererFlipVertical;
+        Mod = MppRendererModFlipHorizontally;
     }
     else
     {
-        Flip = MppRendererFlipNone;
+        Mod = MppRendererModNone;
     }
 }
 
@@ -212,8 +212,8 @@ int MppSpriteAnimation::GetY() const
     return Y;
 }
 
-MppRendererFlip MppSpriteAnimation::GetFlip() const
+MppRendererMod MppSpriteAnimation::GetMod() const
 {
-    return Flip;
+    return Mod;
 }
 

@@ -19,7 +19,7 @@ public:
     int GetPhysicsOffsetY() const;
     int GetPhysicsWidth() const;
     int GetPhysicsHeight() const;
-    void SetSource(const std::shared_ptr<MppEntity>& source, int x, int y);
+    void Setup(const std::shared_ptr<MppEntity>& source, int facingX, int facingY);
 
 protected:
     virtual void OnCollision();

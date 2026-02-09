@@ -9,6 +9,8 @@
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 
+static constexpr int kVelocity = 2;
+
 MppProjectileEntity::MppProjectileEntity()
     : MppEntity()
     , Source{}
@@ -19,20 +21,39 @@ MppProjectileEntity::MppProjectileEntity()
 
 void MppProjectileEntity::Visit(SavepointVisitor& visitor)
 {
-
+    MppEntity::Visit(visitor);
+    visitor(Source);
+    visitor(VelocityX);
+    visitor(VelocityY);
 }
 
 void MppProjectileEntity::Update(uint64_t ticks)
 {
     MppEntity::Update(ticks);
-    if (Move(VelocityX, VelocityY))
+    if (ticks % GetSpeed() == 0)
     {
-        OnCollision();
+        if (!Move(VelocityX * kVelocity, VelocityY * kVelocity))
+        {
+            OnCollision();
+        }
     }
 }
 
 void MppProjectileEntity::Render() const
 {
+    MppRendererMod mod = MppRendererModNone;
+    if (VelocityY < 0)
+    {
+        mod = MppRendererModFlipVertically;
+    }
+    else if (VelocityX < 0)
+    {
+        mod = MppRendererModRotate90CW;
+    }
+    else if (VelocityX > 0)
+    {
+        mod = MppRendererModRotate90CCW;
+    }
     MppEntity::Render();
     MppRendererDraw(
         MppSprite{
@@ -47,7 +68,7 @@ void MppProjectileEntity::Render() const
         },
         X,
         Y,
-        MppRendererFlipNone,
+        mod,
         MppRendererLayerParticleEntity);
 }
 
@@ -68,20 +89,27 @@ int MppProjectileEntity::GetPhysicsOffsetY() const
 
 int MppProjectileEntity::GetPhysicsWidth() const
 {
-    return 3;
+    return 4;
 }
 
 int MppProjectileEntity::GetPhysicsHeight() const
 {
-    return 3;
+    return 4;
 }
 
-void MppProjectileEntity::SetSource(const std::shared_ptr<MppEntity>& source, int x, int y)
+void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int facingX, int facingY)
 {
+    static constexpr int kOffset = 16;
     Source = source->GetReference();
-    MppAssert(!(x && y));
-    VelocityX = x * GetSpeed();
-    VelocityY = y * GetSpeed();
+    MppAssert(!(facingX && facingY));
+    X = 0;
+    Y = 0;
+    auto [thisX, thisY] = GetCenter();
+    auto [x, y] = source->GetCenter();
+    X = x - thisX + facingX * kOffset;
+    Y = y - thisY + facingY * kOffset;
+    VelocityX = facingX;
+    VelocityY = facingY;
 }
 
 void MppProjectileEntity::OnCollision()

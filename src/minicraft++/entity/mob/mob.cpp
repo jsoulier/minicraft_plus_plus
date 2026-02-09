@@ -10,7 +10,9 @@
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/controller/controller.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
+#include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/inventory.hpp>
+#include <minicraft++/item.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
 #include <minicraft++/util.hpp>
@@ -79,9 +81,13 @@ void MppMobEntity::Update(uint64_t ticks)
     {
         Controller->Update(ticks);
     }
-    if (IsMoving() || TickAnimation)
+    if (IsMoving())
     {
         Animation.Update(GetPose(), FacingX, FacingY, ticks);
+    }
+    else if (TickAnimation)
+    {
+        Animation.Update(GetPose(), FacingX, FacingY, GetSpriteTickRate());
         TickAnimation = false;
     }
     if (ticks % GetSpeed() == 0)
@@ -114,7 +120,7 @@ void MppMobEntity::Render() const
         },
         X,
         Y,
-        Animation.GetFlip(),
+        Animation.GetMod(),
         MppRendererLayerEntity);
     if (MppConsole::CVarFov.GetBool())
     {
@@ -173,36 +179,30 @@ void MppMobEntity::DoAction()
             std::shared_ptr<MppEntity>& entity = entities[0];
             if (GetDistance(entity) <= GetActionRange())
             {
-                DoAction(entity);
+                entity->OnAction(*this);
                 didAction = true;
             }
         }
         if (!didAction)
         {
-            int tileX1 = centerX1 / MppTile::kSize;
-            int tileY1 = centerY1 / MppTile::kSize;
-            int tileX2 = centerX2 / MppTile::kSize;
-            int tileY2 = centerY2 / MppTile::kSize;
+            int size = MppTile::kSize;
+            int tileX1 = centerX1 / size;
+            int tileY1 = centerY1 / size;
+            int tileX2 = centerX2 / size;
+            int tileY2 = centerY2 / size;
             MppTile& tile1 = MppWorldGetTile(tileX1, tileY1);
             MppTile& tile2 = MppWorldGetTile(tileX2, tileY2);
-            int size = MppTile::kSize;
-            if (tile1.IsValid() && tile1.OnAction(*this, tileX1, tileY1))
+            if (tile1.IsValid() && tile1.OnAction(*this, tileX1, tileY1) && MppConsole::CVarAction.GetBool())
             {
-                if (MppConsole::CVarAction.GetBool())
-                {
-                    int tx = tileX1 * size;
-                    int ty = tileY1 * size;
-                    MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
-                }
+                int tx = tileX1 * size;
+                int ty = tileY1 * size;
+                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
             }
-            else if (tile2.IsValid() && tile2.OnAction(*this, tileX2, tileY2))
+            else if (tile2.IsValid() && tile2.OnAction(*this, tileX2, tileY2) && MppConsole::CVarAction.GetBool())
             {
-                if (MppConsole::CVarAction.GetBool())
-                {
-                    int tx = tileX2 * size;
-                    int ty = tileY2 * size;
-                    MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
-                }
+                int tx = tileX2 * size;
+                int ty = tileY2 * size;
+                MppRendererDrawRect(kMppColorDebugAction, tx, ty, size, size, MppRendererLayerDebugAction);
             }
         }
         X = thisX;
@@ -210,13 +210,16 @@ void MppMobEntity::DoAction()
     }
     else if (held.GetActionType() == MppItemActionTypeProjectile)
     {
-        // TODO:
         std::shared_ptr<MppProjectileEntity> projectile = held.CreateProjectileEntity();
+        projectile->Setup(shared_from_this(), FacingX, FacingY);
+        std::shared_ptr<MppEntity> entity = std::static_pointer_cast<MppEntity>(projectile);
+        MppWorldAddEntity(entity);
     }
     else
     {
         MppAssert(false);
     }
+    SetTickAnimation();
     actionRecipe.Craft(GetInventory());
 }
 
@@ -294,12 +297,6 @@ int MppMobEntity::GetFacingX() const
 int MppMobEntity::GetFacingY() const
 {
     return FacingY;
-}
-
-void MppMobEntity::DoAction(std::shared_ptr<MppEntity>& entity)
-{
-    Animation.Update(0, FacingX, FacingY);
-    entity->OnAction(*this);
 }
 
 bool MppMobEntity::IsMoving()
