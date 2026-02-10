@@ -16,12 +16,12 @@ public:
     void OnAddEntity() override;
     void OnUpdate(uint64_t ticks) override;
     void OnAction() override;
-    void OnInventory() override;
+    void OnInteract() override;
+    void OnExit() override;
     void OnHeldUp() override;
     void OnHeldDown() override;
     void OnHeldLeft() override;
     void OnHeldRight() override;
-    void OnHeldCrouch() override;
     bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const override;
 
 private:

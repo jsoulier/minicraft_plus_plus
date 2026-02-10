@@ -5,41 +5,37 @@
 #include <cstdint>
 #include <memory>
 
-class MppInputHandler;
-
-void MppInputQuit();
-void MppInputSetPlayer(const std::shared_ptr<MppInputHandler>& handler);
-void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler);
-void MppInputResetPlayer();
-void MppInputResetInteraction();
-void MppInputUpdate(uint64_t ticks);
-void MppInputRender();
-void MppInputHandle(SDL_Event* event);
-
 class MppInputHandler
 {
 public:
     virtual void OnGainFocus() {}
     virtual void OnLoseFocus() {}
-    virtual void OnAction() {}
-    virtual void OnDrop() {}
-    virtual void OnInventory() { MppInputResetInteraction(); }
-    virtual void OnUp() {}
-    virtual void OnDown() {}
-    virtual void OnUpArrow() {}
-    virtual void OnDownArrow() {}
-    virtual void OnLeftArrow() {}
-    virtual void OnRightArrow() {}
-    virtual void OnLeft() {}
-    virtual void OnRight() {}
-    virtual void OnEnter() {}
-    virtual void OnBackspace() {}
+    virtual void OnUpdate(uint64_t ticks) {}
+    virtual void OnRender() {}
     virtual void OnHeldUp() {}
     virtual void OnHeldDown() {}
     virtual void OnHeldLeft() {}
     virtual void OnHeldRight() {}
-    virtual void OnHeldCrouch() {}
+    virtual void OnAction() {}
+    virtual void OnDrop() {}
+    virtual void OnInteract();
+    virtual void OnExit();
+    virtual void OnUp() {}
+    virtual void OnDown() {}
+    virtual void OnLeft() {}
+    virtual void OnRight() {}
+    virtual void OnUpArrow() {}
+    virtual void OnDownArrow() {}
+    virtual void OnLeftArrow() {}
+    virtual void OnRightArrow() {}
+    virtual void OnEnter() {}
+    virtual void OnBackspace() {}
     virtual void OnTextInput(char character) {}
-    virtual void OnUpdate(uint64_t ticks) {}
-    virtual void OnRender() {}
 };
+
+void MppInputQuit();
+void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler);
+void MppInputRemoveHandler(MppInputHandler* handler);
+void MppInputUpdate(uint64_t ticks);
+void MppInputRender();
+void MppInputHandle(SDL_Event* event);

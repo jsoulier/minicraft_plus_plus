@@ -398,7 +398,7 @@ std::string MppConsole::GetEntityName(std::string name) const
 void MppConsole::OnEnter()
 {
     Handle();
-    MppInputResetInteraction();
+    MppInputRemoveHandler(this);
 }
 
 void MppConsole::OnBackspace()
