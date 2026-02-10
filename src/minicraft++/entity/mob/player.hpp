@@ -22,7 +22,6 @@ public:
     void Update(uint64_t ticks) override;
     void Render() const override;
     void SetCrouching(bool crouching);
-    int GetSpeed() const override;
 
 protected:
     std::shared_ptr<MppController> GetController();
@@ -31,6 +30,7 @@ protected:
     int GetSpriteColor3() const override;
     int GetSpriteColor4() const override;
     int GetSpriteColor5() const override;
+    int GetMoveTickRate() const override;
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;
     int GetMaxEnergy() const override;

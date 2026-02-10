@@ -23,6 +23,7 @@ public:
 
 protected:
     virtual void OnCollision();
+    virtual int GetMoveTickRate() const;
     virtual int GetSpeed() const;
     virtual int GetSpriteX() const = 0;
     virtual int GetSpriteY() const = 0;

@@ -39,7 +39,7 @@ void MppCreatureEntity::OnAction(MppEntity& instigator)
     // TODO: set FleeTicks here
 }
 
-int MppCreatureEntity::GetSpeed() const
+int MppCreatureEntity::GetMoveTickRate() const
 {
     if (FleeTicks <= 0)
     {

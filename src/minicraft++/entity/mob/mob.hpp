@@ -33,6 +33,7 @@ public:
 
 protected:
     virtual int GetMaxItems() const;
+    virtual int GetMoveTickRate() const;
     virtual int GetSpeed() const;
     virtual std::shared_ptr<MppController> GetController();
     virtual float GetFov() const;

@@ -4,18 +4,19 @@
 
 #include <minicraft++/entity/projectile/projectile.hpp>
 
-class MppArrowEntity : public MppProjectileEntity
+class MppArrowEntity final : public MppProjectileEntity
 {
     SAVEPOINT_POLY(MppArrowEntity)
 
 public:
 
 protected:
-    int GetSpriteX() const;
-    int GetSpriteY() const;
-    int GetColor1() const;
-    int GetColor2() const;
-    int GetColor3() const;
-    int GetColor4() const;
-    int GetColor5() const;
+    int GetSpeed() const override;
+    int GetSpriteX() const override;
+    int GetSpriteY() const override;
+    int GetColor1() const override;
+    int GetColor2() const override;
+    int GetColor3() const override;
+    int GetColor4() const override;
+    int GetColor5() const override;
 };

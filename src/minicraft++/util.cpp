@@ -34,3 +34,15 @@ bool MppGetRandomBool()
     static std::bernoulli_distribution distribution(0.5);
     return distribution(generator);
 }
+
+int MppNormalize(int value)
+{
+    if (value)
+    {
+        return value / std::abs(value);
+    }
+    else
+    {
+        return value;
+    }
+}

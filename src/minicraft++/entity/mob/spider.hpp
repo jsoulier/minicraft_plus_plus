@@ -30,5 +30,5 @@ protected:
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;
     int GetMaxEnergy() const override;
-    int GetSpeed() const override;
+    int GetMoveTickRate() const override;
 };

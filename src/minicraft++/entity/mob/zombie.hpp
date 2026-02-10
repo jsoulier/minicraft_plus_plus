@@ -18,6 +18,7 @@ protected:
     int GetSpriteColor3() const override;
     int GetSpriteColor4() const override;
     int GetSpriteColor5() const override;
+    int GetMoveTickRate() const override;
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;
     int GetMaxEnergy() const override;

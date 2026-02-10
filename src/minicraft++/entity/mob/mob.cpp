@@ -90,22 +90,30 @@ void MppMobEntity::Update(uint64_t ticks)
         Animation.Update(GetPose(), FacingX, FacingY, GetSpriteTickRate());
         TickAnimation = false;
     }
-    if (ticks % GetSpeed() == 0)
+    if (ticks % GetMoveTickRate() == 0 && (VelocityX || VelocityY))
     {
+        // TODO: speed applies to a push from another entity. that shouldn't happen
+        VelocityX *= GetSpeed();
+        VelocityY *= GetSpeed();
         MppEntity::Move(VelocityX, VelocityY);
-        if (VelocityX || VelocityY)
+        FacingY = MppNormalize(VelocityY);
+        if (!FacingY)
         {
-            FacingX = VelocityX;
-            FacingY = VelocityY;
+            FacingX = MppNormalize(VelocityX);
+        }
+        else
+        {
+            FacingX = 0;
         }
     }
+    MppAssert(std::abs(FacingX) == 1 || std::abs(FacingY) == 1);
+    MppAssert(!(FacingX && FacingY));
     VelocityX = 0;
     VelocityY = 0;
 }
 
 void MppMobEntity::Render() const
 {
-    MppAssert(FacingX || FacingY);
     MppEntity::Render();
     MppRendererDraw(
         MppSprite{
@@ -272,6 +280,11 @@ std::shared_ptr<MppInventory> MppMobEntity::GetInventory()
 int MppMobEntity::GetMaxItems() const
 {
     return 0;
+}
+
+int MppMobEntity::GetMoveTickRate() const
+{
+    return 1;
 }
 
 int MppMobEntity::GetSpeed() const

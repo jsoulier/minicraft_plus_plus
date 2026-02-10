@@ -40,14 +40,8 @@ void MppNPCController::Update(uint64_t ticks)
     }
     dx = Points[PointIndex].first - entity->GetX();
     dy = Points[PointIndex].second - entity->GetY();
-    if (dx)
-    {
-        dx /= std::abs(dx);
-    }
-    if (dy)
-    {
-        dy /= std::abs(dy);
-    }
+    dx = MppNormalize(dx);
+    dy = MppNormalize(dy);
     entity->Push(dx, dy);
     if (MppConsole::CVarNavigation.GetBool())
     {

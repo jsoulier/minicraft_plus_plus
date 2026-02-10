@@ -9,8 +9,6 @@
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 
-static constexpr int kVelocity = 2;
-
 MppProjectileEntity::MppProjectileEntity()
     : MppEntity()
     , Source{}
@@ -30,9 +28,10 @@ void MppProjectileEntity::Visit(SavepointVisitor& visitor)
 void MppProjectileEntity::Update(uint64_t ticks)
 {
     MppEntity::Update(ticks);
-    if (ticks % GetSpeed() == 0)
+    if (ticks % GetMoveTickRate() == 0)
     {
-        if (!Move(VelocityX * kVelocity, VelocityY * kVelocity))
+        // TODO: can potentially collide with source for a slow projectile and prematurely die
+        if (!Move(VelocityX * GetSpeed(), VelocityY * GetSpeed()))
         {
             OnCollision();
         }
@@ -99,11 +98,12 @@ int MppProjectileEntity::GetPhysicsHeight() const
 
 void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int facingX, int facingY)
 {
-    static constexpr int kOffset = 16;
+    static constexpr int kOffset = 8;
     Source = source->GetReference();
     MppAssert(!(facingX && facingY));
     X = 0;
     Y = 0;
+    // TODO: positioning looks correct but I'm not 100% it's calculated the right way
     auto [thisX, thisY] = GetCenter();
     auto [x, y] = source->GetCenter();
     X = x - thisX + facingX * kOffset;
@@ -115,6 +115,11 @@ void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int fa
 void MppProjectileEntity::OnCollision()
 {
     Kill();
+}
+
+int MppProjectileEntity::GetMoveTickRate() const
+{
+    return 1;
 }
 
 int MppProjectileEntity::GetSpeed() const

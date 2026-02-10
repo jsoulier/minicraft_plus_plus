@@ -41,6 +41,11 @@ int MppZombieEntity::GetSpriteColor5() const
     return 210;
 }
 
+int MppZombieEntity::GetMoveTickRate() const
+{
+    return 2;
+}
+
 int MppZombieEntity::GetMaxHealth() const
 {
     return 1;
