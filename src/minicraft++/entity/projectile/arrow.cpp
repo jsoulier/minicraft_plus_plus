@@ -1,6 +1,11 @@
 #include <minicraft++/color.hpp>
 #include <minicraft++/entity/projectile/arrow.hpp>
 
+int MppArrowEntity::GetSpeed() const
+{
+    return 2;
+}
+
 int MppArrowEntity::GetSpriteX() const
 {
     return 4;

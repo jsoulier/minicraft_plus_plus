@@ -93,7 +93,7 @@ int MppSpiderEntity::GetSpriteColor5() const
     return 222;
 }
 
-int MppSpiderEntity::GetSpeed() const
+int MppSpiderEntity::GetMoveTickRate() const
 {
     return 3;
 }

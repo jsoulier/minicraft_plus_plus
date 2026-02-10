@@ -89,7 +89,7 @@ void MppPlayerEntity::SetCrouching(bool crouching)
     Crouching = crouching;
 }
 
-int MppPlayerEntity::GetSpeed() const
+int MppPlayerEntity::GetMoveTickRate() const
 {
     if (Crouching)
     {

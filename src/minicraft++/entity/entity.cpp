@@ -18,6 +18,7 @@
 #include <minicraft++/log.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
+#include <minicraft++/util.hpp>
 #include <minicraft++/world.hpp>
 
 MppEntityReference::MppEntityReference()
@@ -234,13 +235,13 @@ bool MppEntity::Move(int dx, int dy)
     {
         if (dx)
         {
-            int step = dx / std::abs(dx);
+            int step = MppNormalize(dx);
             accepted &= MoveTest(step, 0);
             dx -= step;
         }
         if (dy)
         {
-            int step = dy / std::abs(dy);
+            int step = MppNormalize(dy);
             accepted &= MoveTest(0, step);
             dy -= step;
         }

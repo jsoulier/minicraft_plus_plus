@@ -14,7 +14,7 @@ public:
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
     virtual void OnAction(MppEntity& instigator) override;
-    int GetSpeed() const override;
+    int GetMoveTickRate() const override;
     int GetDefaultSpeed() const;
     int GetFleeSpeed() const;
     int GetIdleCooldown() const;
