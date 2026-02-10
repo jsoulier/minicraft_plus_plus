@@ -18,7 +18,6 @@
 
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
-    , Crouching{false}
 {
 }
 
@@ -39,7 +38,6 @@ void MppPlayerEntity::OnAddEntity()
 void MppPlayerEntity::Visit(SavepointVisitor& visitor)
 {
     MppHumanoidEntity::Visit(visitor);
-    visitor(Crouching);
 }
 
 void MppPlayerEntity::Update(uint64_t ticks)
@@ -84,21 +82,9 @@ void MppPlayerEntity::Render() const
     }
 }
 
-void MppPlayerEntity::SetCrouching(bool crouching)
-{
-    Crouching = crouching;
-}
-
 int MppPlayerEntity::GetMoveTickRate() const
 {
-    if (Crouching)
-    {
-        return 3;
-    }
-    else
-    {
-        return 1;
-    }
+    return 1;
 }
 
 std::shared_ptr<MppController> MppPlayerEntity::GetController() 

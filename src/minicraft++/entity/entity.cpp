@@ -149,6 +149,11 @@ void MppEntity::Render() const
     }
 }
 
+bool MppEntity::OnAction(MppEntity& instigator)
+{
+    return false;
+}
+
 bool MppEntity::OnCollision(MppEntity& instigator, int dx, int dy)
 {
     return false;

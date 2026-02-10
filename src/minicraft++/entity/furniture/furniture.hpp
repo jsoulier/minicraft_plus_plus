@@ -16,7 +16,7 @@ public:
     MppFurnitureEntity();
     virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
-    virtual void OnAction(MppEntity& instigator) override;
+    virtual bool OnAction(MppEntity& instigator) override;
     virtual bool OnCollision(MppEntity& instigator, int dx, int dy) override;
     virtual bool OnInteraction(MppEntity& instigator);
     int GetPhysicsOffsetX() const override;

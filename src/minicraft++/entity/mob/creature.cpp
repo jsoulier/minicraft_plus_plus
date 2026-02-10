@@ -33,10 +33,11 @@ void MppCreatureEntity::Update(uint64_t ticks)
     FleeTicks--;
 }
 
-void MppCreatureEntity::OnAction(MppEntity& instigator)
+bool MppCreatureEntity::OnAction(MppEntity& instigator)
 {
-    MppMobEntity::OnAction(instigator);
+    bool didAction = MppMobEntity::OnAction(instigator);
     // TODO: set FleeTicks here
+    return didAction;
 }
 
 int MppCreatureEntity::GetMoveTickRate() const

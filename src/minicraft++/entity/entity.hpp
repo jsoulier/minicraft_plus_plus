@@ -45,7 +45,7 @@ public:
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
-    virtual void OnAction(MppEntity& instigator) {}
+    virtual bool OnAction(MppEntity& instigator);
     virtual bool OnCollision(MppEntity& instigator, int dx, int dy);
     virtual bool HasPhysics() const;
     virtual bool CanSave() const;

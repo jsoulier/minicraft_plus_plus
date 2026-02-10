@@ -5,8 +5,6 @@
 #include <minicraft++/input.hpp>
 #include <minicraft++/entity/controller/controller.hpp>
 
-class MppPlayerEntity;
-
 class MppPlayerController final
     : public MppController
     , public MppInputHandler
@@ -29,7 +27,4 @@ public:
 private:
     void OnActionCallback(int index);
     void OnDropCallback(int index);
-
-private:
-    std::shared_ptr<MppPlayerEntity> GetPlayer();
 };

@@ -21,7 +21,6 @@ public:
     void Visit(SavepointVisitor& visitor) override;
     void Update(uint64_t ticks) override;
     void Render() const override;
-    void SetCrouching(bool crouching);
 
 protected:
     std::shared_ptr<MppController> GetController();
@@ -34,7 +33,4 @@ protected:
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;
     int GetMaxEnergy() const override;
-
-private:
-    bool Crouching;
 };
