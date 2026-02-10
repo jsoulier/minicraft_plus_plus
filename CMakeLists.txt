@@ -59,6 +59,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/tile.cpp
     src/minicraft++/util.cpp
     src/minicraft++/world.cpp
+    src/minicraft++/level.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)
 target_include_directories(minicraft++ PRIVATE src)
