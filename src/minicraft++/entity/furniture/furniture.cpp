@@ -2,9 +2,10 @@
 
 #include <cstdint>
 
+#include <minicraft++/assert.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
-#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/renderer.hpp>
 
 MppFurnitureEntity::MppFurnitureEntity()
@@ -36,13 +37,12 @@ void MppFurnitureEntity::Render() const
         MppRendererLayerEntity);
 }
 
-void MppFurnitureEntity::OnAction(MppEntity& instigator)
+bool MppFurnitureEntity::OnAction(MppEntity& instigator)
 {
     MppHumanoidEntity* humanoid = dynamic_cast<MppHumanoidEntity*>(&instigator);
-    if (humanoid)
-    {
-        humanoid->HoldEntity(shared_from_this());
-    }
+    MppAssert(humanoid);
+    humanoid->HoldEntity(shared_from_this());
+    return true;
 }
 
 bool MppFurnitureEntity::OnCollision(MppEntity& instigator, int dx, int dy)

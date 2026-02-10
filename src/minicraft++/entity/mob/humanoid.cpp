@@ -180,6 +180,54 @@ void MppHumanoidEntity::DoAction()
     MppMobEntity::DoAction();
 }
 
+void MppHumanoidEntity::EquipItemFromInventory(int index)
+{
+    std::shared_ptr<MppFurnitureEntity> furniture = std::dynamic_pointer_cast<MppFurnitureEntity>(HeldEntity);
+    if (furniture)
+    {
+        if (furniture->IsEmpty())
+        {
+            MoveHeldEntityToInventory();
+        }
+        else
+        {
+            // TODO: need to play an error noise here
+            return;
+        }
+    }
+    MppMobEntity::EquipItemFromInventory(index);
+    const MppItem& item = Inventory->Get(index);
+    if (item.GetType() & MppItemTypeArmor)
+    {
+        if (item.GetType() == MppItemTypeHelmet)
+        {
+            Inventory->SetSlot(MppInventorySlotHelmet, index);
+        }
+        else if (item.GetType() == MppItemTypeCuirass)
+        {
+            Inventory->SetSlot(MppInventorySlotCuirass, index);
+        }
+        else if (item.GetType() == MppItemTypeLeggings)
+        {
+            Inventory->SetSlot(MppInventorySlotLeggings, index);
+        }
+        else if (item.GetType() == MppItemTypeBoots)
+        {
+            Inventory->SetSlot(MppInventorySlotBoots, index);
+        }
+        else
+        {
+            MppAssert(false);
+        }
+    }
+    else if (item.GetType() == MppItemTypeFurniture)
+    {
+        std::shared_ptr<MppEntity> entity = item.CreateFurnitureEntity();
+        Inventory->Remove(index);
+        HoldEntity(entity);
+    }
+}
+
 int MppHumanoidEntity::GetPose() const
 {
     if (HeldEntity)

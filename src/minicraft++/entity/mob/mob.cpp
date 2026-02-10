@@ -13,6 +13,7 @@
 #include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/item.hpp>
+#include <minicraft++/log.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
 #include <minicraft++/util.hpp>
@@ -178,18 +179,17 @@ void MppMobEntity::DoAction()
         });
         std::sort(entities.begin(), entities.end(), [this](std::shared_ptr<MppEntity>& lhs, std::shared_ptr<MppEntity>& rhs)
         {
-            // TODO: sort mobs in front of furniture
             return GetDistance(lhs) < GetDistance(rhs);
         });
         bool didAction = false;
-        if (!entities.empty())
+        while (!entities.empty() && !didAction)
         {
             std::shared_ptr<MppEntity>& entity = entities[0];
-            if (GetDistance(entity) <= GetActionRange())
+            if (GetDistance(entity) > GetActionRange())
             {
-                entity->OnAction(*this);
-                didAction = true;
+                break;
             }
+            didAction = entity->OnAction(*this);
         }
         if (!didAction)
         {
@@ -229,6 +229,32 @@ void MppMobEntity::DoAction()
     }
     SetTickAnimation();
     actionRecipe.Craft(GetInventory());
+}
+
+void MppMobEntity::EquipItemFromInventory(int index)
+{
+    const MppItem& item = Inventory->Get(index);
+    if (item.GetType() & MppItemTypeEquipment)
+    {
+        MppInventorySlot slot = Inventory->GetSlotFromIndex(index);
+        if (slot != MppInventorySlotNone)
+        {
+            Inventory->ResetSlot(slot);
+            return;
+        }
+    }
+    if (item.GetType() == MppItemTypeNone)
+    {
+        MppLog("Tried equipping an MppItemTypeNone: %s", item.GetName().data());
+    }
+    else if (item.GetType() == MppItemTypeConsumable)
+    {
+        // TODO:
+    }
+    else if (item.GetType() & MppItemTypeHeld)
+    {
+        Inventory->SetSlot(MppInventorySlotHeld, index);
+    }
 }
 
 bool MppMobEntity::IsInFov(const std::shared_ptr<MppEntity>& entity)
