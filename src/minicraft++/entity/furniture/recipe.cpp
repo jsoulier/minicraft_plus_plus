@@ -28,7 +28,7 @@ bool MppRecipeEntity::OnInteraction(MppEntity& instigator)
     MppAssert(mob);
     Other = mob->GetInventory();
     Build();
-    MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
     return true;
 }
 

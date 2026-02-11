@@ -38,7 +38,7 @@ public:
     void OnLoseFocus() override;
     void OnEnter() override;
     void OnBackspace() override;
-    void OnInventory() override {}
+    void OnInteract() override {}
     void OnTextInput(char character) override;
     void OnRender() override;
 

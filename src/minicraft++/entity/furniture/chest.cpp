@@ -37,7 +37,7 @@ bool MppChestEntity::OnInteraction(MppEntity& instigator)
     Other = mob->GetInventory();
     Other.lock()->SetIsFocused(true);
     Inventory->SetIsFocused(false);
-    MppInputSetInteraction(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
     return true;
 }
 

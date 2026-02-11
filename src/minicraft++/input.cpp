@@ -12,7 +12,7 @@
 
 static constexpr int kAction = SDL_SCANCODE_SPACE;
 static constexpr int kDrop = SDL_SCANCODE_Q;
-static constexpr int kInventory = SDL_SCANCODE_E;
+static constexpr int kInteract = SDL_SCANCODE_E;
 static constexpr int kConsole = SDLK_SLASH;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
@@ -22,63 +22,57 @@ static constexpr int kLeftArrow = SDL_SCANCODE_LEFT;
 static constexpr int kRightArrow = SDL_SCANCODE_RIGHT;
 static constexpr int kLeft = SDL_SCANCODE_A;
 static constexpr int kRight = SDL_SCANCODE_D;
-static constexpr int kCrouch = SDL_SCANCODE_LSHIFT;
 static constexpr int kExit = SDL_SCANCODE_ESCAPE;
 static constexpr int kEnter = SDL_SCANCODE_RETURN;
 static constexpr int kBackspace = SDL_SCANCODE_BACKSPACE;
 
-static std::weak_ptr<MppInputHandler> player;
-static std::weak_ptr<MppInputHandler> interaction;
+static std::vector<std::weak_ptr<MppInputHandler>> handlers;
 static std::shared_ptr<MppInputHandler> console = std::make_shared<MppConsole>();
+
+void MppInputHandler::OnInteract()
+{
+    MppInputRemoveHandler(this);
+}
+
+void MppInputHandler::OnExit()
+{
+    MppInputRemoveHandler(this);
+}
 
 void MppInputQuit()
 {
-    MppInputResetInteraction();
-    MppInputResetPlayer();
+    console = nullptr;
 }
 
-void MppInputSetPlayer(const std::shared_ptr<MppInputHandler>& handler)
+void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler)
 {
     MppAssert(handler);
-    MppInputResetPlayer();
-    player = handler;
+    handlers.push_back(handler);
     handler->OnGainFocus();
 }
 
-void MppInputSetInteraction(const std::shared_ptr<MppInputHandler>& handler)
+void MppInputRemoveHandler(MppInputHandler* handler)
 {
     MppAssert(handler);
-    MppInputResetInteraction();
-    interaction = handler;
-    handler->OnGainFocus();
-}
-
-void MppInputResetPlayer()
-{
-    std::shared_ptr<MppInputHandler> handler = player.lock();
-    if (handler)
+    handler->OnLoseFocus();
+    int numErased = std::erase_if(handlers, [handler](const std::weak_ptr<MppInputHandler>& other)
     {
-        handler->OnLoseFocus();
-        player.reset();
-    }
-}
-
-void MppInputResetInteraction()
-{
-    std::shared_ptr<MppInputHandler> handler = interaction.lock();
-    if (handler)
-    {
-        handler->OnLoseFocus();
-        interaction.reset();
-    }
+        return handler == other.lock().get();
+    });
+    MppAssert(numErased == 1);
 }
 
 static std::shared_ptr<MppInputHandler> GetHandler()
 {
-    std::shared_ptr<MppInputHandler> handler = interaction.lock();
-    if (!handler)
+    if (handlers.empty())
     {
-        handler = player.lock();
+        return nullptr;
+    }
+    std::shared_ptr<MppInputHandler> handler = handlers.back().lock();
+    while (!handler && !handlers.empty())
+    {
+        handlers.pop_back();
+        handler = handlers.back().lock();
     }
     if (!handler)
     {
@@ -112,10 +106,6 @@ void MppInputUpdate(uint64_t ticks)
     {
         handler->OnHeldRight();
     }
-    if (keys[kCrouch])
-    {
-        handler->OnHeldCrouch();
-    }
 }
 
 void MppInputRender()
@@ -144,8 +134,8 @@ void MppInputHandle(SDL_Event* event)
         case kDrop:
             handler->OnDrop();
             break;
-        case kInventory:
-            handler->OnInventory();
+        case kInteract:
+            handler->OnInteract();
             break;
         case kUp:
             handler->OnUp();
@@ -178,12 +168,12 @@ void MppInputHandle(SDL_Event* event)
             handler->OnBackspace();
             break;
         case kExit:
-            MppInputResetInteraction();
+            handler->OnExit();
             break;
         }
         if (event->key.key == SDLK_SLASH && handler != console)
         {
-            MppInputSetInteraction(console);
+            MppInputAddHandler(console);
         }
     }
     else if (event->type == SDL_EVENT_TEXT_INPUT)

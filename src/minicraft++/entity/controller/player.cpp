@@ -23,7 +23,7 @@ void MppPlayerController::OnAddEntity()
 {
     GetInventory()->SetOnActionCallback(std::bind(&MppPlayerController::OnActionCallback, this, std::placeholders::_1));
     GetInventory()->SetOnDropCallback(std::bind(&MppPlayerController::OnDropCallback, this, std::placeholders::_1));
-    MppInputSetPlayer(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
 }
 
 void MppPlayerController::OnUpdate(uint64_t ticks)
@@ -36,7 +36,7 @@ void MppPlayerController::OnAction()
     Entity.lock()->DoAction();
 }
 
-void MppPlayerController::OnInventory()
+void MppPlayerController::OnInteract()
 {
     std::shared_ptr<MppMobEntity> player = Entity.lock();
     std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(player->GetX(), player->GetY());
@@ -59,8 +59,13 @@ void MppPlayerController::OnInventory()
     }
     if (!didInteraction)
     {
-        MppInputSetInteraction(player->GetInventory());
+        MppInputAddHandler(player->GetInventory());
     }
+}
+
+void MppPlayerController::OnExit()
+{
+    // No-op. Player controller can't be removed
 }
 
 void MppPlayerController::OnHeldUp()
@@ -83,10 +88,6 @@ void MppPlayerController::OnHeldRight()
     Entity.lock()->Push(1, 0);
 }
 
-void MppPlayerController::OnHeldCrouch()
-{
-}
-        
 void MppPlayerController::OnActionCallback(int index)
 {
     Entity.lock()->EquipItemFromInventory(index);
