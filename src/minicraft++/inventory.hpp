@@ -48,7 +48,7 @@ public:
     void OnDrop() override;
     void OnUpArrow() override;
     void OnDownArrow() override;
-    void OnRender() override;
+    void OnRender() const override;
     void SetOnActionCallback(const std::function<void(int index)>& callback);
     void SetOnDropCallback(const std::function<void(int index)>& callback);
     void SetIsFocused(bool focused);

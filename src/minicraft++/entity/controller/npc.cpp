@@ -29,7 +29,9 @@ void MppNPCController::Update(uint64_t ticks)
     std::shared_ptr<MppMobEntity> entity = Entity.lock();
     int dx = Points[PointIndex].first - entity->GetX();
     int dy = Points[PointIndex].second - entity->GetY();
-    if (!dx && !dy)
+    // TODO: there's a bug where speeds > 1 mean they'll keep skipping past their target
+    int speed = entity->GetSpeed();
+    if (std::abs(dx) < speed && std::abs(dy) < speed)
     {
         PointIndex++;
         if (PointIndex >= Points.size())

@@ -18,7 +18,6 @@ public:
     virtual void Render() const override;
     virtual bool OnAction(MppEntity& instigator) override;
     virtual bool OnCollision(MppEntity& instigator, int dx, int dy) override;
-    virtual bool OnInteraction(MppEntity& instigator);
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;

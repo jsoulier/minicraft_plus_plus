@@ -1,3 +1,4 @@
+// TODO: add a ForceSaveNow to entities (for whenever entities are removed and repossessed)
 #include <SDL3/SDL.h>
 #include <savepoint/savepoint.hpp>
 
@@ -103,6 +104,7 @@ bool MppWorldInit()
                 using EntityT = std::shared_ptr<MppEntity>;
                 savepoint.Read<EntityT>([&](EntityT& entity)
                 {
+                    entity->OnCreate();
                     MppWorldAddEntity(entity, level);
                     entities++;
                 }, level);
@@ -129,7 +131,7 @@ bool MppWorldInit()
         {
             levels[level].Tiles[x][y] = kGenerators[level](x, y, level);
         }
-        std::shared_ptr<MppEntity> player = std::make_shared<MppPlayerEntity>();
+        std::shared_ptr<MppEntity> player = MppEntity::Create<MppPlayerEntity>();
         MppWorldAddEntity(player);
         level = LevelIDSurface;
     }
@@ -308,7 +310,7 @@ void MppWorldSetTile(const MppTile& tile, int x, int y)
 
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 {
-    entity->OnAddEntity();
+    entity->OnAdd();
     levels[level].Entities.push_back(entity);
     if (entity->CanSave())
     {

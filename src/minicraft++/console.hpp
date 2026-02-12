@@ -40,7 +40,7 @@ public:
     void OnBackspace() override;
     void OnInteract() override {}
     void OnTextInput(char character) override;
-    void OnRender() override;
+    void OnRender() const override;
 
     static inline MppConsoleVar CVarNavigation{"navigation", false};
     static inline MppConsoleVar CVarPhysics{"physics", false};

@@ -225,6 +225,7 @@ void MppConsole::HandleEntity(const std::vector<std::string>& tokens)
     try
     {
         std::shared_ptr<MppEntity> entity{dynamic_cast<MppEntity*>(function())};
+        entity->OnCreate();
         entity->SetX(std::stoi(tokens[2]));
         entity->SetY(std::stoi(tokens[3]));
         MppWorldAddEntity(entity);
@@ -417,7 +418,7 @@ void MppConsole::OnTextInput(char character)
     }
 }
 
-void MppConsole::OnRender()
+void MppConsole::OnRender() const
 {
     MppMenu::Render();
     MppMenu::Render("/", kMppColorMenuUnlocked, X1, Y1, MppMenuAlignmentLeft);

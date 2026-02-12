@@ -59,7 +59,7 @@ void MppRecipeEntity::OnDownArrow()
     Inventory->OnDownArrow();
 }
 
-void MppRecipeEntity::OnRender()
+void MppRecipeEntity::OnRender() const
 {
     Inventory->Render();
     if (Inventory->IsEmpty())

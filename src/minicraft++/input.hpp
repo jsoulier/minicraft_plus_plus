@@ -11,7 +11,7 @@ public:
     virtual void OnGainFocus() {}
     virtual void OnLoseFocus() {}
     virtual void OnUpdate(uint64_t ticks) {}
-    virtual void OnRender() {}
+    virtual void OnRender() const {}
     virtual void OnHeldUp() {}
     virtual void OnHeldDown() {}
     virtual void OnHeldLeft() {}
@@ -19,6 +19,7 @@ public:
     virtual void OnAction() {}
     virtual void OnDrop() {}
     virtual void OnInteract();
+    virtual void OnDismount() {}
     virtual void OnExit();
     virtual void OnUp() {}
     virtual void OnDown() {}

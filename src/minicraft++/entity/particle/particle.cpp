@@ -11,7 +11,7 @@ MppParticleEntity::MppParticleEntity()
 {
 }
 
-void MppParticleEntity::OnAddEntity()
+void MppParticleEntity::OnAdd()
 {
     Lifetime = GetMaxLifetime();
     MppAssert(Lifetime);

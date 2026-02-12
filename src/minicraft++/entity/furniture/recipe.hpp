@@ -19,7 +19,7 @@ public:
     void OnAction() override;
     void OnUpArrow() override;
     void OnDownArrow() override;
-    void OnRender() override;
+    void OnRender() const override;
 
 private:
     void Build();

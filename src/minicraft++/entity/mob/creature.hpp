@@ -22,7 +22,7 @@ public:
     int GetFleeTicks() const;
 
 protected:
-    std::shared_ptr<MppController> GetController() override;
+    std::shared_ptr<MppController> GetDefaultController() override;
 
 private:
     int FleeTicks;

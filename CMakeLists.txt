@@ -25,6 +25,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/controller/controller.cpp
     src/minicraft++/entity/controller/creature.cpp
     src/minicraft++/entity/controller/melee.cpp
+    src/minicraft++/entity/controller/mount.cpp
     src/minicraft++/entity/controller/npc.cpp
     src/minicraft++/entity/controller/player.cpp
     src/minicraft++/entity/entity.cpp
@@ -36,7 +37,9 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/furniture/recipe.cpp
     src/minicraft++/entity/furniture/workbench.cpp
     src/minicraft++/entity/item.cpp
+    src/minicraft++/entity/mob/cow.cpp
     src/minicraft++/entity/mob/creature.cpp
+    src/minicraft++/entity/mob/horse.cpp
     src/minicraft++/entity/mob/humanoid.cpp
     src/minicraft++/entity/mob/mob.cpp
     src/minicraft++/entity/mob/player.cpp

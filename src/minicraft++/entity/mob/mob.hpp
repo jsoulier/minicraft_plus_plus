@@ -14,7 +14,11 @@ class MppMobEntity : public MppEntity
 {
 public:
     MppMobEntity();
-    virtual void OnAddEntity() override;
+    virtual void OnCreate() override;
+    virtual void OnAdd() override;
+    virtual void OnPossess(const std::shared_ptr<MppController>& controller);
+    virtual void OnUnpossess();
+    std::shared_ptr<MppController>& GetController();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
@@ -25,18 +29,21 @@ public:
     std::shared_ptr<MppInventory> GetInventory();
     virtual int GetActionRange() const;
     void Push(int dx, int dy);
+    void SetFacingX(int facingX);
+    void SetFacingY(int facingY);
     int GetFacingX() const;
     int GetFacingY() const;
+    bool IsFacing(int facingX, int facingY) const;
     bool IsMoving();
     int GetHealth() const;
     int GetHunger() const;
     int GetEnergy() const;
+    virtual int GetSpeed() const;
 
 protected:
     virtual int GetMaxItems() const;
     virtual int GetMoveTickRate() const;
-    virtual int GetSpeed() const;
-    virtual std::shared_ptr<MppController> GetController();
+    virtual std::shared_ptr<MppController> GetDefaultController();
     virtual float GetFov() const;
     virtual int GetMaxHealth() const = 0;
     virtual int GetMaxHunger() const = 0;

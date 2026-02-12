@@ -106,7 +106,7 @@ std::string MppEntity::GetName() const
     return string;
 }
 
-void MppEntity::OnAddEntity()
+void MppEntity::OnAdd()
 {
     Killed = false;
 }
@@ -150,6 +150,11 @@ void MppEntity::Render() const
 }
 
 bool MppEntity::OnAction(MppEntity& instigator)
+{
+    return false;
+}
+
+bool MppEntity::OnInteraction(MppEntity& instigator)
 {
     return false;
 }

@@ -11,7 +11,7 @@ MppZombieEntity::MppZombieEntity()
 {
 }
 
-std::shared_ptr<MppController> MppZombieEntity::GetController() 
+std::shared_ptr<MppController> MppZombieEntity::GetDefaultController() 
 {
     return std::make_shared<MppMeleeController>();
 }

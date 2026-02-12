@@ -16,14 +16,16 @@ class MppController
 public:
     MppController() = default;
     ~MppController() = default;
-    void SetEntity(const std::shared_ptr<MppMobEntity>& entity);
-    virtual void OnAddEntity() {}
+    virtual void Possess(const std::shared_ptr<MppMobEntity>& entity);
+    virtual void Unpossess();
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Update(uint64_t ticks) {}
+    virtual void RenderFromEntity() const {}
     virtual bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const;
+    virtual bool InteractionFilter(const std::shared_ptr<MppEntity>& entity) const;
 
 protected:
-    std::shared_ptr<MppInventory> GetInventory();
+    std::shared_ptr<MppInventory> GetInventory() const;
 
 protected:
     std::weak_ptr<MppMobEntity> Entity;

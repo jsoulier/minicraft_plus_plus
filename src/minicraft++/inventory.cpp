@@ -242,11 +242,12 @@ void MppInventory::OnUpArrow()
 void MppInventory::OnDownArrow() 
 {
     MppAssert(Focused);
+    // TODO: if Items is empty, it becomes -1. what should the logic be here?
     Index = std::min(Index + 1, int(Items.size() - 1));
     Top = std::max(Top, Index - GetHeight() / 8 + 1);
 }
 
-void MppInventory::OnRender()
+void MppInventory::OnRender() const
 {
     Render();
 }

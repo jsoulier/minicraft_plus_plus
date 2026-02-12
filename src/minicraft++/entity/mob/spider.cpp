@@ -48,7 +48,7 @@ int MppSpiderEntity::GetPhysicsHeight() const
     return 16;
 }
 
-std::shared_ptr<MppController> MppSpiderEntity::GetController() 
+std::shared_ptr<MppController> MppSpiderEntity::GetDefaultController() 
 {
     return std::make_shared<MppMeleeController>();
 }

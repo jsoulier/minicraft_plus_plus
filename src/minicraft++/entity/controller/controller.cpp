@@ -6,16 +6,28 @@
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/inventory.hpp>
 
+
 void MppController::Visit(SavepointVisitor& visitor)
 {
 }
 
-void MppController::SetEntity(const std::shared_ptr<MppMobEntity>& entity)
+void MppController::Possess(const std::shared_ptr<MppMobEntity>& entity)
 {
     Entity = entity;
+    entity->OnPossess(shared_from_this());
 }
 
-std::shared_ptr<MppInventory> MppController::GetInventory()
+void MppController::Unpossess()
+{
+    std::shared_ptr<MppMobEntity> entity = Entity.lock();
+    if (entity)
+    {
+        entity->OnUnpossess();
+    }
+    Entity.reset();
+}
+
+std::shared_ptr<MppInventory> MppController::GetInventory() const
 {
     return Entity.lock()->GetInventory();
 }
@@ -23,4 +35,9 @@ std::shared_ptr<MppInventory> MppController::GetInventory()
 bool MppController::ActionFilter(const std::shared_ptr<MppEntity>& entity) const
 {
     return !entity->IsA<MppMobEntity>();
+}
+
+bool MppController::InteractionFilter(const std::shared_ptr<MppEntity>& entity) const
+{
+    return false;
 }

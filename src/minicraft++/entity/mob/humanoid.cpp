@@ -11,9 +11,9 @@
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
 
-void MppHumanoidEntity::OnAddEntity()
+void MppHumanoidEntity::OnAdd()
 {
-    MppMobEntity::OnAddEntity();
+    MppMobEntity::OnAdd();
 }
 
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
