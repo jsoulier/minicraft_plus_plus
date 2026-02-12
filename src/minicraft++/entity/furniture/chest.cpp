@@ -61,7 +61,7 @@ void MppChestEntity::OnAction()
     }
 }
 
-void MppChestEntity::OnRender()
+void MppChestEntity::OnRender() const
 {
     Other.lock()->Render();
     Inventory->Render();

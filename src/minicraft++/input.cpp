@@ -13,6 +13,7 @@
 static constexpr int kAction = SDL_SCANCODE_SPACE;
 static constexpr int kDrop = SDL_SCANCODE_Q;
 static constexpr int kInteract = SDL_SCANCODE_E;
+static constexpr int kDismount = SDL_SCANCODE_LSHIFT;
 static constexpr int kConsole = SDLK_SLASH;
 static constexpr int kUp = SDL_SCANCODE_W;
 static constexpr int kDown = SDL_SCANCODE_S;
@@ -47,6 +48,10 @@ void MppInputQuit()
 void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler)
 {
     MppAssert(handler);
+    for (std::weak_ptr<MppInputHandler>& other : handlers)
+    {
+        MppAssert(handler != other.lock());
+    }
     handlers.push_back(handler);
     handler->OnGainFocus();
 }
@@ -69,9 +74,13 @@ static std::shared_ptr<MppInputHandler> GetHandler()
         return nullptr;
     }
     std::shared_ptr<MppInputHandler> handler = handlers.back().lock();
-    while (!handler && !handlers.empty())
+    while (!handler)
     {
         handlers.pop_back();
+        if (handlers.empty())
+        {
+            break;
+        }
         handler = handlers.back().lock();
     }
     if (!handler)
@@ -110,6 +119,7 @@ void MppInputUpdate(uint64_t ticks)
 
 void MppInputRender()
 {
+    // TODO: walk through all handlers and render 1 by 1. need to get layers right. custom layers?
     std::shared_ptr<MppInputHandler> handler = GetHandler();
     if (handler)
     {
@@ -120,6 +130,13 @@ void MppInputRender()
 void MppInputHandle(SDL_Event* event)
 {
     std::shared_ptr<MppInputHandler> handler = GetHandler();
+    if (event->type == SDL_EVENT_KEY_DOWN)
+    {
+        if (event->key.key == SDLK_SLASH && handler != console)
+        {
+            MppInputAddHandler(console);
+        }
+    }
     if (!handler)
     {
         return;
@@ -136,6 +153,9 @@ void MppInputHandle(SDL_Event* event)
             break;
         case kInteract:
             handler->OnInteract();
+            break;
+        case kDismount:
+            handler->OnDismount();
             break;
         case kUp:
             handler->OnUp();
@@ -170,10 +190,6 @@ void MppInputHandle(SDL_Event* event)
         case kExit:
             handler->OnExit();
             break;
-        }
-        if (event->key.key == SDLK_SLASH && handler != console)
-        {
-            MppInputAddHandler(console);
         }
     }
     else if (event->type == SDL_EVENT_TEXT_INPUT)

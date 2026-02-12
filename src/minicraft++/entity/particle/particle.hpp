@@ -10,7 +10,7 @@ class MppParticleEntity : public MppEntity
 {
 public:
     MppParticleEntity();
-    void OnAddEntity() override;
+    void OnAdd() override;
     void Render() const override;
     void Update(uint64_t ticks) override;
     int GetPhysicsOffsetX() const;

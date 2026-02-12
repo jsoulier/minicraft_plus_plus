@@ -15,7 +15,7 @@ public:
     void Render() const override;
     
 protected:
-    std::shared_ptr<MppController> GetController();
+    std::shared_ptr<MppController> GetDefaultController();
     int GetSpritePose1X() const override;
     int GetSpritePose1Y() const override;
     int GetPhysicsOffsetX() const override;

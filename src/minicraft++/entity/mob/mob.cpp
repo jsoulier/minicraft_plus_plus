@@ -33,19 +33,10 @@ MppMobEntity::MppMobEntity()
 {
 }
 
-void MppMobEntity::OnAddEntity()
+void MppMobEntity::OnCreate()
 {
-    MppEntity::OnAddEntity();
+    MppEntity::OnCreate();
     Inventory->SetMaxItems(GetMaxItems());
-    if (!Controller)
-    {
-        Controller = GetController();
-    }
-    if (Controller)
-    {
-        Controller->SetEntity(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
-        Controller->OnAddEntity();
-    }
     if (Health == -1)
     {
         MppAssert(Hunger == -1);
@@ -61,6 +52,34 @@ void MppMobEntity::OnAddEntity()
     Animation.SetPose(0, GetSpritePose1X(), GetSpritePose1Y());
     Animation.SetPose(1, GetSpritePose2X(), GetSpritePose2Y());
     SetTickAnimation();
+}
+
+void MppMobEntity::OnAdd()
+{
+    MppEntity::OnAdd();
+    if (!Controller)
+    {
+        Controller = GetDefaultController();
+    }
+    if (Controller)
+    {
+        Controller->Possess(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+    }
+}
+
+void MppMobEntity::OnPossess(const std::shared_ptr<MppController>& controller)
+{
+    Controller = controller;
+}
+
+void MppMobEntity::OnUnpossess()
+{
+    Controller = nullptr;
+}
+
+std::shared_ptr<MppController>& MppMobEntity::GetController()
+{
+    return Controller;
 }
 
 void MppMobEntity::Visit(SavepointVisitor& visitor)
@@ -116,6 +135,10 @@ void MppMobEntity::Update(uint64_t ticks)
 void MppMobEntity::Render() const
 {
     MppEntity::Render();
+    if (Controller)
+    {
+        Controller->RenderFromEntity();
+    }
     MppRendererDraw(
         MppSprite{
             GetSpriteColor1(),
@@ -153,6 +176,11 @@ void MppMobEntity::Render() const
 
 void MppMobEntity::DoAction()
 {
+    // TODO: should eventually become an assert
+    if (!Controller)
+    {
+        return;
+    }
     const MppItem& held = Inventory->GetBySlot(MppInventorySlotHeld);
     MppItemRecipe actionRecipe = held.GetActionRecipe();
     if (!actionRecipe.CanCraft(MppItemIDInvalid, Inventory))
@@ -182,14 +210,17 @@ void MppMobEntity::DoAction()
             return GetDistance(lhs) < GetDistance(rhs);
         });
         bool didAction = false;
-        while (!entities.empty() && !didAction)
+        for (std::shared_ptr<MppEntity>& entity : entities)
         {
-            std::shared_ptr<MppEntity>& entity = entities[0];
             if (GetDistance(entity) > GetActionRange())
             {
                 break;
             }
             didAction = entity->OnAction(*this);
+            if (didAction)
+            {
+                break;
+            }
         }
         if (!didAction)
         {
@@ -318,7 +349,7 @@ int MppMobEntity::GetSpeed() const
     return 1;
 }
 
-std::shared_ptr<MppController> MppMobEntity::GetController()
+std::shared_ptr<MppController> MppMobEntity::GetDefaultController()
 {
     return nullptr;
 }
@@ -326,6 +357,20 @@ std::shared_ptr<MppController> MppMobEntity::GetController()
 float MppMobEntity::GetFov() const
 {
     return std::numbers::pi_v<float> / 4.0f * 3.0f;
+}
+
+void MppMobEntity::SetFacingX(int facingX)
+{
+    MppAssert(!Controller);
+    FacingX = facingX;
+    SetTickAnimation();
+}
+
+void MppMobEntity::SetFacingY(int facingY)
+{
+    MppAssert(!Controller);
+    FacingY = facingY;
+    SetTickAnimation();
 }
 
 int MppMobEntity::GetFacingX() const
@@ -336,6 +381,11 @@ int MppMobEntity::GetFacingX() const
 int MppMobEntity::GetFacingY() const
 {
     return FacingY;
+}
+
+bool MppMobEntity::IsFacing(int facingX, int facingY) const
+{
+    return FacingX == facingX && FacingY == facingY;
 }
 
 bool MppMobEntity::IsMoving()

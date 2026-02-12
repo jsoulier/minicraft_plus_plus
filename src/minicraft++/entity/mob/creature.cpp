@@ -77,7 +77,7 @@ int MppCreatureEntity::GetFleeTicks() const
     return FleeTicks;
 }
 
-std::shared_ptr<MppController> MppCreatureEntity::GetController() 
+std::shared_ptr<MppController> MppCreatureEntity::GetDefaultController() 
 {
     return std::make_shared<MppCreatureController>();
 }

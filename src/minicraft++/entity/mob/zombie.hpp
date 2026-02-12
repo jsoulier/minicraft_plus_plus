@@ -12,7 +12,7 @@ public:
     MppZombieEntity();
     
 protected:
-    std::shared_ptr<MppController> GetController();
+    std::shared_ptr<MppController> GetDefaultController();
     int GetSpriteColor1() const override;
     int GetSpriteColor2() const override;
     int GetSpriteColor3() const override;

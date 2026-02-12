@@ -19,7 +19,7 @@ public:
     void Visit(SavepointVisitor& visitor);
     bool OnInteraction(MppEntity& instigator) override;
     void OnAction() override;
-    void OnRender() override;
+    void OnRender() const override;
     void OnUpArrow() override;
     void OnDownArrow() override;
     void OnLeftArrow() override;

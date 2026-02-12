@@ -40,32 +40,32 @@ using CreateProjectileEntityFunction = std::shared_ptr<MppProjectileEntity>(*)()
 
 static std::shared_ptr<MppFurnitureEntity> CreateWorkbenchEntity()
 {
-    return std::make_shared<MppWorkbenchEntity>();
+    return MppEntity::Create<MppWorkbenchEntity>();
 }
 
 static std::shared_ptr<MppFurnitureEntity> CreateFurnaceEntity()
 {
-    return std::make_shared<MppFurnaceEntity>();
+    return MppEntity::Create<MppFurnaceEntity>();
 }
 
 static std::shared_ptr<MppFurnitureEntity> CreateChestEntity()
 {
-    return std::make_shared<MppChestEntity>();
+    return MppEntity::Create<MppChestEntity>();
 }
 
 static std::shared_ptr<MppFurnitureEntity> CreateAnvilEntity()
 {
-    return std::make_shared<MppAnvilEntity>();
+    return MppEntity::Create<MppAnvilEntity>();
 }
 
 static std::shared_ptr<MppFurnitureEntity> CreateLanternEntity()
 {
-    return std::make_shared<MppLanternEntity>();
+    return MppEntity::Create<MppLanternEntity>();
 }
 
 static std::shared_ptr<MppProjectileEntity> CreateArrowEntity()
 {
-    return std::make_shared<MppArrowEntity>();
+    return MppEntity::Create<MppArrowEntity>();
 }
 
 struct MppItemRecipeData

@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 class MppEntity;
 
@@ -41,11 +42,14 @@ public:
     MppEntity(MppEntity&& other) = delete;
     MppEntity& operator=(MppEntity&& other) = delete;
     std::string GetName() const;
-    virtual void OnAddEntity();
+    virtual void OnCreate() {}
+    virtual void OnAdd();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
+    // Replace all instigators with shared_ptrs
     virtual bool OnAction(MppEntity& instigator);
+    virtual bool OnInteraction(MppEntity& instigator);
     virtual bool OnCollision(MppEntity& instigator, int dx, int dy);
     virtual bool HasPhysics() const;
     virtual bool CanSave() const;
@@ -66,6 +70,14 @@ public:
     virtual int GetSize() const = 0;
     std::pair<int, int> GetCenter() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
+
+    template<typename T, typename... Args>
+    static std::shared_ptr<T> Create(Args&&... args)
+    {
+        std::shared_ptr<T> entity = std::make_shared<T>(std::forward<Args>(args)...);
+        entity->OnCreate();
+        return entity;
+    }
 
     template<typename T>
     bool IsA() const

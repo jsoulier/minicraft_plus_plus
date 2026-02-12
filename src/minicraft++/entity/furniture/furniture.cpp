@@ -56,11 +56,6 @@ bool MppFurnitureEntity::OnCollision(MppEntity& instigator, int dx, int dy)
     return true;
 }
 
-bool MppFurnitureEntity::OnInteraction(MppEntity& instigator)
-{
-    return false;
-}
-
 int MppFurnitureEntity::GetPhysicsOffsetX() const
 {
     return 1;

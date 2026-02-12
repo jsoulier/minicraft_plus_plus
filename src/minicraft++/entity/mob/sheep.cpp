@@ -1,6 +1,5 @@
 #include <savepoint/savepoint.hpp>
 
-#include <minicraft++/color.hpp>
 #include <minicraft++/entity/mob/creature.hpp>
 #include <minicraft++/entity/mob/sheep.hpp>
 
