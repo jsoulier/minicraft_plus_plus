@@ -27,7 +27,7 @@ struct {
 } Biome;
 
 struct {
-    ClusterID;
+    int ClusterID;
     int num_tiles;
 } LevelCluster;
 
