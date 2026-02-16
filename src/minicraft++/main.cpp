@@ -52,7 +52,6 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 void SDLCALL SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     uint64_t ticks = GetTicks();
-    MppInputQuit();
     MppWorldSave(ticks, true);
     MppWorldQuit();
     MppAudioQuit();

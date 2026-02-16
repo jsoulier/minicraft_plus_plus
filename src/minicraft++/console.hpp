@@ -9,7 +9,7 @@
 #include <minicraft++/input.hpp>
 #include <minicraft++/menu.hpp>
 
-class MppPlayerEntity;
+class MppMobEntity;
 
 class MppConsoleVar
 {
@@ -55,7 +55,7 @@ private:
     void HandleKill(const std::vector<std::string>& tokens);
     void HandleKillAll(const std::vector<std::string>& tokens);
     void HandleCVar(const std::vector<std::string>& tokens);
-    std::shared_ptr<MppPlayerEntity> GetPlayer() const;
+    std::shared_ptr<MppMobEntity> GetPlayer() const;
     std::string GetEntityName(std::string name) const;
 
 private:

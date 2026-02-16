@@ -15,32 +15,32 @@ struct Generator
 
 static Generator generator;
 
-MppTileID MppGenSurface(float x, float y, int level)
+MppTile MppGenSurface(float x, float y, int level)
 {
     float noise = generator.Noise.GetNoise(x, y);
     if (noise > 0.6)
     {
-        return MppTileIDTree;
+        return MppTile{MppTileIDGrass, MppTileIDTree};
     }
     else if (noise > 0.2)
     {
-        return MppTileIDGrass;
+        return MppTile{MppTileIDGrass};
     }
     else if (noise > -0.2)
     {
-        return MppTileIDDirt;
+        return MppTile{MppTileIDDirt};
     }
     else if (noise > -0.6)
     {
-        return MppTileIDStoneWall;
+        return MppTile{MppTileIDDirt, MppTileIDStoneWall};
     }
     else
     {
-        return MppTileIDSand;
+        return MppTile{MppTileIDSand};
     }
 }
 
-MppTileID MppGenUnderground(float x, float y, int level)
+MppTile MppGenUnderground(float x, float y, int level)
 {
-    return MppTileIDStoneWall;
+    return MppTile{MppTileIDDirt, MppTileIDStoneWall};
 }

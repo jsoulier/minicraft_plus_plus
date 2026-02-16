@@ -34,7 +34,6 @@ public:
     virtual void OnInputText(char character) {}
 };
 
-void MppInputQuit();
 void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler);
 void MppInputRemoveHandler(MppInputHandler* handler);
 void MppInputUpdate(uint64_t ticks);

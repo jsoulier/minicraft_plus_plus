@@ -41,11 +41,6 @@ void MppInputHandler::OnInputExit()
     MppInputRemoveHandler(this);
 }
 
-void MppInputQuit()
-{
-    console = nullptr;
-}
-
 void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler)
 {
     MppAssert(handler);
@@ -134,13 +129,6 @@ void MppInputRender()
             static constexpr MppRendererLayer kTopMenu = MppRendererLayerTopMenu1;
             MppRendererLayerOverride override1{kMenu, MppRendererLayer(kMenu + i * 2)};
             MppRendererLayerOverride override2{kTopMenu, MppRendererLayer(kTopMenu + i * 2)};
-            handler.lock()->OnInputRender();
-        }
-    }
-    for (const std::weak_ptr<MppInputHandler> handler : handlers)
-    {
-        if (!handler.expired())
-        {
             handler.lock()->OnInputRender();
         }
     }

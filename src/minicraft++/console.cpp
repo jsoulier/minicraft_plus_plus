@@ -14,8 +14,9 @@
 #include <minicraft++/assert.hpp>
 #include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
+#include <minicraft++/entity/controller/player.hpp>
 #include <minicraft++/entity/entity.hpp>
-#include <minicraft++/entity/mob/player.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/item.hpp>
 #include <minicraft++/log.hpp>
@@ -157,7 +158,7 @@ void MppConsole::OnInputLoseFocus()
 
 void MppConsole::HandleGive(const std::vector<std::string>& tokens)
 {
-    std::shared_ptr<MppPlayerEntity> player = GetPlayer();
+    std::shared_ptr<MppMobEntity> player = GetPlayer();
     if (!player)
     {
         return;
@@ -212,64 +213,60 @@ void MppConsole::HandleEntity(const std::vector<std::string>& tokens)
 {
     if (tokens.size() != 4)
     {
-        MppLog("Expected entity <entity_name> <x> <y>");
+        MppLog("Expected entity <x> <y> <entity_name>");
         return;
     }
-    std::string name = GetEntityName(tokens[1]);
+    std::string name = GetEntityName(tokens[3]);
     SavepointPolyFunction function = SavepointGetPolyFunction(name);
     if (!function)
     {
-        MppLog("Unknown entity: %s", tokens[1].data());
+        MppLog("Unknown entity: %s", tokens[3].data());
         return;
     }
     try
     {
         std::shared_ptr<MppEntity> entity{dynamic_cast<MppEntity*>(function())};
         entity->OnCreate();
-        entity->SetX(std::stoi(tokens[2]));
-        entity->SetY(std::stoi(tokens[3]));
+        entity->SetX(std::stoi(tokens[1]));
+        entity->SetY(std::stoi(tokens[2]));
         MppWorldAddEntity(entity);
     }
     catch (const std::exception& e)
     {
-        MppLog("Invalid position: %s, %s", tokens[2].data(), tokens[3].data());
+        MppLog("Invalid position: %s, %s", tokens[1].data(), tokens[2].data());
     }
 }
 
 void MppConsole::HandleTile(const std::vector<std::string>& tokens)
 {
-    if (tokens.size() != 4)
+    if (tokens.size() < 4 || tokens.size() > 5)
     {
-        MppLog("Expected tile <tile_name> <x> <y>");
+        MppLog("Expected tile <x> <y> <bottom_tile_name> <top_tile_name>");
         return;
     }
-    MppTile tile;
+    MppTileID bottomID = MppTileIDInvalid;
+    MppTileID topID = MppTileIDInvalid;
     for (int i = MppTileIDInvalid + 1; i < MppTileIDCount; i++)
     {
-        std::string name{MppTile{MppTileID(i)}.GetName()};
-        for (int j = 0; j < name.size(); j++)
+        if (MppTileIDGetName(MppTileID(i)) == tokens[3])
         {
-            if (name[j] == ' ')
-            {
-                name[j] = '_';
-            }
+            bottomID = MppTileID(i);
         }
-        if (name == tokens[1])
+        if (tokens.size() >= 5 && MppTileIDGetName(MppTileID(i)) == tokens[4])
         {
-            tile = MppTile{MppTileID(i)};
-            break;
+            topID = MppTileID(i);
         }
     }
-    if (!tile.IsValid())
+    if (bottomID == MppTileIDInvalid)
     {
-        MppLog("Unknown tile: %s", tokens[1].data());
+        MppLog("Unknown tile: %s", tokens[3].data());
         return;
     }
     try
     {
-        int x = std::stoi(tokens[2]);
-        int y = std::stoi(tokens[3]);
-        MppWorldSetTile(tile, x, y);
+        int x = std::stoi(tokens[1]);
+        int y = std::stoi(tokens[2]);
+        MppWorldSetTile(MppTile{bottomID, topID}, x, y);
     }
     catch (const std::exception& e)
     {
@@ -299,12 +296,7 @@ void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
     std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities();
     for (std::shared_ptr<MppEntity>& entity : entities)
     {
-        // TODO: should enable in the future
-        std::shared_ptr<MppPlayerEntity> player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
-        if (!player)
-        {
-            entity->Unspawn();
-        }
+        entity->Unspawn();
     }
 }
 
@@ -374,14 +366,15 @@ void MppConsole::Handle()
     }
 }
 
-std::shared_ptr<MppPlayerEntity> MppConsole::GetPlayer() const
+std::shared_ptr<MppMobEntity> MppConsole::GetPlayer() const
 {
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
     {
-        std::shared_ptr<MppPlayerEntity> player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
-        if (player)
+        std::shared_ptr<MppMobEntity> mob = entity->Cast<MppMobEntity>();
+        std::shared_ptr<MppController> controller = mob->GetController();
+        if (controller && controller->IsA<MppPlayerController>())
         {
-            return player;
+            return mob;
         }
     }
     MppLog("Failed to find player");

@@ -2,11 +2,13 @@
 
 #include <savepoint/savepoint.hpp>
 
+#include <array>
 #include <cstdint>
 #include <memory>
 #include <string_view>
 
 class MppEntity;
+enum MppRendererLayer : uint8_t;
 
 enum MppTileID : uint16_t
 {
@@ -21,6 +23,8 @@ enum MppTileID : uint16_t
     MppTileIDCount,
 };
 
+std::string_view MppTileIDGetName(MppTileID id);
+
 enum MppTilePhysicsType
 {
     // Physics MUST be disjoint. e.g. Cannot have Ground and Wall at the same time
@@ -29,20 +33,28 @@ enum MppTilePhysicsType
     MppTilePhysicsTypeLiquid = 0x04,
 };
 
+enum MppTileLayer
+{
+    MppTileLayerBottom,
+    MppTileLayerTop,
+    MppTileLayerCount,
+};
+
 class MppTile
 {
 public:
     static constexpr int kSize = 16;
 
     MppTile();
-    MppTile(MppTileID id);
+    MppTile(MppTileID bottomID);
+    MppTile(MppTileID bottomID, MppTileID topID);
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y) const;
     bool OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y);
     bool OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y);
     bool OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y);
-    const std::string_view& GetName() const;
+    MppTileID GetID(MppTileLayer layer) const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;
     int GetPhysicsX(int x) const;
@@ -53,8 +65,11 @@ public:
     bool IsValid() const;
 
 private:
-    MppTileID ID;
+    MppTileID& GetMutableID();
+
+    std::array<MppTileID, MppTileLayerCount> Layers;
     uint64_t Ticks;
 };
 
 static MppTile kMppTileInvalid{};
+static MppTileID kMppTileIDInvalid{kMppTileIDInvalid};

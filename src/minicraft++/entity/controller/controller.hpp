@@ -24,6 +24,18 @@ public:
     virtual bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const;
     virtual bool InteractionFilter(const std::shared_ptr<MppEntity>& entity) const;
 
+    template<typename T>
+    std::shared_ptr<T> Cast()
+    {
+        return std::dynamic_pointer_cast<T>(shared_from_this());
+    }
+
+    template<typename T>
+    bool IsA() const
+    {
+        return dynamic_cast<const T*>(this) != nullptr;
+    }
+
 protected:
     std::shared_ptr<MppInventory> GetInventory() const;
 

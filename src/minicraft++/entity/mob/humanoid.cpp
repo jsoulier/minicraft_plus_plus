@@ -66,18 +66,21 @@ void MppHumanoidEntity::DoAction()
 
 void MppHumanoidEntity::Equip(int index)
 {
-    std::shared_ptr<MppFurnitureEntity> furniture = Entity->Cast<MppFurnitureEntity>();
-    if (furniture)
+    if (Entity)
     {
-        if (furniture->IsEmpty())
+        std::shared_ptr<MppFurnitureEntity> furniture = Entity->Cast<MppFurnitureEntity>();
+        if (furniture)
         {
-            Inventory->Add(furniture->GetItemID());
-            Entity = nullptr;
-            RequestAnimationTick();
-        }
-        else
-        {
-            return;
+            if (furniture->IsEmpty())
+            {
+                Inventory->Add(furniture->GetItemID());
+                Entity = nullptr;
+                RequestAnimationTick();
+            }
+            else
+            {
+                return;
+            }
         }
     }
     MppMobEntity::Equip(index);

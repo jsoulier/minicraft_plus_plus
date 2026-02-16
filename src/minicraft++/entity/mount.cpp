@@ -86,10 +86,24 @@ void MppMountEntityProxy::Update(uint64_t ticks)
     {
         return;
     }
-    static constexpr int kOffset = 4;
     std::shared_ptr<MppMobEntity> vehicle = GetVehicle();
-    Rider->SetX(vehicle->GetX() - vehicle->GetFacingX() * kOffset);
-    Rider->SetY(vehicle->GetY() - vehicle->GetFacingY() * kOffset);
+    int offsetX = 0;
+    int offsetY = 0;
+    if (vehicle->GetFacingX())
+    {
+        offsetX = -vehicle->GetFacingX() * 4;
+        offsetY = -2;
+    }
+    else if (vehicle->GetFacingY() == -1)
+    {
+        offsetY = 0;
+    }
+    else if (vehicle->GetFacingY() == 1)
+    {
+        offsetY = -4;
+    }
+    Rider->SetX(vehicle->GetX() + offsetX);
+    Rider->SetY(vehicle->GetY() + offsetY);
     if (!Rider->IsFacing(vehicle->GetFacingX(), vehicle->GetFacingY()))
     {
         Rider->SetFacingX(vehicle->GetFacingX());
