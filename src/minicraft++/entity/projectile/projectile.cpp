@@ -114,7 +114,7 @@ void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int fa
 
 void MppProjectileEntity::OnCollision()
 {
-    Kill();
+    Unspawn();
 }
 
 int MppProjectileEntity::GetMoveTickRate() const

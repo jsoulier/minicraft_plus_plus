@@ -24,13 +24,13 @@ void MppItemEntity::Render() const
     Item.Render(X, Y, MppRendererLayerEntity);
 }
 
-bool MppItemEntity::OnCollision(MppEntity& instigator, int dx, int dy)
+bool MppItemEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
     MppEntity::OnCollision(instigator, dx, dy);
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    std::shared_ptr<MppMobEntity> mob = instigator->Cast<MppMobEntity>();
     if (mob && mob->GetInventory()->Add(Item))
     {
-        Kill();
+        Unspawn();
     }
     return false;
 }

@@ -17,16 +17,16 @@ class MppChestEntity final
 public:
     MppChestEntity();
     void Visit(SavepointVisitor& visitor);
-    bool OnInteraction(MppEntity& instigator) override;
-    void OnAction() override;
-    void OnRender() const override;
-    void OnUpArrow() override;
-    void OnDownArrow() override;
-    void OnLeftArrow() override;
-    void OnRightArrow() override;
+    bool OnInteraction(std::shared_ptr<MppEntity>& instigator) override;
+    void OnInputAction() override;
+    void OnInputRender() const override;
+    void OnInputUpArrow() override;
+    void OnInputDownArrow() override;
+    void OnInputLeftArrow() override;
+    void OnInputRightArrow() override;
     MppItemID GetItemID() const override;
     bool IsEmpty() const override;
-    void OnLoseFocus() override;
+    void OnInputLoseFocus() override;
 
 protected:
     int GetSpriteX() const override;

@@ -153,9 +153,9 @@ void MppWorldUpdate(uint64_t ticks)
     for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
     {
         entity->Update(ticks);
-        if (entity->IsKilled())
+        if (!entity->IsSpawned())
         {
-            if (entity->CanSave())
+            if (entity->CanBeSaved())
             {
                 savepoint.Delete(*entity);
             }
@@ -218,7 +218,7 @@ void MppWorldSave(uint64_t inTicks, bool force)
         }
         for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(level))
         {
-            if (entity->CanSave())
+            if (entity->CanBeSaved())
             {
                 savepoint.Write(entity, level);
                 entities++;
@@ -312,7 +312,7 @@ void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 {
     entity->OnAdd();
     levels[level].Entities.push_back(entity);
-    if (entity->CanSave())
+    if (entity->CanBeSaved())
     {
         savepoint.Write(entity, level);
     }

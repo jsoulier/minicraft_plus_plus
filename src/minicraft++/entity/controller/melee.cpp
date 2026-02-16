@@ -34,7 +34,6 @@ void MppMeleeController::Update(uint64_t ticks)
 {
     MppNPCController::Update(ticks);
     std::shared_ptr<MppMobEntity> entity = Entity.lock();
-    Target.Update();
     switch (State)
     {
     case MppMeleeControllerStateIdle: Idle(); break;
@@ -85,7 +84,7 @@ void MppMeleeController::Move()
     std::shared_ptr<MppMobEntity> entity = Entity.lock();
     if (target)
     {
-        int range = entity->GetActionRange();
+        int range = entity->GetActionOffset();
         int distance = entity->GetDistance(target);
         if (distance <= range)
         {

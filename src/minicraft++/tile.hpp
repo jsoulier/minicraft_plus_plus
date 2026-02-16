@@ -3,6 +3,7 @@
 #include <savepoint/savepoint.hpp>
 
 #include <cstdint>
+#include <memory>
 #include <string_view>
 
 class MppEntity;
@@ -38,8 +39,9 @@ public:
     void Visit(SavepointVisitor& visitor);
     void Update(int x, int y, uint64_t ticks);
     void Render(int x, int y) const;
-    bool OnAction(MppEntity& instigator, int x, int y);
-    bool OnCollision(MppEntity& instigator, int x, int y);
+    bool OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y);
+    bool OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y);
+    bool OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y);
     const std::string_view& GetName() const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

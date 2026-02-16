@@ -37,19 +37,17 @@ void MppFurnitureEntity::Render() const
         MppRendererLayerEntity);
 }
 
-bool MppFurnitureEntity::OnAction(MppEntity& instigator)
+bool MppFurnitureEntity::OnAction(std::shared_ptr<MppEntity>& instigator)
 {
-    MppHumanoidEntity* humanoid = dynamic_cast<MppHumanoidEntity*>(&instigator);
+    std::shared_ptr<MppHumanoidEntity> humanoid = instigator->Cast<MppHumanoidEntity>();
     MppAssert(humanoid);
-    humanoid->HoldEntity(shared_from_this());
+    humanoid->PickupEntity(shared_from_this());
     return true;
 }
 
-bool MppFurnitureEntity::OnCollision(MppEntity& instigator, int dx, int dy)
+bool MppFurnitureEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    MppFurnitureEntity* furniture = dynamic_cast<MppFurnitureEntity*>(&instigator);
-    if (mob || furniture)
+    if (instigator->IsA<MppMobEntity>() || instigator->IsA<MppFurnitureEntity>())
     {
         Move(dx, dy);
     }

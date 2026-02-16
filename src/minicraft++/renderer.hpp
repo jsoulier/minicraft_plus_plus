@@ -9,17 +9,35 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerBottomTile,
     MppRendererLayerTile,
     MppRendererLayerTopTile,
+
     MppRendererLayerEntity,
-    MppRendererLayerEntityOverlay,
+    MppRendererLayerTopEntity,
+    MppRendererLayerEntity1 = MppRendererLayerEntity,
+    MppRendererLayerTopEntity1 = MppRendererLayerTopEntity,
+    MppRendererLayerEntity2,
+    MppRendererLayerTopEntity2,
+
     MppRendererLayerParticleEntity,
     MppRendererLayerDebugPhysics,
     MppRendererLayerDebugNavigation,
     MppRendererLayerDebugFov,
     MppRendererLayerDebugAction,
+
     MppRendererLayerMenu,
-    MppRendererLayerMenuContent,
+    MppRendererLayerTopMenu,
+    MppRendererLayerMenu1 = MppRendererLayerMenu,
+    MppRendererLayerTopMenu1 = MppRendererLayerTopMenu,
+    MppRendererLayerMenu2,
+    MppRendererLayerTopMenu2,
+    MppRendererLayerMenu3,
+    MppRendererLayerTopMenu3,
+    MppRendererLayerMenu4,
+    MppRendererLayerTopMenu4,
+    MppRendererLayerMenu5,
+    MppRendererLayerTopMenu5,
+
     MppRendererLayerCount,
-    MppRendererLayerUI = MppRendererLayerMenu,
+    MppRendererLayerMenuBegin = MppRendererLayerMenu,
 };
 
 enum MppRendererMod : uint8_t
@@ -29,6 +47,17 @@ enum MppRendererMod : uint8_t
     MppRendererModFlipVertically,
     MppRendererModRotate90CW,
     MppRendererModRotate90CCW,
+};
+
+class MppRendererLayerOverride
+{
+public:
+    MppRendererLayerOverride(MppRendererLayer key, MppRendererLayer value);
+    ~MppRendererLayerOverride();
+
+private:
+    MppRendererLayer Key;
+    MppRendererLayer Value;
 };
 
 bool MppRendererInit();

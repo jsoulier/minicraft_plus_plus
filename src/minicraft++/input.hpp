@@ -8,30 +8,30 @@
 class MppInputHandler
 {
 public:
-    virtual void OnGainFocus() {}
-    virtual void OnLoseFocus() {}
-    virtual void OnUpdate(uint64_t ticks) {}
-    virtual void OnRender() const {}
-    virtual void OnHeldUp() {}
-    virtual void OnHeldDown() {}
-    virtual void OnHeldLeft() {}
-    virtual void OnHeldRight() {}
-    virtual void OnAction() {}
-    virtual void OnDrop() {}
-    virtual void OnInteract();
-    virtual void OnDismount() {}
-    virtual void OnExit();
-    virtual void OnUp() {}
-    virtual void OnDown() {}
-    virtual void OnLeft() {}
-    virtual void OnRight() {}
-    virtual void OnUpArrow() {}
-    virtual void OnDownArrow() {}
-    virtual void OnLeftArrow() {}
-    virtual void OnRightArrow() {}
-    virtual void OnEnter() {}
-    virtual void OnBackspace() {}
-    virtual void OnTextInput(char character) {}
+    virtual void OnInputGainFocus() {}
+    virtual void OnInputLoseFocus() {}
+    virtual void OnInputUpdate(uint64_t ticks) {}
+    virtual void OnInputRender() const {}
+    virtual void OnInputHeldUp() {}
+    virtual void OnInputHeldDown() {}
+    virtual void OnInputHeldLeft() {}
+    virtual void OnInputHeldRight() {}
+    virtual void OnInputAction() {}
+    virtual void OnInputDrop() {}
+    virtual void OnInputInteract();
+    virtual void OnInputDismount() {}
+    virtual void OnInputExit();
+    virtual void OnInputUp() {}
+    virtual void OnInputDown() {}
+    virtual void OnInputLeft() {}
+    virtual void OnInputRight() {}
+    virtual void OnInputUpArrow() {}
+    virtual void OnInputDownArrow() {}
+    virtual void OnInputLeftArrow() {}
+    virtual void OnInputRightArrow() {}
+    virtual void OnInputEnter() {}
+    virtual void OnInputBackspace() {}
+    virtual void OnInputText(char character) {}
 };
 
 void MppInputQuit();

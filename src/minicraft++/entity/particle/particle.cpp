@@ -13,6 +13,7 @@ MppParticleEntity::MppParticleEntity()
 
 void MppParticleEntity::OnAdd()
 {
+    MppEntity::OnAdd();
     Lifetime = GetMaxLifetime();
     MppAssert(Lifetime);
 }
@@ -44,7 +45,7 @@ void MppParticleEntity::Update(uint64_t ticks)
     Lifetime--;
     if (Lifetime <= 0)
     {
-        Kill();
+        Unspawn();
     }
 }
 
@@ -83,7 +84,7 @@ bool MppParticleEntity::HasPhysics() const
     return false;
 }
 
-bool MppParticleEntity::CanSave() const
+bool MppParticleEntity::CanBeSaved() const
 {
     return false;
 }

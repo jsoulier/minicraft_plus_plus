@@ -16,27 +16,27 @@ std::shared_ptr<MppController> MppZombieEntity::GetDefaultController()
     return std::make_shared<MppMeleeController>();
 }
 
-int MppZombieEntity::GetSpriteColor1() const 
+int MppZombieEntity::GetColor1() const 
 {
     return 0;
 }
 
-int MppZombieEntity::GetSpriteColor2() const 
+int MppZombieEntity::GetColor2() const 
 {
     return 420;
 }
 
-int MppZombieEntity::GetSpriteColor3() const 
+int MppZombieEntity::GetColor3() const 
 {
     return 420;
 }
 
-int MppZombieEntity::GetSpriteColor4() const 
+int MppZombieEntity::GetColor4() const 
 {
     return 40;
 }
 
-int MppZombieEntity::GetSpriteColor5() const 
+int MppZombieEntity::GetColor5() const 
 {
     return 210;
 }

@@ -18,7 +18,7 @@ public:
     int GetPhysicsWidth() const;
     int GetPhysicsHeight() const;
     bool HasPhysics() const override;
-    bool CanSave() const override;
+    bool CanBeSaved() const override;
 
 protected:
     virtual int GetVelocityX() const;

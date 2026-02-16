@@ -124,12 +124,12 @@ MppConsole::MppConsole()
     : Characters{}
 {
     SetX1(0);
-    SetY1(0);
+    SetY1(128);
     SetX2(256);
-    SetY2(8);
+    SetY2(144);
 }
 
-void MppConsole::OnGainFocus() 
+void MppConsole::OnInputGainFocus() 
 {
     SDL_Window** windows = SDL_GetWindows(nullptr);
     SDL_Window* window = windows[0];
@@ -146,7 +146,7 @@ void MppConsole::OnGainFocus()
     SDL_free(windows);
 }
 
-void MppConsole::OnLoseFocus() 
+void MppConsole::OnInputLoseFocus() 
 {
     Characters.clear();
     SDL_Window** windows = SDL_GetWindows(nullptr);
@@ -289,7 +289,7 @@ void MppConsole::HandleKill(const std::vector<std::string>& tokens)
     {
         if (entity->GetClassName() == name)
         {
-            entity->Kill();
+            entity->Unspawn();
         }
     }
 }
@@ -303,7 +303,7 @@ void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
         std::shared_ptr<MppPlayerEntity> player = std::dynamic_pointer_cast<MppPlayerEntity>(entity);
         if (!player)
         {
-            entity->Kill();
+            entity->Unspawn();
         }
     }
 }
@@ -396,13 +396,13 @@ std::string MppConsole::GetEntityName(std::string name) const
     return std::format("Mpp{}Entity", name);
 }
 
-void MppConsole::OnEnter()
+void MppConsole::OnInputEnter()
 {
     Handle();
     MppInputRemoveHandler(this);
 }
 
-void MppConsole::OnBackspace()
+void MppConsole::OnInputBackspace()
 {
     if (!Characters.empty())
     {
@@ -410,7 +410,7 @@ void MppConsole::OnBackspace()
     }
 }
 
-void MppConsole::OnTextInput(char character) 
+void MppConsole::OnInputText(char character) 
 {
     if (character != '/')
     {
@@ -418,7 +418,7 @@ void MppConsole::OnTextInput(char character)
     }
 }
 
-void MppConsole::OnRender() const
+void MppConsole::OnInputRender() const
 {
     MppMenu::Render();
     MppMenu::Render("/", kMppColorMenuUnlocked, X1, Y1, MppMenuAlignmentLeft);

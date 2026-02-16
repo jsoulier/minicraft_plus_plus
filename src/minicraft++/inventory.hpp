@@ -44,11 +44,11 @@ public:
     void ResetSlot(MppInventorySlot slot);
     void SetMaxItems(int max);
     bool IsEmpty() const;
-    void OnAction() override;
-    void OnDrop() override;
-    void OnUpArrow() override;
-    void OnDownArrow() override;
-    void OnRender() const override;
+    void OnInputAction() override;
+    void OnInputDrop() override;
+    void OnInputUpArrow() override;
+    void OnInputDownArrow() override;
+    void OnInputRender() const override;
     void SetOnActionCallback(const std::function<void(int index)>& callback);
     void SetOnDropCallback(const std::function<void(int index)>& callback);
     void SetIsFocused(bool focused);

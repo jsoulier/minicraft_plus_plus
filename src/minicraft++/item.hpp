@@ -92,7 +92,7 @@ enum MppItemType
 enum MppItemActionType
 {
     MppItemActionTypeNone,
-    MppItemActionTypeAttackOrInteract,
+    MppItemActionTypeDefault,
     MppItemActionTypeProjectile,
 };
 

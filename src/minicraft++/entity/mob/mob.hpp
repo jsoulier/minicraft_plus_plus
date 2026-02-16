@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <minicraft++/entity/entity.hpp>
+#include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 
 class MppController;
@@ -18,17 +19,15 @@ public:
     virtual void OnAdd() override;
     virtual void OnPossess(const std::shared_ptr<MppController>& controller);
     virtual void OnUnpossess();
-    std::shared_ptr<MppController>& GetController();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
+    void Render(MppRendererLayer layer) const;
     virtual void Render() const override;
     virtual void DoAction();
-    virtual void EquipItemFromInventory(int index);
+    virtual void Equip(int index);
+    void Push(int dx, int dy, bool useSpeed);
     bool IsInFov(const std::shared_ptr<MppEntity>& entity);
     int GetSize() const override;
-    std::shared_ptr<MppInventory> GetInventory();
-    virtual int GetActionRange() const;
-    void Push(int dx, int dy);
     void SetFacingX(int facingX);
     void SetFacingY(int facingY);
     int GetFacingX() const;
@@ -39,28 +38,32 @@ public:
     int GetHunger() const;
     int GetEnergy() const;
     virtual int GetSpeed() const;
+    virtual int GetActionOffset() const;
+    std::shared_ptr<MppController> GetController();
+    std::shared_ptr<MppInventory> GetInventory();
+    virtual std::shared_ptr<MppController> GetDefaultController();
+    void RequestAnimationTick();
 
 protected:
     virtual int GetMaxItems() const;
     virtual int GetMoveTickRate() const;
-    virtual std::shared_ptr<MppController> GetDefaultController();
+    virtual int GetAnimationTickRate() const;
     virtual float GetFov() const;
     virtual int GetMaxHealth() const = 0;
     virtual int GetMaxHunger() const = 0;
     virtual int GetMaxEnergy() const = 0;
-    virtual int GetPose() const;
-    virtual int GetSpriteColor1() const = 0;
-    virtual int GetSpriteColor2() const = 0;
-    virtual int GetSpriteColor3() const = 0;
-    virtual int GetSpriteColor4() const = 0;
-    virtual int GetSpriteColor5() const = 0;
-    virtual int GetSpriteTickRate() const;
-    virtual int GetSpritePose1X() const = 0;
-    virtual int GetSpritePose1Y() const = 0;
-    virtual int GetSpritePose2X() const;
-    virtual int GetSpritePose2Y() const;
-    void SetTickAnimation();
-    virtual int GetActionOffset() const;
+    virtual int GetColor1() const = 0;
+    virtual int GetColor2() const = 0;
+    virtual int GetColor3() const = 0;
+    virtual int GetColor4() const = 0;
+    virtual int GetColor5() const = 0;
+    virtual int GetAnimationPose() const;
+    virtual int GetAnimationPose1X() const = 0;
+    virtual int GetAnimationPose1Y() const = 0;
+    virtual int GetAnimationPose2X() const;
+    virtual int GetAnimationPose2Y() const;
+    virtual int GetAnimationPose3X() const;
+    virtual int GetAnimationPose3Y() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;
@@ -68,6 +71,7 @@ protected:
     MppSpriteAnimation Animation;
 
 private:
+    bool TickAnimation;
     int FacingX;
     int FacingY;
     int VelocityX;
@@ -75,5 +79,4 @@ private:
     int Health;
     int Hunger;
     int Energy;
-    bool TickAnimation;
 };

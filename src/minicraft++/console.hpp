@@ -34,13 +34,13 @@ class MppConsole
 {
 public:
     MppConsole();
-    void OnGainFocus() override;
-    void OnLoseFocus() override;
-    void OnEnter() override;
-    void OnBackspace() override;
-    void OnInteract() override {}
-    void OnTextInput(char character) override;
-    void OnRender() const override;
+    void OnInputGainFocus() override;
+    void OnInputLoseFocus() override;
+    void OnInputEnter() override;
+    void OnInputBackspace() override;
+    void OnInputInteract() override {}
+    void OnInputText(char character) override;
+    void OnInputRender() const override;
 
     static inline MppConsoleVar CVarNavigation{"navigation", false};
     static inline MppConsoleVar CVarPhysics{"physics", false};

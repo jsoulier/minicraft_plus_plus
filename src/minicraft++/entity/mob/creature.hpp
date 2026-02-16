@@ -13,7 +13,7 @@ public:
     MppCreatureEntity();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
-    virtual bool OnAction(MppEntity& instigator) override;
+    virtual bool OnAction(std::shared_ptr<MppEntity>& instigator) override;
     int GetMoveTickRate() const override;
     int GetDefaultSpeed() const;
     int GetFleeSpeed() const;

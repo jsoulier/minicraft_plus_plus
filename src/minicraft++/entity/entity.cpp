@@ -42,29 +42,25 @@ void MppEntityReference::Visit(SavepointVisitor& visitor)
     visitor(EntityID);
 }
 
-void MppEntityReference::Update()
+std::shared_ptr<MppEntity> MppEntityReference::GetEntity()
 {
+    std::shared_ptr<MppEntity> entity = Entity.lock();
+    if (entity)
+    {
+        return entity;
+    }
     if (!EntityID.IsValid())
     {
-        MppAssert(Entity.expired());
-        return;
+        return nullptr;
     }
-    if (!Entity.expired())
-    {
-        return;
-    }
-    std::shared_ptr<MppEntity> entity = MppWorldGetEntity(EntityID);
+    entity = MppWorldGetEntity(EntityID);
     Entity = entity;
     if (!entity)
     {
         MppLog("Failed to find reference on entity");
         EntityID = SavepointID{};
     }
-}
-
-std::shared_ptr<MppEntity> MppEntityReference::GetEntity() const
-{
-    return Entity.lock();
+    return entity;
 }
 
 bool MppEntityReference::IsValid() const
@@ -75,40 +71,28 @@ bool MppEntityReference::IsValid() const
 MppEntity::MppEntity()
     : X{0}
     , Y{0}
-    , Killed{false}
+    , Spawned{false}
 {
 }
 
-std::string MppEntity::GetName() const
+void MppEntity::OnCreate()
 {
-    std::string_view className = GetClassName();
-    static constexpr const char kPrefix[] = "Mpp";
-    static constexpr const char kSuffix[] = "Entity";
-    MppAssert(className.starts_with(kPrefix));
-    MppAssert(className.ends_with(kSuffix));
-    std::string string;
-    string.reserve(className.size());
-    for (int i = sizeof(kPrefix) - 1; i < className.size() - sizeof(kSuffix) + 1; i++)
+    if (HasPhysics())
     {
-        if (std::islower(className[i]))
-        {
-            string.push_back(className[i]);
-        }
-        else
-        {
-            if (i > 3)
-            {
-                string.push_back('_');
-            }
-            string.push_back(std::tolower(className[i]));
-        }
+        int size = GetSize();
+        int x = GetPhysicsOffsetX();
+        int y = GetPhysicsOffsetY();
+        int w = GetPhysicsWidth();
+        int h = GetPhysicsHeight();
+        MppAssert(x * 2 + w == size);
+        MppAssert(y * 2 + h == size);
     }
-    return string;
 }
 
 void MppEntity::OnAdd()
 {
-    Killed = false;
+    MppAssert(!Spawned);
+    Spawned = true;
 }
 
 void MppEntity::Visit(SavepointVisitor& visitor)
@@ -119,7 +103,7 @@ void MppEntity::Visit(SavepointVisitor& visitor)
 
 void MppEntity::Render() const
 {
-    if (MppConsole::CVarPhysics.GetBool())
+    if (IsSpawned() && MppConsole::CVarPhysics.GetBool())
     {
         int color = 0;
         int x = GetPhysicsX();
@@ -149,17 +133,17 @@ void MppEntity::Render() const
     }
 }
 
-bool MppEntity::OnAction(MppEntity& instigator)
+bool MppEntity::OnAction(std::shared_ptr<MppEntity>& instigator)
 {
     return false;
 }
 
-bool MppEntity::OnInteraction(MppEntity& instigator)
+bool MppEntity::OnInteraction(std::shared_ptr<MppEntity>& instigator)
 {
     return false;
 }
 
-bool MppEntity::OnCollision(MppEntity& instigator, int dx, int dy)
+bool MppEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
     return false;
 }
@@ -169,7 +153,7 @@ bool MppEntity::HasPhysics() const
     return true;
 }
 
-bool MppEntity::CanSave() const
+bool MppEntity::CanBeSaved() const
 {
     return true;
 }
@@ -184,14 +168,14 @@ bool MppEntity::IsColliding()
     return MoveTest(0, 0);
 }
 
-void MppEntity::Kill()
+void MppEntity::Unspawn()
 {
-    Killed = true;
+    Spawned = false;
 }
 
-bool MppEntity::IsKilled() const
+bool MppEntity::IsSpawned() const
 {
-    return Killed;
+    return Spawned;
 }
 
 void MppEntity::SetX(int x)
@@ -226,7 +210,34 @@ int MppEntity::GetPhysicsY() const
 
 std::pair<int, int> MppEntity::GetCenter() const
 {
-    return std::make_pair(GetPhysicsX() + GetPhysicsWidth() / 2, GetPhysicsY() + GetPhysicsHeight() / 2);
+    return std::make_pair(GetX() + GetSize() / 2, GetY() + GetSize() / 2);
+}
+
+std::string MppEntity::GetName() const
+{
+    std::string_view name = GetClassName();
+    static constexpr const char kPrefix[] = "Mpp";
+    static constexpr const char kSuffix[] = "Entity";
+    MppAssert(name.starts_with(kPrefix));
+    MppAssert(name.ends_with(kSuffix));
+    std::string string;
+    string.reserve(name.size());
+    for (int i = sizeof(kPrefix) - 1; i < name.size() - sizeof(kSuffix) + 1; i++)
+    {
+        if (std::islower(name[i]))
+        {
+            string.push_back(name[i]);
+        }
+        else
+        {
+            if (i > 3)
+            {
+                string.push_back('_');
+            }
+            string.push_back(std::tolower(name[i]));
+        }
+    }
+    return string;
 }
 
 int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
@@ -236,6 +247,15 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     float dx = x2 - x1;
     float dy = y2 - y1;
     return std::sqrt(dx * dx + dy * dy);
+}
+
+int MppEntity::IsColliding(int inX, int inY, int inW, int inH)
+{
+    int x = GetPhysicsX();
+    int y = GetPhysicsY();
+    int w = GetPhysicsWidth();
+    int h = GetPhysicsHeight();
+    return (x + w > inX) && (x < inX + inW) && (y + h > inY) && (y < inY + inH);
 }
 
 bool MppEntity::Move(int dx, int dy)
@@ -261,6 +281,7 @@ bool MppEntity::Move(int dx, int dy)
 
 bool MppEntity::MoveTest(int dx, int dy)
 {
+    std::shared_ptr<MppEntity> self = Cast<MppEntity>();
     int entityX = X;
     int entityY = Y;
     X += dx;
@@ -270,10 +291,6 @@ bool MppEntity::MoveTest(int dx, int dy)
     int y = GetPhysicsY();
     int w = GetPhysicsWidth();
     int h = GetPhysicsHeight();
-    auto test = [&](float x2, float y2, int w2, int h2)
-    {
-        return (x + w > x2) && (x < x2 + w2) && (y + h > y2) && (y < y2 + h2);
-    };
     int tileX1 = x / MppTile::kSize;
     int tileY1 = y / MppTile::kSize;
     int tileX2 = (x + w) / MppTile::kSize;
@@ -287,11 +304,11 @@ bool MppEntity::MoveTest(int dx, int dy)
         int ty = tile.GetPhysicsY(tileY);
         int tw = tile.GetPhysicsWidth();
         int th = tile.GetPhysicsHeight();
-        if (!test(tx, ty, tw, th))
+        if (!IsColliding(tx, ty, tw, th))
         {
             continue;
         }
-        rejected |= tile.OnCollision(*this, tileX, tileY);
+        rejected |= tile.OnCollision(self, tileX, tileY);
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
     {
@@ -303,11 +320,11 @@ bool MppEntity::MoveTest(int dx, int dy)
         int ey = entity->GetPhysicsY();
         int ew = entity->GetPhysicsWidth();
         int eh = entity->GetPhysicsHeight();
-        if (!test(ex, ey, ew, eh))
+        if (!IsColliding(ex, ey, ew, eh))
         {
             continue;
         }
-        rejected |= entity->OnCollision(*this, dx, dy);
+        rejected |= entity->OnCollision(self, dx, dy);
     }
     if (rejected)
     {

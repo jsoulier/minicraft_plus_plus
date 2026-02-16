@@ -15,18 +15,18 @@ class MppPlayerController final
 
 public:
     MppPlayerController() = default;
-    void Possess(const std::shared_ptr<MppMobEntity>& entity) override;
-    void Unpossess() override;
+    bool Possess(const std::shared_ptr<MppMobEntity>& entity) override;
+    bool Unpossess() override;
     void Update(uint64_t ticks) override;
-    void OnRender() const override;
-    void RenderFromEntity() const override;
-    void OnAction() override;
-    void OnInteract() override;
-    void OnExit() override;
-    void OnHeldUp() override;
-    void OnHeldDown() override;
-    void OnHeldLeft() override;
-    void OnHeldRight() override;
+    void OnInputRender() const override;
+    void Render() const override;
+    void OnInputAction() override;
+    void OnInputInteract() override;
+    void OnInputExit() override;
+    void OnInputHeldUp() override;
+    void OnInputHeldDown() override;
+    void OnInputHeldLeft() override;
+    void OnInputHeldRight() override;
     bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const override;
     bool InteractionFilter(const std::shared_ptr<MppEntity>& entity) const override;
 

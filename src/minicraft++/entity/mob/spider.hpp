@@ -16,17 +16,17 @@ public:
     
 protected:
     std::shared_ptr<MppController> GetDefaultController();
-    int GetSpritePose1X() const override;
-    int GetSpritePose1Y() const override;
+    int GetAnimationPose1X() const override;
+    int GetAnimationPose1Y() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
-    int GetSpriteColor1() const override;
-    int GetSpriteColor2() const override;
-    int GetSpriteColor3() const override;
-    int GetSpriteColor4() const override;
-    int GetSpriteColor5() const override;
+    int GetColor1() const override;
+    int GetColor2() const override;
+    int GetColor3() const override;
+    int GetColor4() const override;
+    int GetColor5() const override;
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;
     int GetMaxEnergy() const override;

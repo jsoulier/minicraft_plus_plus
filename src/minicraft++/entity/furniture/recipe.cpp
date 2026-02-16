@@ -22,17 +22,18 @@ MppRecipeEntity::MppRecipeEntity()
     Inventory->SetMaxItems(MppItemIDCount);
 }
 
-bool MppRecipeEntity::OnInteraction(MppEntity& instigator)
+bool MppRecipeEntity::OnInteraction(std::shared_ptr<MppEntity>& instigator)
 {
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    MppFurnitureEntity::OnInteraction(instigator);
+    std::shared_ptr<MppMobEntity> mob = instigator->Cast<MppMobEntity>();
     MppAssert(mob);
     Other = mob->GetInventory();
     Build();
-    MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    MppInputAddHandler(Cast<MppInputHandler>());
     return true;
 }
 
-void MppRecipeEntity::OnAction()
+void MppRecipeEntity::OnInputAction()
 {
     if (Inventory->IsEmpty())
     {
@@ -49,17 +50,17 @@ void MppRecipeEntity::OnAction()
     Build();
 }
 
-void MppRecipeEntity::OnUpArrow()
+void MppRecipeEntity::OnInputUpArrow()
 {
-    Inventory->OnUpArrow();
+    Inventory->OnInputUpArrow();
 }
 
-void MppRecipeEntity::OnDownArrow()
+void MppRecipeEntity::OnInputDownArrow()
 {
-    Inventory->OnDownArrow();
+    Inventory->OnInputDownArrow();
 }
 
-void MppRecipeEntity::OnRender() const
+void MppRecipeEntity::OnInputRender() const
 {
     Inventory->Render();
     if (Inventory->IsEmpty())

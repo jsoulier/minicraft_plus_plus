@@ -1,120 +1,87 @@
-// TODO: all this shit needs a massive refactor if I want mountable boats/minecarts. i don't wanna duplicate this
-
 #include <savepoint/savepoint.hpp>
 
+#include <cstdint>
 #include <memory>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/entity/controller/mount.hpp>
+#include <minicraft++/entity/controller/controller.hpp>
 #include <minicraft++/entity/mob/creature.hpp>
 #include <minicraft++/entity/mob/horse.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
+#include <minicraft++/entity/mount.hpp>
 
 MppHorseEntity::MppHorseEntity()
     : MppCreatureEntity()
+    , Mount{std::make_shared<MppMountEntityProxy>()}
 {
+}
+
+void MppHorseEntity::OnAdd()
+{
+    MppCreatureEntity::OnAdd();
+    Mount->OnAdd();
 }
 
 void MppHorseEntity::Visit(SavepointVisitor& visitor)
 {
     MppCreatureEntity::Visit(visitor);
-    visitor(MountController);
-}
-
-void MppHorseEntity::OnAdd()
-{
-    MppMobEntity::OnAdd();
-    // TODO: refactor
-    if (MountController)
-    {
-        // TODO: can this be added before the player controller? that would be bad
-        MppInputAddHandler(MountController);
-        MountController->SetEntityContext(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
-    }
+    visitor(Mount);
 }
 
 void MppHorseEntity::Update(uint64_t ticks)
 {
     MppCreatureEntity::Update(ticks);
-    if (MountController)
-    {
-        MountController->Update(ticks);
-    }
+    Mount->Update(ticks);
 }
 
 void MppHorseEntity::Render() const
 {
     MppCreatureEntity::Render();
-    if (MountController)
-    {
-        MountController->RenderFromEntity();
-    }
+    Mount->Render();
 }
 
-void MppHorseEntity::OnUnpossess()
+bool MppHorseEntity::OnInteraction(std::shared_ptr<MppEntity>& instigator)
 {
-    MppCreatureEntity::OnUnpossess();
-    MountController = nullptr;
-    // TODO: refactor
-    std::shared_ptr<MppController> controller = GetDefaultController();
-    controller->Possess(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
-}
-
-bool MppHorseEntity::OnInteraction(MppEntity& instigator)
-{
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    MppAssert(mob);
-    MountController = std::make_shared<MppMountController>(std::dynamic_pointer_cast<MppMobEntity>(mob->shared_from_this()));
-    MountController->Possess(std::dynamic_pointer_cast<MppMobEntity>(shared_from_this()));
+    Mount->Possess(Cast<MppMobEntity>(), instigator);
     return true;
 }
 
 void MppHorseEntity::DoAction()
 {
-    // When mounted, forward actions to the rider
-    if (MountController)
-    {
-        // TODO: This doesn't work because the Rider doesn't have a controller
-        // I'm wondering if the Rider needs a PuppetController or something so that
-        // they can perform basic actions. Right now, the controller is only used for the
-        // action filter. Maybe we can make the ActionFilter a static function and get the
-        // function pointer to that in the PuppetController. Basically just simulate the previous.
-        // We'll need this for skeleton riders
-        MountController->GetRider()->DoAction();
-    }
+    Mount->DoAction();
 }
 
-int MppHorseEntity::GetSpritePose1X() const
+int MppHorseEntity::GetAnimationPose1X() const
 {
     return 12;
 }
 
-int MppHorseEntity::GetSpritePose1Y() const
+int MppHorseEntity::GetAnimationPose1Y() const
 {
     return 8;
 }
 
-int MppHorseEntity::GetSpriteColor1() const
+int MppHorseEntity::GetColor1() const
 {
     return 0;
 }
 
-int MppHorseEntity::GetSpriteColor2() const
+int MppHorseEntity::GetColor2() const
 {
     return 210;
 }
 
-int MppHorseEntity::GetSpriteColor3() const
+int MppHorseEntity::GetColor3() const
 {
     return 111;
 }
 
-int MppHorseEntity::GetSpriteColor4() const
+int MppHorseEntity::GetColor4() const
 {
     return 433;
 }
 
-int MppHorseEntity::GetSpriteColor5() const
+int MppHorseEntity::GetColor5() const
 {
     return 0;
 }
@@ -156,7 +123,6 @@ int MppHorseEntity::GetMaxEnergy() const
 
 int MppHorseEntity::GetSpeed() const
 {
-    // TODO: should only go fast when we're mounted
     return 2;
 }
 

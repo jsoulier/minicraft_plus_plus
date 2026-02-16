@@ -13,11 +13,11 @@ public:
     
 protected:
     std::shared_ptr<MppController> GetDefaultController();
-    int GetSpriteColor1() const override;
-    int GetSpriteColor2() const override;
-    int GetSpriteColor3() const override;
-    int GetSpriteColor4() const override;
-    int GetSpriteColor5() const override;
+    int GetColor1() const override;
+    int GetColor2() const override;
+    int GetColor3() const override;
+    int GetColor4() const override;
+    int GetColor5() const override;
     int GetMoveTickRate() const override;
     int GetMaxHealth() const override;
     int GetMaxHunger() const override;

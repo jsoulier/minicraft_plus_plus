@@ -4,22 +4,20 @@
 
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <utility>
+
+#include <minicraft++/log.hpp>
 
 class MppEntity;
 
 class MppEntityReference
 {
-    friend class MppEntity;
-
-private:
-    MppEntityReference(const std::shared_ptr<MppEntity>& entity);
-
 public:
     MppEntityReference();
+    MppEntityReference(const std::shared_ptr<MppEntity>& entity);
     void Visit(SavepointVisitor& visitor);
-    void Update();
-    std::shared_ptr<MppEntity> GetEntity() const;
+    std::shared_ptr<MppEntity> GetEntity();
     bool IsValid() const;
 
 private:
@@ -32,51 +30,58 @@ class MppEntity :
     public SavepointPoly,
     public std::enable_shared_from_this<MppEntity>
 {
-protected:
-    MppEntity();
-
 public:
+    MppEntity();
     virtual ~MppEntity() = default;
     MppEntity(const MppEntity& other) = delete;
     MppEntity& operator=(const MppEntity& other) = delete;
     MppEntity(MppEntity&& other) = delete;
     MppEntity& operator=(MppEntity&& other) = delete;
-    std::string GetName() const;
-    virtual void OnCreate() {}
+    virtual void OnCreate();
     virtual void OnAdd();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Render() const;
     virtual void Update(uint64_t ticks) {}
-    // Replace all instigators with shared_ptrs
-    virtual bool OnAction(MppEntity& instigator);
-    virtual bool OnInteraction(MppEntity& instigator);
-    virtual bool OnCollision(MppEntity& instigator, int dx, int dy);
+    virtual bool OnAction(std::shared_ptr<MppEntity>& instigator);
+    virtual bool OnInteraction(std::shared_ptr<MppEntity>& instigator);
+    virtual bool OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy);
     virtual bool HasPhysics() const;
-    virtual bool CanSave() const;
+    virtual bool CanBeSaved() const;
     MppEntityReference GetReference();
     bool IsColliding();
-    void Kill();
-    bool IsKilled() const;
+    void Unspawn();
+    bool IsSpawned() const;
     void SetX(int x);
     void SetY(int y);
     int GetX() const;
     int GetY() const;
+    virtual int GetSize() const = 0;
     int GetPhysicsX() const;
     int GetPhysicsY() const;
-    virtual int GetPhysicsOffsetX() const = 0;
-    virtual int GetPhysicsOffsetY() const = 0;
     virtual int GetPhysicsWidth() const = 0;
     virtual int GetPhysicsHeight() const = 0;
-    virtual int GetSize() const = 0;
     std::pair<int, int> GetCenter() const;
+    std::string GetName() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
+    int IsColliding(int x, int y, int w, int h);
 
     template<typename T, typename... Args>
     static std::shared_ptr<T> Create(Args&&... args)
     {
         std::shared_ptr<T> entity = std::make_shared<T>(std::forward<Args>(args)...);
+        if (!entity)
+        {
+            MppLog("Failed to create entity");
+            return nullptr;
+        }
         entity->OnCreate();
         return entity;
+    }
+
+    template<typename T>
+    std::shared_ptr<T> Cast()
+    {
+        return std::dynamic_pointer_cast<T>(shared_from_this());
     }
 
     template<typename T>
@@ -86,15 +91,12 @@ public:
     }
 
 protected:
+    virtual int GetPhysicsOffsetX() const = 0;
+    virtual int GetPhysicsOffsetY() const = 0;
     bool Move(int dx, int dy);
-
-private:
     bool MoveTest(int dx, int dy);
 
-protected:
     int X;
     int Y;
-
-private:
-    bool Killed;
+    bool Spawned;
 };

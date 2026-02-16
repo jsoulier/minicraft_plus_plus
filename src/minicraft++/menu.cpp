@@ -38,7 +38,7 @@ void MppMenu::Render(const std::string_view& string, int color, int x, int y, Mp
     for (char character : string)
     {
         MppSprite sprite(color, std::toupper(character));
-        MppRendererDraw(sprite, x, y, MppRendererModNone, MppRendererLayerMenuContent);
+        MppRendererDraw(sprite, x, y, MppRendererModNone, MppRendererLayerTopMenu);
         x += 8;
     }
 }

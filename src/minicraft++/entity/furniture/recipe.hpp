@@ -15,11 +15,11 @@ class MppRecipeEntity
 {
 public:
     MppRecipeEntity();
-    bool OnInteraction(MppEntity& instigator) override;
-    void OnAction() override;
-    void OnUpArrow() override;
-    void OnDownArrow() override;
-    void OnRender() const override;
+    bool OnInteraction(std::shared_ptr<MppEntity>& instigator) override;
+    void OnInputAction() override;
+    void OnInputUpArrow() override;
+    void OnInputDownArrow() override;
+    void OnInputRender() const override;
 
 private:
     void Build();

@@ -1,9 +1,8 @@
 #include <savepoint/savepoint.hpp>
 
-#include <cstdint>
+#include <memory>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/color.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
@@ -11,15 +10,11 @@
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
 
-void MppHumanoidEntity::OnAdd()
-{
-    MppMobEntity::OnAdd();
-}
-
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
-    visitor(HeldEntity);
+    visitor(Entity);
+    visitor(Riding);
 }
 
 void MppHumanoidEntity::Render() const
@@ -29,12 +24,134 @@ void MppHumanoidEntity::Render() const
     Render(Inventory->GetBySlot(MppInventorySlotCuirass));
     Render(Inventory->GetBySlot(MppInventorySlotLeggings));
     Render(Inventory->GetBySlot(MppInventorySlotBoots));
-    if (HeldEntity)
+    if (Entity)
     {
-        HeldEntity->SetX(X);
-        HeldEntity->SetY(Y - HeldEntity->GetPhysicsHeight());
-        HeldEntity->Render();
+        Entity->SetX(X);
+        Entity->SetY(Y - Entity->GetPhysicsHeight());
+        Entity->Render();
     }
+}
+
+int MppHumanoidEntity::GetPhysicsOffsetX() const
+{
+    return 2;
+}
+
+int MppHumanoidEntity::GetPhysicsOffsetY() const
+{
+    return 1;
+}
+
+int MppHumanoidEntity::GetPhysicsWidth() const
+{
+    return 12;
+}
+
+int MppHumanoidEntity::GetPhysicsHeight() const
+{
+    return 14;
+}
+
+void MppHumanoidEntity::DoAction() 
+{
+    if (GetEntity())
+    {
+        DropEntity();
+    }
+    else
+    {
+        MppMobEntity::DoAction();
+    }
+}
+
+void MppHumanoidEntity::Equip(int index)
+{
+    std::shared_ptr<MppFurnitureEntity> furniture = Entity->Cast<MppFurnitureEntity>();
+    if (furniture)
+    {
+        if (furniture->IsEmpty())
+        {
+            Inventory->Add(furniture->GetItemID());
+            Entity = nullptr;
+            RequestAnimationTick();
+        }
+        else
+        {
+            return;
+        }
+    }
+    MppMobEntity::Equip(index);
+    const MppItem& item = Inventory->Get(index);
+    if (item.GetType() & MppItemTypeArmor)
+    {
+        if (item.GetType() == MppItemTypeHelmet)
+        {
+            Inventory->SetSlot(MppInventorySlotHelmet, index);
+        }
+        else if (item.GetType() == MppItemTypeCuirass)
+        {
+            Inventory->SetSlot(MppInventorySlotCuirass, index);
+        }
+        else if (item.GetType() == MppItemTypeLeggings)
+        {
+            Inventory->SetSlot(MppInventorySlotLeggings, index);
+        }
+        else if (item.GetType() == MppItemTypeBoots)
+        {
+            Inventory->SetSlot(MppInventorySlotBoots, index);
+        }
+        else
+        {
+            MppAssert(false);
+        }
+    }
+    else if (item.GetType() == MppItemTypeFurniture)
+    {
+        std::shared_ptr<MppEntity> entity = item.CreateFurnitureEntity();
+        Inventory->Remove(index);
+        PickupEntity(entity);
+    }
+}
+
+int MppHumanoidEntity::GetActionOffset() const
+{
+    return 16;
+}
+
+void MppHumanoidEntity::PickupEntity(const std::shared_ptr<MppEntity>& entity)
+{
+    MppAssert(!Entity);
+    Entity = entity;
+    Entity->Unspawn();
+    RequestAnimationTick();
+}
+
+void MppHumanoidEntity::DropEntity()
+{
+    MppAssert(Entity);
+    int heldX = Entity->GetX();
+    int heldY = Entity->GetY();
+    Entity->SetX(X + GetFacingX() * GetSize());
+    Entity->SetY(Y + GetFacingY() * GetSize());
+    if (!Entity->IsColliding())
+    {
+        Entity->SetX(heldX);
+        Entity->SetY(heldY);
+        return;
+    }
+    MppWorldAddEntity(Entity);
+    Entity = nullptr;
+    RequestAnimationTick();
+}
+
+std::shared_ptr<MppEntity> MppHumanoidEntity::GetEntity() const
+{
+    return Entity;
+}
+
+void MppHumanoidEntity::SetRiding(bool riding)
+{
+    Riding = riding;
 }
 
 void MppHumanoidEntity::Render(const MppItem& item) const
@@ -75,27 +192,7 @@ void MppHumanoidEntity::Render(const MppItem& item) const
         X,
         Y,
         Animation.GetMod(),
-        MppRendererLayerEntityOverlay);
-}
-
-int MppHumanoidEntity::GetPhysicsOffsetX() const
-{
-    return 2;
-}
-
-int MppHumanoidEntity::GetPhysicsOffsetY() const
-{
-    return 1;
-}
-
-int MppHumanoidEntity::GetPhysicsWidth() const
-{
-    return 12;
-}
-
-int MppHumanoidEntity::GetPhysicsHeight() const
-{
-    return 14;
+        MppRendererLayerTopEntity);
 }
 
 int MppHumanoidEntity::GetMaxItems() const
@@ -103,134 +200,13 @@ int MppHumanoidEntity::GetMaxItems() const
     return 32;
 }
 
-int MppHumanoidEntity::GetSpritePose1X() const
+int MppHumanoidEntity::GetAnimationPose() const
 {
-    return 0;
-}
-
-int MppHumanoidEntity::GetSpritePose1Y() const
-{
-    return 6;
-}
-
-int MppHumanoidEntity::GetSpritePose2X() const
-{
-    return 4;
-}
-
-int MppHumanoidEntity::GetSpritePose2Y() const
-{
-    return 6;
-}
-
-int MppHumanoidEntity::GetActionRange() const
-{
-    return 16;
-}
-
-void MppHumanoidEntity::HoldEntity(const std::shared_ptr<MppEntity>& entity)
-{
-    MppAssert(!HeldEntity);
-    HeldEntity = entity;
-    HeldEntity->Kill();
-    SetTickAnimation();
-}
-
-void MppHumanoidEntity::DropHeldEntity()
-{
-    MppAssert(HeldEntity);
-    int heldX = HeldEntity->GetX();
-    int heldY = HeldEntity->GetY();
-    HeldEntity->SetX(X + GetFacingX() * GetSize());
-    HeldEntity->SetY(Y + GetFacingY() * GetSize());
-    if (!HeldEntity->IsColliding())
+    if (Riding)
     {
-        HeldEntity->SetX(heldX);
-        HeldEntity->SetY(heldY);
-        // TODO: need to play a sound
-        return;
+        return 2;
     }
-    MppWorldAddEntity(HeldEntity);
-    HeldEntity = nullptr;
-    SetTickAnimation();
-}
-
-void MppHumanoidEntity::MoveHeldEntityToInventory()
-{
-    MppAssert(HeldEntity);
-    std::shared_ptr<MppFurnitureEntity> furniture = std::dynamic_pointer_cast<MppFurnitureEntity>(HeldEntity);
-    MppAssert(furniture->IsEmpty());
-    Inventory->Add(furniture->GetItemID());
-    HeldEntity = nullptr;
-    SetTickAnimation();
-}
-
-std::shared_ptr<MppEntity> MppHumanoidEntity::GetHeldEntity() const
-{
-    return HeldEntity;
-}
-
-void MppHumanoidEntity::DoAction() 
-{
-    if (GetHeldEntity())
-    {
-        DropHeldEntity();
-        return;
-    }
-    MppMobEntity::DoAction();
-}
-
-void MppHumanoidEntity::EquipItemFromInventory(int index)
-{
-    std::shared_ptr<MppFurnitureEntity> furniture = std::dynamic_pointer_cast<MppFurnitureEntity>(HeldEntity);
-    if (furniture)
-    {
-        if (furniture->IsEmpty())
-        {
-            MoveHeldEntityToInventory();
-        }
-        else
-        {
-            // TODO: need to play an error noise here
-            return;
-        }
-    }
-    MppMobEntity::EquipItemFromInventory(index);
-    const MppItem& item = Inventory->Get(index);
-    if (item.GetType() & MppItemTypeArmor)
-    {
-        if (item.GetType() == MppItemTypeHelmet)
-        {
-            Inventory->SetSlot(MppInventorySlotHelmet, index);
-        }
-        else if (item.GetType() == MppItemTypeCuirass)
-        {
-            Inventory->SetSlot(MppInventorySlotCuirass, index);
-        }
-        else if (item.GetType() == MppItemTypeLeggings)
-        {
-            Inventory->SetSlot(MppInventorySlotLeggings, index);
-        }
-        else if (item.GetType() == MppItemTypeBoots)
-        {
-            Inventory->SetSlot(MppInventorySlotBoots, index);
-        }
-        else
-        {
-            MppAssert(false);
-        }
-    }
-    else if (item.GetType() == MppItemTypeFurniture)
-    {
-        std::shared_ptr<MppEntity> entity = item.CreateFurnitureEntity();
-        Inventory->Remove(index);
-        HoldEntity(entity);
-    }
-}
-
-int MppHumanoidEntity::GetPose() const
-{
-    if (HeldEntity)
+    else if (Entity)
     {
         return 1;
     }
@@ -238,4 +214,34 @@ int MppHumanoidEntity::GetPose() const
     {
         return 0;
     }
+}
+
+int MppHumanoidEntity::GetAnimationPose1X() const
+{
+    return 0;
+}
+
+int MppHumanoidEntity::GetAnimationPose1Y() const
+{
+    return 6;
+}
+
+int MppHumanoidEntity::GetAnimationPose2X() const
+{
+    return 4;
+}
+
+int MppHumanoidEntity::GetAnimationPose2Y() const
+{
+    return 6;
+}
+
+int MppHumanoidEntity::GetAnimationPose3X() const
+{
+    return 8;
+}
+
+int MppHumanoidEntity::GetAnimationPose3Y() const
+{
+    return 6;
 }

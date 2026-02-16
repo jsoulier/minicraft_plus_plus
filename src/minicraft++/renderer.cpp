@@ -4,6 +4,7 @@
 #include <cmath>
 #include <filesystem>
 #include <format>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -101,12 +102,25 @@ static std::unordered_map<size_t, SDL_Texture*> textures;
 static std::unordered_map<int, SDL_Texture*> lights;
 static std::vector<Light> lightCommands;
 static std::array<Commands, MppRendererLayerCount> layers;
+static std::array<int, MppRendererLayerCount> layerIndices;
 static int worldX;
 static int worldY;
 static int tileX1;
 static int tileY1;
 static int tileX2;
 static int tileY2;
+
+MppRendererLayerOverride::MppRendererLayerOverride(MppRendererLayer key, MppRendererLayer value)
+    : Key{key}
+    , Value{MppRendererLayer(layerIndices[key])}
+{
+    layerIndices[key] = value;
+}
+
+MppRendererLayerOverride::~MppRendererLayerOverride()
+{
+    layerIndices[Key] = Value;
+}
 
 bool MppRendererInit()
 {
@@ -132,6 +146,7 @@ bool MppRendererInit()
         MppLog("Failed to create light texture: %s", SDL_GetError());
         return false;
     }
+    std::iota(layerIndices.begin(), layerIndices.end(), 0);
     return true;
 }
 
@@ -165,6 +180,7 @@ void MppRendererQuit()
 
 void MppRendererMove(int x, int y, int size)
 {
+    // TODO: clamp to the world
     MppAssert(size > 0);
     worldX = x - kWidth / 2 + size / 2;
     worldY = y - kHeight / 2 + size / 2;
@@ -355,7 +371,7 @@ void MppRendererSubmit(int inLightColor)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     SDL_RenderClear(renderer);
-    for (int layer = 0; layer < MppRendererLayerUI; layer++)
+    for (int layer = 0; layer < MppRendererLayerMenuBegin; layer++)
     {
         layers[layer].Draw(MppRendererLayer(layer));
     }
@@ -372,7 +388,7 @@ void MppRendererSubmit(int inLightColor)
     SDL_SetRenderTarget(renderer, nullptr);
     SDL_RenderTexture(renderer, lightTexture, nullptr, nullptr);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-    for (int layer = MppRendererLayerUI; layer < MppRendererLayerCount; layer++)
+    for (int layer = MppRendererLayerMenuBegin; layer < MppRendererLayerCount; layer++)
     {
         layers[layer].Draw(MppRendererLayer(layer));
     }
@@ -388,17 +404,17 @@ void MppRendererSubmit(int inLightColor)
 
 void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererMod mod, MppRendererLayer layer)
 {
-    layers[layer].Sprites.emplace_back(sprite, x, y, mod);
+    layers[layerIndices[layer]].Sprites.emplace_back(sprite, x, y, mod);
 }
 
 void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRendererLayer layer)
 {
-    layers[layer].Quads.emplace_back(color, x, y, width, height);
+    layers[layerIndices[layer]].Quads.emplace_back(color, x, y, width, height);
 }
 
 void MppRendererDrawLine(int color, int x1, int y1, int x2, int y2, MppRendererLayer layer)
 {
-    layers[layer].Lines.emplace_back(color, x1, y1, x2, y2);
+    layers[layerIndices[layer]].Lines.emplace_back(color, x1, y1, x2, y2);
 }
 
 void MppRendererDrawLight(int color, int x, int y, int radius, int strength)

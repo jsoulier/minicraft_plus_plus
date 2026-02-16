@@ -18,14 +18,14 @@ void MppSpiderEntity::Render() const
     MppMobEntity::Render();
 }
 
-int MppSpiderEntity::GetSpritePose1X() const
+int MppSpiderEntity::GetAnimationPose1X() const
 {
-    return 8;
+    return 12;
 }
 
-int MppSpiderEntity::GetSpritePose1Y() const
+int MppSpiderEntity::GetAnimationPose1Y() const
 {
-    return 7;
+    return 10;
 }
 
 int MppSpiderEntity::GetPhysicsOffsetX() const
@@ -68,27 +68,27 @@ int MppSpiderEntity::GetMaxEnergy() const
     return 1;
 }
 
-int MppSpiderEntity::GetSpriteColor1() const
+int MppSpiderEntity::GetColor1() const
 {
     return 0;
 }
 
-int MppSpiderEntity::GetSpriteColor2() const
+int MppSpiderEntity::GetColor2() const
 {
     return 500;
 }
 
-int MppSpiderEntity::GetSpriteColor3() const
+int MppSpiderEntity::GetColor3() const
 {
     return 222;
 }
 
-int MppSpiderEntity::GetSpriteColor4() const
+int MppSpiderEntity::GetColor4() const
 {
     return 111;
 }
 
-int MppSpiderEntity::GetSpriteColor5() const
+int MppSpiderEntity::GetColor5() const
 {
     return 222;
 }

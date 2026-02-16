@@ -36,7 +36,7 @@ void MppInventory::Render() const
         int y = Y1 + row * 8;
         const MppItem& item = Items[Top + row];
         int count = item.GetCount();
-        item.Render(X1 + 8, y, MppRendererLayerMenuContent);
+        item.Render(X1 + 8, y, MppRendererLayerTopMenu);
         if (count > 1)
         {
             int offset = MppGetNumberOfDigits(count) * 8;
@@ -117,7 +117,7 @@ MppItem MppInventory::Remove(int index, int count)
     {
         if (Index <= index)
         {
-            OnUpArrow();
+            OnInputUpArrow();
         }
         Items.erase(Items.begin() + index);
         erased = true;
@@ -214,7 +214,7 @@ void MppInventory::SetMaxItems(int max)
     MaxItems = max;
 }
 
-void MppInventory::OnAction() 
+void MppInventory::OnInputAction() 
 {
     MppAssert(Focused);
     if (!Items.empty())
@@ -223,7 +223,7 @@ void MppInventory::OnAction()
     }
 }
 
-void MppInventory::OnDrop() 
+void MppInventory::OnInputDrop() 
 {
     MppAssert(Focused);
     if (!Items.empty())
@@ -232,14 +232,14 @@ void MppInventory::OnDrop()
     }
 }
 
-void MppInventory::OnUpArrow() 
+void MppInventory::OnInputUpArrow() 
 {
     MppAssert(Focused);
     Index = std::max(Index - 1, 0);
     Top = std::min(Top, Index);
 }
 
-void MppInventory::OnDownArrow() 
+void MppInventory::OnInputDownArrow() 
 {
     MppAssert(Focused);
     // TODO: if Items is empty, it becomes -1. what should the logic be here?
@@ -247,7 +247,7 @@ void MppInventory::OnDownArrow()
     Top = std::max(Top, Index - GetHeight() / 8 + 1);
 }
 
-void MppInventory::OnRender() const
+void MppInventory::OnInputRender() const
 {
     Render();
 }

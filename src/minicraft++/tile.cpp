@@ -501,10 +501,18 @@ void MppTile::Render(int x, int y) const
     }
 }
 
-bool MppTile::OnAction(MppEntity& instigator, int x, int y)
+bool MppTile::OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y)
 {
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
-    MppAssert(mob);
+    if (!IsValid())
+    {
+        return false;
+    }
+    std::shared_ptr<MppMobEntity> mob = instigator->Cast<MppMobEntity>();
+    if (!mob)
+    {
+        MppLog("A non-mob entity tried to perform an action on a tile");
+        return false;
+    }
     MppItem item = mob->GetInventory()->GetBySlot(MppInventorySlotHeld);
     MppAssert(item.IsValid());
     if ((item.GetType() & kTiles[ID].ItemTypes) == MppItemTypeNone)
@@ -515,7 +523,7 @@ bool MppTile::OnAction(MppEntity& instigator, int x, int y)
     if (child != MppTileIDInvalid)
     {
         *this = MppTile(child);
-        std::shared_ptr<MppEntity> entity = std::make_shared<MppHitEntity>();
+        std::shared_ptr<MppEntity> entity = MppEntity::Create<MppHitEntity>();
         entity->SetX(x * kSize);
         entity->SetY(y * kSize);
         MppWorldAddEntity(entity);
@@ -527,7 +535,12 @@ bool MppTile::OnAction(MppEntity& instigator, int x, int y)
     return true;
 }
 
-bool MppTile::OnCollision(MppEntity& instigator, int x, int y)
+bool MppTile::OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y)
+{
+    return false;
+}
+
+bool MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y)
 {
     return kTiles[ID].PhysicsType == MppTilePhysicsTypeWall;
 }

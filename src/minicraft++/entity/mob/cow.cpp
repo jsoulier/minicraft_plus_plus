@@ -8,37 +8,37 @@ MppCowEntity::MppCowEntity()
 {
 }
 
-int MppCowEntity::GetSpritePose1X() const
+int MppCowEntity::GetAnimationPose1X() const
 {
     return 12;
 }
 
-int MppCowEntity::GetSpritePose1Y() const
+int MppCowEntity::GetAnimationPose1Y() const
 {
     return 7;
 }
 
-int MppCowEntity::GetSpriteColor1() const
+int MppCowEntity::GetColor1() const
 {
     return 0;
 }
 
-int MppCowEntity::GetSpriteColor2() const
+int MppCowEntity::GetColor2() const
 {
     return 210;
 }
 
-int MppCowEntity::GetSpriteColor3() const
+int MppCowEntity::GetColor3() const
 {
     return 444;
 }
 
-int MppCowEntity::GetSpriteColor4() const
+int MppCowEntity::GetColor4() const
 {
     return 320;
 }
 
-int MppCowEntity::GetSpriteColor5() const
+int MppCowEntity::GetColor5() const
 {
     return 444;
 }

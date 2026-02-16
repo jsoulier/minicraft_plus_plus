@@ -21,9 +21,12 @@
 
 static constexpr int kDropDistance = 16;
 
-void MppPlayerController::Possess(const std::shared_ptr<MppMobEntity>& entity)
+bool MppPlayerController::Possess(const std::shared_ptr<MppMobEntity>& entity)
 {
-    MppController::Possess(entity);
+    if (!MppController::Possess(entity))
+    {
+        return false;
+    }
     std::shared_ptr<MppInventory> inventory = GetInventory();
     inventory->SetOnActionCallback(std::bind(&MppPlayerController::OnActionCallback, this, std::placeholders::_1));
     inventory->SetOnDropCallback(std::bind(&MppPlayerController::OnDropCallback, this, std::placeholders::_1));
@@ -37,12 +40,17 @@ void MppPlayerController::Possess(const std::shared_ptr<MppMobEntity>& entity)
     inventory->SetY1(4);
     inventory->SetX2(126);
     inventory->SetY2(124);
+    return true;
 }
 
-void MppPlayerController::Unpossess()
+bool MppPlayerController::Unpossess()
 {
-    MppController::Unpossess();
+    if (!MppController::Unpossess())
+    {
+        return false;
+    }
     MppInputRemoveHandler(this);
+    return true;
 }
 
 void MppPlayerController::Update(uint64_t ticks)
@@ -50,21 +58,21 @@ void MppPlayerController::Update(uint64_t ticks)
     MppController::Update(ticks);
 }
 
-void MppPlayerController::RenderFromEntity() const
+void MppPlayerController::Render() const
 {
-    MppController::RenderFromEntity();
+    MppController::Render();
 }
 
-void MppPlayerController::OnAction()
+void MppPlayerController::OnInputAction()
 {
     Entity.lock()->DoAction();
 }
 
-void MppPlayerController::OnRender() const
+void MppPlayerController::OnInputRender() const
 {
     std::shared_ptr<MppMobEntity> player = Entity.lock();
+    std::shared_ptr<MppHumanoidEntity> humanoid = player->Cast<MppHumanoidEntity>();
     const std::shared_ptr<MppInventory> inventory = GetInventory();
-    // TODO: should be at the start of the frame for all entities
     MppRendererMove(player->GetX(), player->GetY(), player->GetSize());
     MppMenu::Render();
     int health = std::ceil(float(player->GetHealth()) / 10);
@@ -74,27 +82,26 @@ void MppPlayerController::OnRender() const
     {
         int x = i * MppItem::kSize;
         int y = 128;
-        MppItem{MppItemIDHeart}.Render(x, y, MppRendererLayerMenuContent);
+        MppItem{MppItemIDHeart}.Render(x, y, MppRendererLayerTopMenu);
     }
     for (int i = 0; i < hunger; i++)
     {
-        int x = 176 + i * MppItem::kSize;
+        int x = 256 - (i + 1) * MppItem::kSize;
         int y = 136;
-        MppItem{MppItemIDFood}.Render(x, y, MppRendererLayerMenuContent);
+        MppItem{MppItemIDFood}.Render(x, y, MppRendererLayerTopMenu);
     }
     for (int i = 0; i < energy; i++)
     {
         int x = i * MppItem::kSize;
         int y = 136;
-        MppItem{MppItemIDEnergy}.Render(x, y, MppRendererLayerMenuContent);
+        MppItem{MppItemIDEnergy}.Render(x, y, MppRendererLayerTopMenu);
     }
     const MppItem& held = inventory->GetBySlot(MppInventorySlotHeld);
-    std::shared_ptr<MppHumanoidEntity> humanoid = std::dynamic_pointer_cast<MppHumanoidEntity>(player);
     if (humanoid)
     {
-        if (humanoid->GetHeldEntity())
+        if (humanoid->GetEntity())
         {
-            MppMenu::Render(humanoid->GetHeldEntity()->GetName(), kMppColorMenuUnlocked, 256, 128, MppMenuAlignmentRight);
+            MppMenu::Render(humanoid->GetEntity()->GetName(), kMppColorMenuUnlocked, 256, 128, MppMenuAlignmentRight);
         }
         else if (held.IsValid())
         {
@@ -103,9 +110,10 @@ void MppPlayerController::OnRender() const
     }
 }
 
-void MppPlayerController::OnInteract()
+void MppPlayerController::OnInputInteract()
 {
     std::shared_ptr<MppMobEntity> player = Entity.lock();
+    std::shared_ptr<MppEntity> self = player->Cast<MppEntity>();
     std::vector<std::shared_ptr<MppEntity>> entities = MppWorldGetEntities(player->GetX(), player->GetY());
     std::erase_if(entities, [&](std::shared_ptr<MppEntity>& other)
     {
@@ -114,10 +122,9 @@ void MppPlayerController::OnInteract()
     bool didInteraction = false;
     for (std::shared_ptr<MppEntity>& entity : entities)
     {
-        std::shared_ptr<MppFurnitureEntity> furniture = std::static_pointer_cast<MppFurnitureEntity>(entity);
-        if (player->GetDistance(entity) <= player->GetActionRange())
+        if (player->GetDistance(entity) <= player->GetActionOffset())
         {
-            didInteraction = furniture->OnInteraction(*player);
+            didInteraction = entity->OnInteraction(self);
             if (didInteraction)
             {
                 break;
@@ -130,34 +137,34 @@ void MppPlayerController::OnInteract()
     }
 }
 
-void MppPlayerController::OnExit()
+void MppPlayerController::OnInputExit()
 {
     // No-op. Player controller can't be removed
 }
 
-void MppPlayerController::OnHeldUp()
+void MppPlayerController::OnInputHeldUp()
 {
-    Entity.lock()->Push(0, -1);
+    Entity.lock()->Push(0, -1, true);
 }
 
-void MppPlayerController::OnHeldDown()
+void MppPlayerController::OnInputHeldDown()
 {
-    Entity.lock()->Push(0, 1);
+    Entity.lock()->Push(0, 1, true);
 }
 
-void MppPlayerController::OnHeldLeft()
+void MppPlayerController::OnInputHeldLeft()
 {
-    Entity.lock()->Push(-1, 0);
+    Entity.lock()->Push(-1, 0, true);
 }
 
-void MppPlayerController::OnHeldRight()
+void MppPlayerController::OnInputHeldRight()
 {
-    Entity.lock()->Push(1, 0);
+    Entity.lock()->Push(1, 0, true);
 }
 
 void MppPlayerController::OnActionCallback(int index)
 {
-    Entity.lock()->EquipItemFromInventory(index);
+    Entity.lock()->Equip(index);
 }
 
 void MppPlayerController::OnDropCallback(int index)

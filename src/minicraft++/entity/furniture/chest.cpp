@@ -30,18 +30,18 @@ void MppChestEntity::Visit(SavepointVisitor& visitor)
     visitor(Inventory);
 }
 
-bool MppChestEntity::OnInteraction(MppEntity& instigator)
+bool MppChestEntity::OnInteraction(std::shared_ptr<MppEntity>& instigator)
 {
-    MppMobEntity* mob = dynamic_cast<MppMobEntity*>(&instigator);
+    std::shared_ptr<MppMobEntity> mob = instigator->Cast<MppMobEntity>();
     MppAssert(mob);
     Other = mob->GetInventory();
     Other.lock()->SetIsFocused(true);
     Inventory->SetIsFocused(false);
-    MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
+    MppInputAddHandler(Cast<MppInputHandler>());
     return true;
 }
 
-void MppChestEntity::OnAction()
+void MppChestEntity::OnInputAction()
 {
     std::shared_ptr<MppInventory> from;
     std::shared_ptr<MppInventory> to;
@@ -61,37 +61,37 @@ void MppChestEntity::OnAction()
     }
 }
 
-void MppChestEntity::OnRender() const
+void MppChestEntity::OnInputRender() const
 {
     Other.lock()->Render();
     Inventory->Render();
 }
 
-void MppChestEntity::OnUpArrow()
+void MppChestEntity::OnInputUpArrow()
 {
     if (Other.lock()->IsFocused())
     {
-        Other.lock()->OnUpArrow();
+        Other.lock()->OnInputUpArrow();
     }
     else
     {
-        Inventory->OnUpArrow();
+        Inventory->OnInputUpArrow();
     }
 }
 
-void MppChestEntity::OnDownArrow()
+void MppChestEntity::OnInputDownArrow()
 {
     if (Other.lock()->IsFocused())
     {
-        Other.lock()->OnDownArrow();
+        Other.lock()->OnInputDownArrow();
     }
     else
     {
-        Inventory->OnDownArrow();
+        Inventory->OnInputDownArrow();
     }
 }
 
-void MppChestEntity::OnLeftArrow()
+void MppChestEntity::OnInputLeftArrow()
 {
     if (Inventory->IsFocused())
     {
@@ -100,7 +100,7 @@ void MppChestEntity::OnLeftArrow()
     }
 }
 
-void MppChestEntity::OnRightArrow()
+void MppChestEntity::OnInputRightArrow()
 {
     if (Other.lock()->IsFocused())
     {
@@ -154,7 +154,7 @@ int MppChestEntity::GetColor5() const
     return kMppColorChest5;
 }
 
-void MppChestEntity::OnLoseFocus()
+void MppChestEntity::OnInputLoseFocus()
 {
     Other.lock()->SetIsFocused(true);
     Inventory->SetIsFocused(false);

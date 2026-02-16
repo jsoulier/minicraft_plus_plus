@@ -33,7 +33,7 @@ void MppCreatureEntity::Update(uint64_t ticks)
     FleeTicks--;
 }
 
-bool MppCreatureEntity::OnAction(MppEntity& instigator)
+bool MppCreatureEntity::OnAction(std::shared_ptr<MppEntity>& instigator)
 {
     bool didAction = MppMobEntity::OnAction(instigator);
     // TODO: set FleeTicks here

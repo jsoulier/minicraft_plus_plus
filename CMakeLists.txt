@@ -25,7 +25,6 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/controller/controller.cpp
     src/minicraft++/entity/controller/creature.cpp
     src/minicraft++/entity/controller/melee.cpp
-    src/minicraft++/entity/controller/mount.cpp
     src/minicraft++/entity/controller/npc.cpp
     src/minicraft++/entity/controller/player.cpp
     src/minicraft++/entity/entity.cpp
@@ -47,6 +46,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/mob/slime.cpp
     src/minicraft++/entity/mob/spider.cpp
     src/minicraft++/entity/mob/zombie.cpp
+    src/minicraft++/entity/mount.cpp
     src/minicraft++/entity/particle/hit.cpp
     src/minicraft++/entity/particle/particle.cpp
     src/minicraft++/entity/projectile/arrow.cpp

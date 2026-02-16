@@ -51,27 +51,27 @@ std::shared_ptr<MppController> MppPlayerEntity::GetDefaultController()
     return std::make_shared<MppPlayerController>();
 }
 
-int MppPlayerEntity::GetSpriteColor1() const
+int MppPlayerEntity::GetColor1() const
 {
     return 0;
 }
 
-int MppPlayerEntity::GetSpriteColor2() const
+int MppPlayerEntity::GetColor2() const
 {
     return 500;
 }
 
-int MppPlayerEntity::GetSpriteColor3() const
+int MppPlayerEntity::GetColor3() const
 {
     return 5;
 }
 
-int MppPlayerEntity::GetSpriteColor4() const
+int MppPlayerEntity::GetColor4() const
 {
     return 532;
 }
 
-int MppPlayerEntity::GetSpriteColor5() const
+int MppPlayerEntity::GetColor5() const
 {
     return 211;
 }

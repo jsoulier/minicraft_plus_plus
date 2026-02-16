@@ -9,6 +9,7 @@
 #include <minicraft++/console.hpp>
 #include <minicraft++/input.hpp>
 #include <minicraft++/log.hpp>
+#include <minicraft++/renderer.hpp>
 
 static constexpr int kAction = SDL_SCANCODE_SPACE;
 static constexpr int kDrop = SDL_SCANCODE_Q;
@@ -30,12 +31,12 @@ static constexpr int kBackspace = SDL_SCANCODE_BACKSPACE;
 static std::vector<std::weak_ptr<MppInputHandler>> handlers;
 static std::shared_ptr<MppInputHandler> console = std::make_shared<MppConsole>();
 
-void MppInputHandler::OnInteract()
+void MppInputHandler::OnInputInteract()
 {
     MppInputRemoveHandler(this);
 }
 
-void MppInputHandler::OnExit()
+void MppInputHandler::OnInputExit()
 {
     MppInputRemoveHandler(this);
 }
@@ -53,18 +54,18 @@ void MppInputAddHandler(const std::shared_ptr<MppInputHandler>& handler)
         MppAssert(handler != other.lock());
     }
     handlers.push_back(handler);
-    handler->OnGainFocus();
+    handler->OnInputGainFocus();
 }
 
 void MppInputRemoveHandler(MppInputHandler* handler)
 {
     MppAssert(handler);
-    handler->OnLoseFocus();
-    int numErased = std::erase_if(handlers, [handler](const std::weak_ptr<MppInputHandler>& other)
+    handler->OnInputLoseFocus();
+    int count = std::erase_if(handlers, [handler](const std::weak_ptr<MppInputHandler>& other)
     {
         return handler == other.lock().get();
     });
-    MppAssert(numErased == 1);
+    MppAssert(count == 1);
 }
 
 static std::shared_ptr<MppInputHandler> GetHandler()
@@ -97,33 +98,51 @@ void MppInputUpdate(uint64_t ticks)
     {
         return;
     }
-    handler->OnUpdate(ticks);
+    handler->OnInputUpdate(ticks);
     const bool* keys = SDL_GetKeyboardState(nullptr);
     if (keys[kUp])
     {
-        handler->OnHeldUp();
+        handler->OnInputHeldUp();
     }
     if (keys[kDown])
     {
-        handler->OnHeldDown();
+        handler->OnInputHeldDown();
     }
     if (keys[kLeft])
     {
-        handler->OnHeldLeft();
+        handler->OnInputHeldLeft();
     }
     if (keys[kRight])
     {
-        handler->OnHeldRight();
+        handler->OnInputHeldRight();
     }
 }
 
 void MppInputRender()
 {
-    // TODO: walk through all handlers and render 1 by 1. need to get layers right. custom layers?
-    std::shared_ptr<MppInputHandler> handler = GetHandler();
-    if (handler)
+    for (int i = 0; i < handlers.size(); i++)
     {
-        handler->OnRender();
+        if (i > 5)
+        {
+            MppLog("Ran out of renderer layers");
+            break;
+        }
+        const std::weak_ptr<MppInputHandler> handler = handlers[i];
+        if (!handler.expired())
+        {
+            static constexpr MppRendererLayer kMenu = MppRendererLayerMenu1;
+            static constexpr MppRendererLayer kTopMenu = MppRendererLayerTopMenu1;
+            MppRendererLayerOverride override1{kMenu, MppRendererLayer(kMenu + i * 2)};
+            MppRendererLayerOverride override2{kTopMenu, MppRendererLayer(kTopMenu + i * 2)};
+            handler.lock()->OnInputRender();
+        }
+    }
+    for (const std::weak_ptr<MppInputHandler> handler : handlers)
+    {
+        if (!handler.expired())
+        {
+            handler.lock()->OnInputRender();
+        }
     }
 }
 
@@ -146,49 +165,49 @@ void MppInputHandle(SDL_Event* event)
         switch (event->key.scancode)
         {
         case kAction:
-            handler->OnAction();
+            handler->OnInputAction();
             break;
         case kDrop:
-            handler->OnDrop();
+            handler->OnInputDrop();
             break;
         case kInteract:
-            handler->OnInteract();
+            handler->OnInputInteract();
             break;
         case kDismount:
-            handler->OnDismount();
+            handler->OnInputDismount();
             break;
         case kUp:
-            handler->OnUp();
+            handler->OnInputUp();
             break;
         case kDown:
-            handler->OnDown();
+            handler->OnInputDown();
             break;
         case kUpArrow:
-            handler->OnUpArrow();
+            handler->OnInputUpArrow();
             break;
         case kDownArrow:
-            handler->OnDownArrow();
+            handler->OnInputDownArrow();
             break;
         case kLeftArrow:
-            handler->OnLeftArrow();
+            handler->OnInputLeftArrow();
             break;
         case kRightArrow:
-            handler->OnRightArrow();
+            handler->OnInputRightArrow();
             break;
         case kLeft:
-            handler->OnLeft();
+            handler->OnInputLeft();
             break;
         case kRight:
-            handler->OnRight();
+            handler->OnInputRight();
             break;
         case kEnter:
-            handler->OnEnter();
+            handler->OnInputEnter();
             break;
         case kBackspace:
-            handler->OnBackspace();
+            handler->OnInputBackspace();
             break;
         case kExit:
-            handler->OnExit();
+            handler->OnInputExit();
             break;
         }
     }
@@ -197,7 +216,7 @@ void MppInputHandle(SDL_Event* event)
         char character = event->text.text[0];
         if (character <= 127)
         {
-            handler->OnTextInput(character);
+            handler->OnInputText(character);
         }
         else
         {

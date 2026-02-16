@@ -18,12 +18,12 @@ void MppSlimeEntity::Render() const
     MppMobEntity::Render();
 }
 
-int MppSlimeEntity::GetSpritePose1X() const
+int MppSlimeEntity::GetAnimationPose1X() const
 {
     return 12;
 }
 
-int MppSlimeEntity::GetSpritePose1Y() const
+int MppSlimeEntity::GetAnimationPose1Y() const
 {
     return 6;
 }
@@ -68,27 +68,27 @@ int MppSlimeEntity::GetMaxEnergy() const
     return 1;
 }
 
-int MppSlimeEntity::GetSpriteColor1() const
+int MppSlimeEntity::GetColor1() const
 {
     return 0;
 }
 
-int MppSlimeEntity::GetSpriteColor2() const
+int MppSlimeEntity::GetColor2() const
 {
     return 40;
 }
 
-int MppSlimeEntity::GetSpriteColor3() const
+int MppSlimeEntity::GetColor3() const
 {
     return 50;
 }
 
-int MppSlimeEntity::GetSpriteColor4() const
+int MppSlimeEntity::GetColor4() const
 {
     return 0;
 }
 
-int MppSlimeEntity::GetSpriteColor5() const
+int MppSlimeEntity::GetColor5() const
 {
     return 0;
 }
