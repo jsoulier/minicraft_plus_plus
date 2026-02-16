@@ -26,6 +26,11 @@ struct {
 
 } Biome;
 
+struct {
+    ClusterID;
+    int num_tiles;
+} LevelCluster;
+
 //map<struct Biome, map<enum MppTileID,float>> biomes;
 
 class MppLevel {
