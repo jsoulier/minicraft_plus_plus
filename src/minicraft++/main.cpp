@@ -25,7 +25,7 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
 #ifndef NDEBUG
     SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
 #endif
-    if (!SDL_Init(SDL_INIT_VIDEO))
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
     {
         MppLog("Failed to initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -38,7 +38,7 @@ SDL_AppResult SDLCALL SDL_AppInit(void** appstate, int argc, char** argv)
     if (!MppAudioInit())
     {
         MppLog("Failed to initialize audio");
-        // Intentionally not a fatal error
+        // Intentionally not fatal
     }
     if (!MppWorldInit())
     {
@@ -66,6 +66,7 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     MppInputUpdate(ticks);
     MppWorldUpdate(ticks);
     MppWorldSave(ticks, false);
+    MppAudioUpdate(ticks);
     MppInputRender();
     MppWorldRender();
     MppRendererSubmit(555);

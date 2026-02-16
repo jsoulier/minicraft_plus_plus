@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include <minicraft++/assert.hpp>
+#include <minicraft++/audio.hpp>
 #include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/entity.hpp>
@@ -22,6 +23,8 @@
 
 static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
 static constexpr int kDirtColor = 420;
+
+static const MppAudioHandle kDestroyedAudio{{"destroyed_tile_1", "destroyed_tile_2"}};
 
 enum TileSpriteType
 {
@@ -491,6 +494,7 @@ bool MppTile::OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y)
         return false;
     }
     id = kTiles[id].ChildTile;
+    kDestroyedAudio.Play();
     std::shared_ptr<MppEntity> entity = MppEntity::Create<MppHitEntity>();
     entity->SetX(x * kSize);
     entity->SetY(y * kSize);

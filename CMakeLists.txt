@@ -13,6 +13,8 @@ make_directory(${BINARY_DIR})
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)
 configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
+configure_file(res/sounds/destroyed_tile_1.wav ${BINARY_DIR} COPYONLY)
+configure_file(res/sounds/destroyed_tile_2.wav ${BINARY_DIR} COPYONLY)
 
 add_subdirectory(lib/FastNoiseLite)
 add_subdirectory(lib/SDL)
@@ -55,14 +57,15 @@ add_executable(minicraft++ WIN32
     src/minicraft++/input.cpp
     src/minicraft++/inventory.cpp
     src/minicraft++/item.cpp
+    src/minicraft++/level.cpp
     src/minicraft++/main.cpp
     src/minicraft++/menu.cpp
+    src/minicraft++/random.cpp
     src/minicraft++/renderer.cpp
     src/minicraft++/sprite.cpp
     src/minicraft++/tile.cpp
     src/minicraft++/util.cpp
     src/minicraft++/world.cpp
-    src/minicraft++/level.cpp
 )
 set_target_properties(minicraft++ PROPERTIES CXX_STANDARD 20)
 target_include_directories(minicraft++ PRIVATE src)
@@ -83,6 +86,8 @@ target_precompile_headers(minicraft++ PRIVATE
     <format>
     <limits>
     <memory>
+    <queue>
+    <span>
     <sstream>
     <string>
     <string_view>

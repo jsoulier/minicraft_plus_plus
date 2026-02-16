@@ -7,6 +7,7 @@
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/controller/npc.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
+#include <minicraft++/random.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
 #include <minicraft++/util.hpp>
@@ -72,14 +73,14 @@ bool MppNPCController::TryNavigateRandom()
     MppAssert(Points.empty());
     int dx = 0;
     int dy = 0;
-    switch (MppGetRandomInt(0, 3))
+    switch (MppRandomGetInt(0, 3))
     {
     case 0: dx = -1; break;
     case 1: dx = 1; break;
     case 2: dy = -1; break;
     case 3: dy = 1; break;
     }
-    int distance = MppGetRandomInt(1, GetMaxNavigateRandomDistance());
+    int distance = MppRandomGetInt(1, GetMaxNavigateRandomDistance());
     int tx = entity->GetX() / MppTile::kSize;
     int ty = entity->GetY() / MppTile::kSize;
     for (int i = 0; i < distance; i++)
