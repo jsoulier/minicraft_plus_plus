@@ -69,7 +69,7 @@ SDL_AppResult SDLCALL SDL_AppIterate(void* appstate)
     MppAudioUpdate(ticks);
     MppInputRender();
     MppWorldRender();
-    MppRendererSubmit(555);
+    MppRendererSubmit(MppWorldGetLightColor());
     return SDL_APP_CONTINUE;
 }
 

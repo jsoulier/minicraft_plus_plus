@@ -566,8 +566,12 @@ MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, 
                 break;
             }
         }
-        instigator->SetLevel(level);
-        MppAssert(i < 4);
+        MppWorldSetEntityLevel(instigator, level);
+        if (i >= 4)
+        {
+            MppLog("No valid positions found for entity using stairs");
+            return MppEntityCollisionRejected;
+        }
         return MppEntityCollisionOverriden;
     }
     else if (GetPhysicsType() == MppTilePhysicsTypeWall)

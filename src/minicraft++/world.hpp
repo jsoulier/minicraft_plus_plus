@@ -29,4 +29,5 @@ void MppWorldSetLevel(int level);
 int MppWorldGetLevel();
 int MppWorldGetLevelCount();
 int MppWorldGetSize();
+int MppWorldGetLightColor();
 uint64_t MppWorldGetTicks();

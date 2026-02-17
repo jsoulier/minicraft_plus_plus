@@ -1,5 +1,9 @@
 # Minicraft++
 
+### Features
+
+TODO
+
 ### Building
 
 #### Windows

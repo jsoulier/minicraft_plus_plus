@@ -38,6 +38,9 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/furniture/recipe.cpp
     src/minicraft++/entity/furniture/workbench.cpp
     src/minicraft++/entity/item.cpp
+    src/minicraft++/level/level.cpp
+    src/minicraft++/level/surface.cpp
+    src/minicraft++/level/underground.cpp
     src/minicraft++/entity/mob/cow.cpp
     src/minicraft++/entity/mob/creature.cpp
     src/minicraft++/entity/mob/horse.cpp
@@ -53,7 +56,6 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/particle/particle.cpp
     src/minicraft++/entity/projectile/arrow.cpp
     src/minicraft++/entity/projectile/projectile.cpp
-    src/minicraft++/gen.cpp
     src/minicraft++/input.cpp
     src/minicraft++/inventory.cpp
     src/minicraft++/item.cpp

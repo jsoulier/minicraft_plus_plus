@@ -171,9 +171,9 @@ void MppMobEntity::Render() const
     }
 }
 
-void MppMobEntity::SetLevel(int level)
+void MppMobEntity::OnSetLevel(int level)
 {
-    MppEntity::SetLevel(level);
+    MppEntity::OnSetLevel(level);
     if (Controller)
     {
         Controller->OnSetLevel(level);
@@ -182,7 +182,7 @@ void MppMobEntity::SetLevel(int level)
 
 void MppMobEntity::DoAction()
 {
-    using Entity = std::shared_ptr<MppEntity>;
+    using EntityT = std::shared_ptr<MppEntity>;
     if (!Controller)
     {
         return;
@@ -195,7 +195,7 @@ void MppMobEntity::DoAction()
     }
     RequestAnimationTick();
     actionRecipe.Craft(GetInventory());
-    Entity self = Cast<MppEntity>();
+    EntityT self = Cast<MppEntity>();
     if (held.GetActionType() == MppItemActionTypeDefault)
     {
         int thisX = X;
@@ -208,17 +208,17 @@ void MppMobEntity::DoAction()
         {
             MppRendererDrawLine(kMppColorDebugAction, x1, y1, x2, y2, MppRendererLayerDebugAction);
         }
-        std::vector<Entity> entities = MppWorldGetEntities(GetX(), GetY());
-        std::erase_if(entities, [this](const Entity& other)
+        std::vector<EntityT> entities = MppWorldGetEntities(GetX(), GetY());
+        std::erase_if(entities, [this](const EntityT& other)
         {
             return this == other.get() || Controller->ActionFilter(other);
         });
-        std::sort(entities.begin(), entities.end(), [this](Entity& lhs, Entity& rhs)
+        std::sort(entities.begin(), entities.end(), [this](EntityT& lhs, EntityT& rhs)
         {
             return GetDistance(lhs) < GetDistance(rhs);
         });
         bool didAction = false;
-        for (Entity& entity : entities)
+        for (EntityT& entity : entities)
         {
             if (GetDistance(entity) > GetActionOffset())
             {
@@ -260,7 +260,7 @@ void MppMobEntity::DoAction()
         std::shared_ptr<MppProjectileEntity> projectile = held.CreateProjectileEntity();
         MppAssert(projectile);
         projectile->Setup(self, FacingX, FacingY);
-        Entity entity = projectile->Cast<MppEntity>();
+        EntityT entity = projectile->Cast<MppEntity>();
         MppWorldAddEntity(entity);
     }
     else

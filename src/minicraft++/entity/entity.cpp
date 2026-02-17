@@ -163,11 +163,6 @@ MppEntityReference MppEntity::GetReference()
     return MppEntityReference(shared_from_this());
 }
 
-void MppEntity::SetLevel(int level)
-{
-    MppWorldSetEntityLevel(Cast<MppEntity>(), level);
-}
-
 bool MppEntity::IsColliding()
 {
     return MoveTest(0, 0);

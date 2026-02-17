@@ -56,7 +56,7 @@ public:
     virtual bool HasPhysics() const;
     virtual bool CanBeSaved() const;
     MppEntityReference GetReference();
-    virtual void SetLevel(int level);
+    virtual void OnSetLevel(int level) {}
     bool IsColliding();
     void Unspawn();
     bool IsSpawned() const;
