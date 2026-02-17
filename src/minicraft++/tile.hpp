@@ -8,7 +8,7 @@
 #include <string_view>
 
 class MppEntity;
-enum MppRendererLayer : uint8_t;
+enum MppEntityCollision : uint8_t;
 
 enum MppTileID : uint16_t
 {
@@ -20,6 +20,7 @@ enum MppTileID : uint16_t
     MppTileIDSand,
     MppTileIDStairsDown,
     MppTileIDStairsUp,
+    MppTileIDStone,
     MppTileIDCount,
 };
 
@@ -31,6 +32,7 @@ enum MppTilePhysicsType
     MppTilePhysicsTypeGround = 0x01,
     MppTilePhysicsTypeWall   = 0x02,
     MppTilePhysicsTypeLiquid = 0x04,
+    MppTilePhysicsTypeStairs = 0x08,
 };
 
 enum MppTileLayer
@@ -53,7 +55,7 @@ public:
     void Render(int x, int y) const;
     bool OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y);
     bool OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y);
-    bool OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y);
+    MppEntityCollision OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y);
     MppTileID GetID(MppTileLayer layer) const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

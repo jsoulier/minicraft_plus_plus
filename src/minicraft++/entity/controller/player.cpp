@@ -176,6 +176,11 @@ void MppPlayerController::OnDropCallback(int index)
     MppWorldAddEntity(item);
 }
 
+void MppPlayerController::OnSetLevel(int level)
+{
+    MppWorldSetLevel(level);
+}
+
 bool MppPlayerController::ActionFilter(const std::shared_ptr<MppEntity>& entity) const
 {
     return !entity->IsA<MppMobEntity>() && !entity->IsA<MppFurnitureEntity>();

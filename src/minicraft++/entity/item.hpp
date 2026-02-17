@@ -14,7 +14,7 @@ public:
     MppItemEntity(const MppItem& item);
     void Visit(SavepointVisitor& visitor) override;
     void Render() const override;
-    bool OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy) override;
+    MppEntityCollision OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy) override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;

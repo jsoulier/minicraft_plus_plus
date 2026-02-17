@@ -45,13 +45,13 @@ bool MppFurnitureEntity::OnAction(std::shared_ptr<MppEntity>& instigator)
     return true;
 }
 
-bool MppFurnitureEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
+MppEntityCollision MppFurnitureEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
     if (instigator->IsA<MppMobEntity>() || instigator->IsA<MppFurnitureEntity>())
     {
         Move(dx, dy);
     }
-    return true;
+    return MppEntityCollisionRejected;
 }
 
 int MppFurnitureEntity::GetPhysicsOffsetX() const

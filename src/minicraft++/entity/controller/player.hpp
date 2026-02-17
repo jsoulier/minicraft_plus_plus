@@ -27,6 +27,7 @@ public:
     void OnInputHeldDown() override;
     void OnInputHeldLeft() override;
     void OnInputHeldRight() override;
+    void OnSetLevel(int level) override;
     bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const override;
     bool InteractionFilter(const std::shared_ptr<MppEntity>& entity) const override;
 

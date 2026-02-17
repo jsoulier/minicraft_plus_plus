@@ -24,6 +24,8 @@ void MppWorldSetTile(const MppTile& tile, int x, int y, int level);
 void MppWorldSetTile(const MppTile& tile, int x, int y);
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level);
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity);
+void MppWorldSetEntityLevel(const std::shared_ptr<MppEntity>& entity, int level);
+void MppWorldSetLevel(int level);
 int MppWorldGetLevel();
 int MppWorldGetLevelCount();
 int MppWorldGetSize();

@@ -129,7 +129,7 @@ void MppMobEntity::Update(uint64_t ticks)
     VelocityY = 0;
 }
 
-void MppMobEntity::Render(MppRendererLayer layer) const
+void MppMobEntity::Render() const
 {
     MppEntity::Render();
     if (Controller)
@@ -150,7 +150,7 @@ void MppMobEntity::Render(MppRendererLayer layer) const
         X,
         Y,
         Animation.GetMod(),
-        layer);
+        MppRendererLayerEntity);
     if (MppConsole::CVarFov.GetBool())
     {
         static constexpr float kLength = 32.0f;
@@ -171,9 +171,13 @@ void MppMobEntity::Render(MppRendererLayer layer) const
     }
 }
 
-void MppMobEntity::Render() const
+void MppMobEntity::SetLevel(int level)
 {
-    Render(MppRendererLayerEntity);
+    MppEntity::SetLevel(level);
+    if (Controller)
+    {
+        Controller->OnSetLevel(level);
+    }
 }
 
 void MppMobEntity::DoAction()

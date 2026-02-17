@@ -21,8 +21,8 @@ public:
     virtual void OnUnpossess();
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
-    void Render(MppRendererLayer layer) const;
     virtual void Render() const override;
+    void SetLevel(int level) override;
     virtual void DoAction();
     virtual void Equip(int index);
     void Push(int dx, int dy, bool useSpeed);

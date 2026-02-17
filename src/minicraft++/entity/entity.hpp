@@ -2,6 +2,7 @@
 
 #include <savepoint/savepoint.hpp>
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -25,6 +26,13 @@ private:
     SavepointID EntityID;
 };
 
+enum MppEntityCollision : uint8_t
+{
+    MppEntityCollisionAccepted,
+    MppEntityCollisionRejected,
+    MppEntityCollisionOverriden,
+};
+
 class MppEntity :
     public SavepointEntity,
     public SavepointPoly,
@@ -44,10 +52,11 @@ public:
     virtual void Update(uint64_t ticks) {}
     virtual bool OnAction(std::shared_ptr<MppEntity>& instigator);
     virtual bool OnInteraction(std::shared_ptr<MppEntity>& instigator);
-    virtual bool OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy);
+    virtual MppEntityCollision OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy);
     virtual bool HasPhysics() const;
     virtual bool CanBeSaved() const;
     MppEntityReference GetReference();
+    virtual void SetLevel(int level);
     bool IsColliding();
     void Unspawn();
     bool IsSpawned() const;
@@ -93,8 +102,8 @@ public:
 protected:
     virtual int GetPhysicsOffsetX() const = 0;
     virtual int GetPhysicsOffsetY() const = 0;
-    bool Move(int dx, int dy);
-    bool MoveTest(int dx, int dy);
+    MppEntityCollision Move(int dx, int dy);
+    MppEntityCollision MoveTest(int dx, int dy);
 
     int X;
     int Y;

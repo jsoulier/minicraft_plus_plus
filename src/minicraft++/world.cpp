@@ -1,4 +1,3 @@
-// TODO: add a ForceSaveNow to entities (for whenever entities are removed and repossessed)
 #include <SDL3/SDL.h>
 #include <savepoint/savepoint.hpp>
 
@@ -10,6 +9,7 @@
 #include <memory>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -25,9 +25,19 @@
 
 static constexpr int kSize = 256;
 
+enum LevelID : uint8_t
+{
+    LevelIDSurface,
+    LevelIDUnderground1,
+    LevelIDUnderground2,
+    LevelIDUnderground3,
+    LevelIDCount,
+};
+
 struct SaveHeader
 {
     uint64_t Ticks;
+    LevelID LevelIndex;
 
     SaveHeader()
         : Ticks{}
@@ -37,16 +47,8 @@ struct SaveHeader
     void Visit(SavepointVisitor& visitor)
     {
         visitor(Ticks);
+        visitor(LevelIndex);
     }
-};
-
-enum LevelID
-{
-    LevelIDSurface,
-    LevelIDUnderground1,
-    LevelIDUnderground2,
-    LevelIDUnderground3,
-    LevelIDCount,
 };
 
 struct Level
@@ -69,6 +71,7 @@ static constexpr uint64_t kSaveRate = 1000;
 
 static std::array<Level, LevelIDCount> levels;
 static std::unordered_map<SavepointID, std::weak_ptr<MppEntity>> references;
+static std::vector<std::pair<std::weak_ptr<MppEntity>, int>> moveRequests;
 static LevelID level;
 static Savepoint savepoint;
 static SavepointStatus savepointStatus;
@@ -133,7 +136,7 @@ bool MppWorldInit()
         }
         std::shared_ptr<MppEntity> player = MppEntity::Create<MppPlayerEntity>();
         MppWorldAddEntity(player);
-        level = LevelIDSurface;
+        MppWorldSetLevel(LevelIDSurface);
     }
     return true;
 }
@@ -149,7 +152,8 @@ void MppWorldQuit()
 
 void MppWorldUpdate(uint64_t ticks)
 {
-    std::vector<std::shared_ptr<MppEntity>> entities;
+    level = saveHeader.LevelIndex;
+    std::unordered_set<std::shared_ptr<MppEntity>> entities;
     for (std::shared_ptr<MppEntity>& entity : levels[level].Entities)
     {
         entity->Update(ticks);
@@ -162,15 +166,26 @@ void MppWorldUpdate(uint64_t ticks)
         }
         else
         {
-            entities.push_back(entity);
+            entities.insert(entity);
         }
     }
-    levels[level].Entities = std::move(entities);
     for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
     for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
     {
         levels[level].Tiles[x][y].Update(x, y, ticks);
     }
+    for (auto& [entity, level] : moveRequests)
+    {
+        if (entity.expired())
+        {
+            continue;
+        }
+        entities.erase(entity.lock());
+        levels[level].Entities.push_back(entity.lock());
+    }
+    moveRequests.clear();
+    levels[level].Entities.clear();
+    levels[level].Entities.insert(levels[level].Entities.begin(), entities.begin(), entities.end());
 }
 
 void MppWorldSave(uint64_t inTicks, bool force)
@@ -322,6 +337,18 @@ void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity)
 {
     MppWorldAddEntity(entity, level);
+}
+
+void MppWorldSetEntityLevel(const std::shared_ptr<MppEntity>& entity, int level)
+{
+    MppAssert(level >= 0 && level < levels.size());
+    MppAssert(entity->IsSpawned());
+    moveRequests.emplace_back(entity, level);
+}
+
+void MppWorldSetLevel(int level)
+{
+    saveHeader.LevelIndex = LevelID(level);
 }
 
 int MppWorldGetLevel()

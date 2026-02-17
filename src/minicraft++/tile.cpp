@@ -170,7 +170,7 @@ static constexpr kTiles[MppTileIDCount] =
         .ItemType = MppItemTypeShovel,
     },
     {
-        .Name = "stairs down",
+        .Name = "stairs_down",
         .SpriteType = TileSpriteTypeNoLinks,
         .SpriteX = 0,
         .SpriteY = 19,
@@ -180,16 +180,16 @@ static constexpr kTiles[MppTileIDCount] =
         .Color3 = 333,
         .Color4 = 0,
         .Color5 = kDirtColor,
-        .PhysicsType = MppTilePhysicsTypeGround,
-        .PhysicsOffsetX = 0,
-        .PhysicsOffsetY = 0,
-        .PhysicsWidth = MppTile::kSize,
-        .PhysicsHeight = MppTile::kSize,
+        .PhysicsType = MppTilePhysicsTypeStairs,
+        .PhysicsOffsetX = 7,
+        .PhysicsOffsetY = 7,
+        .PhysicsWidth = 2,
+        .PhysicsHeight = 2,
         .ChildTile = MppTileIDInvalid,
         .ItemType = MppItemTypeNone,
     },
     {
-        .Name = "stairs up",
+        .Name = "stairs_up",
         .SpriteType = TileSpriteTypeNoLinks,
         .SpriteX = 1,
         .SpriteY = 19,
@@ -199,6 +199,25 @@ static constexpr kTiles[MppTileIDCount] =
         .Color3 = 333,
         .Color4 = 0,
         .Color5 = kDirtColor,
+        .PhysicsType = MppTilePhysicsTypeStairs,
+        .PhysicsOffsetX = 7,
+        .PhysicsOffsetY = 7,
+        .PhysicsWidth = 2,
+        .PhysicsHeight = 2,
+        .ChildTile = MppTileIDInvalid,
+        .ItemType = MppItemTypeNone,
+    },
+    {
+        .Name = "stone",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .Color1 = 333,
+        .Color2 = 333,
+        .Color3 = 333,
+        .Color4 = kDirtColor,
+        .Color5 = 0,
         .PhysicsType = MppTilePhysicsTypeGround,
         .PhysicsOffsetX = 0,
         .PhysicsOffsetY = 0,
@@ -365,6 +384,10 @@ void MppTile::Render(int x, int y) const
         {
             color = kMppColorDebugLiquidTilePhysics;
         }
+        else if (GetPhysicsType() == MppTilePhysicsTypeStairs)
+        {
+            color = kMppColorDebugStairsTilePhysics;
+        }
         if (color)
         {
             MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
@@ -507,9 +530,54 @@ bool MppTile::OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y
     return false;
 }
 
-bool MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y)
+MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y)
 {
-    return kTiles[GetID()].PhysicsType == MppTilePhysicsTypeWall;
+    MppTileID id = GetID();
+    if (GetPhysicsType() == MppTilePhysicsTypeStairs)
+    {
+        int level = MppWorldGetLevel();
+        const int (*positions)[4][2] = nullptr;
+        if (id == MppTileIDStairsDown)
+        {
+            static constexpr int kPositions[4][2] = {{-1, 0}, {0, 1}, {0, -1}, {1, 0}};
+            positions = &kPositions;
+            level++;
+        }
+        else if (id == MppTileIDStairsUp)
+        {
+            static constexpr int kPositions[4][2] = {{1, 0}, {0, 1}, {0, -1}, {-1, 0}};
+            positions = &kPositions;
+            level--;
+        }
+        else
+        {
+            MppAssert(false);
+        }
+        int i = 0;
+        for (; i < 4; i++)
+        {
+            int tx = x + (*positions)[i][0];
+            int ty = y + (*positions)[i][1];
+            const MppTile& tile = MppWorldGetTile(tx, ty, level);
+            if (tile.GetPhysicsType() == MppTilePhysicsTypeGround)
+            {
+                instigator->SetX(tx * kSize);
+                instigator->SetY(ty * kSize);
+                break;
+            }
+        }
+        instigator->SetLevel(level);
+        MppAssert(i < 4);
+        return MppEntityCollisionOverriden;
+    }
+    else if (GetPhysicsType() == MppTilePhysicsTypeWall)
+    {
+        return MppEntityCollisionRejected;
+    }
+    else
+    {
+        return MppEntityCollisionAccepted;
+    }
 }
 
 MppTileID MppTile::GetID(MppTileLayer layer) const

@@ -21,6 +21,7 @@ public:
     virtual void Visit(SavepointVisitor& visitor) {}
     virtual void Update(uint64_t ticks) {}
     virtual void Render() const {}
+    virtual void OnSetLevel(int level) {}
     virtual bool ActionFilter(const std::shared_ptr<MppEntity>& entity) const;
     virtual bool InteractionFilter(const std::shared_ptr<MppEntity>& entity) const;
 

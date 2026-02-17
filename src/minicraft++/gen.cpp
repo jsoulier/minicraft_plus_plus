@@ -42,5 +42,5 @@ MppTile MppGenSurface(float x, float y, int level)
 
 MppTile MppGenUnderground(float x, float y, int level)
 {
-    return MppTile{MppTileIDDirt, MppTileIDStoneWall};
+    return MppTile{MppTileIDStone};
 }

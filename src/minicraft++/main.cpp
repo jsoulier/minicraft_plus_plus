@@ -80,6 +80,12 @@ SDL_AppResult SDLCALL SDL_AppEvent(void* appstate, SDL_Event* event)
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
     case SDL_EVENT_KEY_DOWN:
+        MppInputHandle(event);
+        if (event->key.key == SDLK_S && event->key.mod & SDL_KMOD_CTRL)
+        {
+            MppWorldSave(GetTicks(), true);
+        }
+        break;
     case SDL_EVENT_TEXT_INPUT:
         MppInputHandle(event);
         break;

@@ -24,7 +24,7 @@ void MppItemEntity::Render() const
     Item.Render(X, Y, MppRendererLayerEntity);
 }
 
-bool MppItemEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
+MppEntityCollision MppItemEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
     MppEntity::OnCollision(instigator, dx, dy);
     std::shared_ptr<MppMobEntity> mob = instigator->Cast<MppMobEntity>();
@@ -32,7 +32,7 @@ bool MppItemEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, 
     {
         Unspawn();
     }
-    return false;
+    return MppEntityCollisionAccepted;
 }
 
 void MppItemEntity::Visit(SavepointVisitor& visitor)
