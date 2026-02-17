@@ -21,6 +21,7 @@ enum MppTileID : uint16_t
     MppTileIDStairsDown,
     MppTileIDStairsUp,
     MppTileIDStone,
+    MppTileIDIronRails,
     MppTileIDCount,
 };
 

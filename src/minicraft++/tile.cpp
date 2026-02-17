@@ -25,6 +25,7 @@ static constexpr uint64_t kInvalidTicks = std::numeric_limits<uint64_t>::max();
 static constexpr int kDirtColor = 420;
 
 static const MppAudioHandle kDestroyedAudio{{"destroyed_tile_1", "destroyed_tile_2"}};
+static const MppAudioHandle kPlacedAudio{{"placed_tile_1"}};
 
 enum TileSpriteType
 {
@@ -122,7 +123,7 @@ static constexpr kTiles[MppTileIDCount] =
         .Color2 = 111,
         .Color3 = 555,
         .Color4 = 444,
-        .Color5 = kDirtColor,
+        .Color5 = 0,
         .PhysicsType = MppTilePhysicsTypeWall,
         .PhysicsOffsetX = 0,
         .PhysicsOffsetY = 0,
@@ -225,6 +226,25 @@ static constexpr kTiles[MppTileIDCount] =
         .PhysicsHeight = MppTile::kSize,
         .ChildTile = MppTileIDInvalid,
         .ItemType = MppItemTypeNone,
+    },
+    {
+        .Name = "iron_rails",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 20,
+        .TopSpriteY = 0,
+        .Color1 = 111,
+        .Color2 = 222,
+        .Color3 = 210,
+        .Color4 = 0,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemType = MppItemTypeEquipment,
     },
 };
 
@@ -439,6 +459,24 @@ void MppTile::Render(int x, int y) const
     {
         return;
     }
+    else if (kTiles[topID].SpriteType == TileSpriteType1x1)
+    {
+        MppRendererDraw(
+            MppSprite{
+                kTiles[topID].Color1,
+                kTiles[topID].Color2,
+                kTiles[topID].Color3,
+                kTiles[topID].Color4,
+                kTiles[topID].Color5,
+                kTiles[topID].SpriteX + GetSprite1x1(topID, x, y, MppTileLayerTop),
+                kTiles[topID].SpriteY,
+                MppTile::kSize,
+            },
+            x * MppTile::kSize,
+            y * MppTile::kSize,
+            MppRendererModNone,
+            MppRendererLayerBottomTile);
+    }
     else if (kTiles[topID].SpriteType == TileSpriteType2x2)
     {
         SDL_assert(kTiles[topID].TopSpriteY == 0);
@@ -511,17 +549,35 @@ bool MppTile::OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y)
     }
     MppItem item = mob->GetInventory()->GetBySlot(MppInventorySlotHeld);
     MppAssert(item.IsValid());
-    MppTileID& id = GetMutableID();
-    if ((item.GetType() & kTiles[id].ItemType) == MppItemTypeNone)
+    if (item.GetType() & MppItemTypeEquipment)
     {
-        return false;
+        MppTileID& id = GetMutableID();
+        if ((item.GetType() & kTiles[id].ItemType) == MppItemTypeNone)
+        {
+            return false;
+        }
+        id = kTiles[id].ChildTile;
+        kDestroyedAudio.Play();
+        std::shared_ptr<MppEntity> entity = MppEntity::Create<MppHitEntity>();
+        entity->SetX(x * kSize);
+        entity->SetY(y * kSize);
+        MppWorldAddEntity(entity);
     }
-    id = kTiles[id].ChildTile;
-    kDestroyedAudio.Play();
-    std::shared_ptr<MppEntity> entity = MppEntity::Create<MppHitEntity>();
-    entity->SetX(x * kSize);
-    entity->SetY(y * kSize);
-    MppWorldAddEntity(entity);
+    else if (item.GetType() & MppItemTypeConsumable)
+    {
+        if (Layers[MppTileLayerTop] != MppTileIDInvalid)
+        {
+            return false;
+        }
+        // TODO: not everything supports
+        MppTileID id = item.GetTileID();
+        if (id == MppTileIDInvalid)
+        {
+            return false;
+        }
+        Layers[MppTileLayerTop] = id;
+        kPlacedAudio.Play();
+    }
     return true;
 }
 
@@ -535,6 +591,11 @@ MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, 
     MppTileID id = GetID();
     if (GetPhysicsType() == MppTilePhysicsTypeStairs)
     {
+        // TODO: If a held entity is placed. Pretty dangerous edge case, should fix properly
+        if (!instigator->IsSpawned())
+        {
+            return MppEntityCollisionReject;
+        }
         int level = MppWorldGetLevel();
         const int (*positions)[4][2] = nullptr;
         if (id == MppTileIDStairsDown)
@@ -570,17 +631,17 @@ MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, 
         if (i >= 4)
         {
             MppLog("No valid positions found for entity using stairs");
-            return MppEntityCollisionRejected;
+            return MppEntityCollisionReject;
         }
-        return MppEntityCollisionOverriden;
+        return MppEntityCollisionTeleport;
     }
     else if (GetPhysicsType() == MppTilePhysicsTypeWall)
     {
-        return MppEntityCollisionRejected;
+        return MppEntityCollisionReject;
     }
     else
     {
-        return MppEntityCollisionAccepted;
+        return MppEntityCollisionAccept;
     }
 }
 

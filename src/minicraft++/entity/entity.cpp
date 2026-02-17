@@ -145,7 +145,7 @@ bool MppEntity::OnInteraction(std::shared_ptr<MppEntity>& instigator)
 
 MppEntityCollision MppEntity::OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy)
 {
-    return MppEntityCollisionAccepted;
+    return MppEntityCollisionAccept;
 }
 
 bool MppEntity::HasPhysics() const
@@ -165,7 +165,7 @@ MppEntityReference MppEntity::GetReference()
 
 bool MppEntity::IsColliding()
 {
-    return MoveTest(0, 0);
+    return MoveTest(0, 0) != MppEntityCollisionAccept;
 }
 
 void MppEntity::Unspawn()
@@ -249,6 +249,15 @@ int MppEntity::GetDistance(const std::shared_ptr<MppEntity>& entity) const
     return std::sqrt(dx * dx + dy * dy);
 }
 
+int MppEntity::IsColliding(const std::shared_ptr<MppEntity>& entity)
+{
+    int x = entity->GetPhysicsX();
+    int y = entity->GetPhysicsY();
+    int w = entity->GetPhysicsWidth();
+    int h = entity->GetPhysicsHeight();
+    return IsColliding(x, y, w, h);
+}
+
 int MppEntity::IsColliding(int inX, int inY, int inW, int inH)
 {
     int x = GetPhysicsX();
@@ -260,7 +269,7 @@ int MppEntity::IsColliding(int inX, int inY, int inW, int inH)
 
 MppEntityCollision MppEntity::Move(int dx, int dy)
 {
-    MppEntityCollision collision = MppEntityCollisionAccepted;
+    MppEntityCollision collision = MppEntityCollisionAccept;
     auto function = [&collision, this](int& delta, int signX, int signY)
     {
         if (!delta)
@@ -270,15 +279,15 @@ MppEntityCollision MppEntity::Move(int dx, int dy)
         int step = MppNormalize(delta);
         switch (MoveTest(delta * signX, delta * signY))
         {
-        case MppEntityCollisionRejected:
-            collision = MppEntityCollisionRejected;
+        case MppEntityCollisionReject:
+            collision = MppEntityCollisionReject;
             break;
-        case MppEntityCollisionOverriden:
-            collision = MppEntityCollisionOverriden;
+        case MppEntityCollisionTeleport:
+            collision = MppEntityCollisionTeleport;
             break;
         }
         delta -= step;
-        return collision == MppEntityCollisionOverriden;
+        return collision == MppEntityCollisionTeleport;
     };
     while (dx || dy)
     {
@@ -310,7 +319,7 @@ MppEntityCollision MppEntity::MoveTest(int dx, int dy)
     int tileY1 = y / MppTile::kSize;
     int tileX2 = (x + w) / MppTile::kSize;
     int tileY2 = (y + h) / MppTile::kSize;
-    MppEntityCollision collision = MppEntityCollisionAccepted;
+    MppEntityCollision collision = MppEntityCollisionAccept;
     for (int tileX = tileX1; tileX <= tileX2; tileX++)
     for (int tileY = tileY1; tileY <= tileY2; tileY++)
     {
@@ -325,11 +334,11 @@ MppEntityCollision MppEntity::MoveTest(int dx, int dy)
         }
         switch (tile.OnCollision(self, tileX, tileY))
         {
-        case MppEntityCollisionRejected:
-            collision = MppEntityCollisionRejected;
+        case MppEntityCollisionReject:
+            collision = MppEntityCollisionReject;
             break;
-        case MppEntityCollisionOverriden:
-            return MppEntityCollisionOverriden;
+        case MppEntityCollisionTeleport:
+            return MppEntityCollisionTeleport;
         }
     }
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities(X, Y))
@@ -348,15 +357,15 @@ MppEntityCollision MppEntity::MoveTest(int dx, int dy)
         }
         switch (entity->OnCollision(self, dx, dy))
         {
-        case MppEntityCollisionRejected:
-            collision = MppEntityCollisionRejected;
+        case MppEntityCollisionReject:
+            collision = MppEntityCollisionReject;
             break;
-        case MppEntityCollisionOverriden:
-            return MppEntityCollisionOverriden;
+        case MppEntityCollisionTeleport:
+            return MppEntityCollisionTeleport;
         }
     }
-    MppAssert(collision != MppEntityCollisionOverriden);
-    if (collision == MppEntityCollisionRejected)
+    MppAssert(collision != MppEntityCollisionTeleport);
+    if (collision == MppEntityCollisionReject)
     {
         X = entityX;
         Y = entityY;

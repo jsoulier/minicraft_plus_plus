@@ -272,14 +272,11 @@ void MppMobEntity::DoAction()
 void MppMobEntity::Equip(int index)
 {
     const MppItem& item = Inventory->Get(index);
-    if (item.GetType() & MppItemTypeEquipment)
+    MppInventorySlot slot = Inventory->GetSlotFromIndex(index);
+    if (slot != MppInventorySlotNone)
     {
-        MppInventorySlot slot = Inventory->GetSlotFromIndex(index);
-        if (slot != MppInventorySlotNone)
-        {
-            Inventory->ResetSlot(slot);
-            return;
-        }
+        Inventory->ResetSlot(slot);
+        return;
     }
     if (item.GetType() == MppItemTypeNone)
     {
@@ -287,7 +284,7 @@ void MppMobEntity::Equip(int index)
     }
     else if (item.GetType() == MppItemTypeConsumable)
     {
-        // TODO: use consumable
+        Inventory->SetSlot(MppInventorySlotHeld, index);
     }
     else if (item.GetType() & MppItemTypeHeld)
     {

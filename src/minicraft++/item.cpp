@@ -18,6 +18,7 @@
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/item.hpp>
 #include <minicraft++/renderer.hpp>
+#include <minicraft++/tile.hpp>
 
 static constexpr int kIronColor1 = 0;
 static constexpr int kIronColor2 = 222;
@@ -83,6 +84,7 @@ struct
     MppItemRecipeData ActionRecipe;
     CreateFurnitureEntityFunction CreateFurnitureEntity;
     CreateProjectileEntityFunction CreateProjectileEntity;
+    MppTileID TileID;
     int Color1;
     int Color2;
     int Color3;
@@ -565,6 +567,21 @@ static const kItems[MppItemIDCount] =
         .SpriteX = 4,
         .SpriteY = 12,
     },
+    {
+        .Name = "iron rails",
+        .Type = MppItemTypeConsumable,
+        .ActionType = MppItemActionTypeDefault,
+        .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 6}, {MppItemIDIronBar, 1}}},
+        .ActionRecipe = {MppItemIDInvalid, {{MppItemIDIronRails, 1}}},
+        .TileID = MppTileIDIronRails,
+        .Color1 = 111,
+        .Color2 = 222,
+        .Color3 = 210,
+        .Color4 = 0,
+        .Color5 = 0,
+        .SpriteX = 5,
+        .SpriteY = 12,
+    },
 };
 
 MppItemRecipe::MppItemRecipe(const MppItemRecipeData& data)
@@ -677,6 +694,11 @@ std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
 std::shared_ptr<MppProjectileEntity> MppItem::CreateProjectileEntity() const
 {
     return kItems[ID].CreateProjectileEntity();
+}
+
+MppTileID MppItem::GetTileID() const
+{
+    return kItems[ID].TileID;
 }
 
 MppItemRecipe MppItem::GetRecipe() const

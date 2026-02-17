@@ -136,7 +136,7 @@ void MppHumanoidEntity::DropEntity()
     int heldY = Entity->GetY();
     Entity->SetX(X + GetFacingX() * GetSize());
     Entity->SetY(Y + GetFacingY() * GetSize());
-    if (!Entity->IsColliding())
+    if (Entity->IsColliding())
     {
         Entity->SetX(heldX);
         Entity->SetY(heldY);

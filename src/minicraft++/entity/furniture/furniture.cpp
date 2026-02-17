@@ -49,9 +49,24 @@ MppEntityCollision MppFurnitureEntity::OnCollision(std::shared_ptr<MppEntity>& i
 {
     if (instigator->IsA<MppMobEntity>() || instigator->IsA<MppFurnitureEntity>())
     {
-        Move(dx, dy);
+        int x = X;
+        int y = Y;
+        switch (Move(dx, dy))
+        {
+        case MppEntityCollisionAccept:
+        case MppEntityCollisionTeleport:
+            // If still colliding with instigator, instigator is inside the furniture
+            if (IsColliding(instigator))
+            {
+                X = x;
+                Y = y;
+            }
+            return MppEntityCollisionAccept;
+        case MppEntityCollisionReject:
+            return MppEntityCollisionReject;
+        }
     }
-    return MppEntityCollisionRejected;
+    return MppEntityCollisionReject;
 }
 
 int MppFurnitureEntity::GetPhysicsOffsetX() const

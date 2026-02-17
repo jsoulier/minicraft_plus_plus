@@ -12,9 +12,10 @@ make_directory(${BINARY_DIR})
 
 configure_file(LICENSE.txt ${BINARY_DIR} COPYONLY)
 configure_file(README.md ${BINARY_DIR} COPYONLY)
-configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
 configure_file(res/sounds/destroyed_tile_1.wav ${BINARY_DIR} COPYONLY)
 configure_file(res/sounds/destroyed_tile_2.wav ${BINARY_DIR} COPYONLY)
+configure_file(res/sounds/placed_tile_1.wav ${BINARY_DIR} COPYONLY)
+configure_file(res/textures/spritesheet.png ${BINARY_DIR} COPYONLY)
 
 add_subdirectory(lib/FastNoiseLite)
 add_subdirectory(lib/SDL)
@@ -45,6 +46,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/mob/creature.cpp
     src/minicraft++/entity/mob/horse.cpp
     src/minicraft++/entity/mob/humanoid.cpp
+    src/minicraft++/entity/mob/minecart.cpp
     src/minicraft++/entity/mob/mob.cpp
     src/minicraft++/entity/mob/player.cpp
     src/minicraft++/entity/mob/sheep.cpp

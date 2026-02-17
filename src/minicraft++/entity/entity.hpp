@@ -28,9 +28,9 @@ private:
 
 enum MppEntityCollision : uint8_t
 {
-    MppEntityCollisionAccepted,
-    MppEntityCollisionRejected,
-    MppEntityCollisionOverriden,
+    MppEntityCollisionAccept,
+    MppEntityCollisionReject,
+    MppEntityCollisionTeleport,
 };
 
 class MppEntity :
@@ -72,6 +72,7 @@ public:
     std::pair<int, int> GetCenter() const;
     std::string GetName() const;
     int GetDistance(const std::shared_ptr<MppEntity>& entity) const;
+    int IsColliding(const std::shared_ptr<MppEntity>& entity);
     int IsColliding(int x, int y, int w, int h);
 
     template<typename T, typename... Args>

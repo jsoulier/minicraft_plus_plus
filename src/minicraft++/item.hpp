@@ -15,6 +15,7 @@ class MppItemEntity;
 class MppProjectileEntity;
 enum MppRendererLayer : uint8_t;
 struct MppItemRecipeData;
+enum MppTileID : uint16_t;
 
 enum MppItemID
 {
@@ -55,6 +56,7 @@ enum MppItemID
     MppItemIDHands,
     MppItemIDLantern,
     MppItemIDArrow,
+    MppItemIDIronRails,
     MppItemIDCount,
 };
 
@@ -74,6 +76,7 @@ enum MppItemType
     MppItemTypeConsumable = 1024,
     MppItemTypeHands = 2048,
     MppItemTypeHeld =
+        MppItemTypeHands |
         MppItemTypePickaxe |
         MppItemTypeAxe |
         MppItemTypeShovel |
@@ -85,6 +88,7 @@ enum MppItemType
         MppItemTypeLeggings |
         MppItemTypeBoots,
     MppItemTypeEquipment =
+        MppItemTypeHands |
         MppItemTypeHeld |
         MppItemTypeArmor,
 };
@@ -132,6 +136,7 @@ public:
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
     std::shared_ptr<MppProjectileEntity> CreateProjectileEntity() const;
+    MppTileID GetTileID() const;
     MppItemRecipe GetRecipe() const;
     MppItemRecipe GetActionRecipe() const;
     void Add(int count = 1);

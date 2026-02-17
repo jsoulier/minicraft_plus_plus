@@ -32,7 +32,7 @@ MppEntityCollision MppItemEntity::OnCollision(std::shared_ptr<MppEntity>& instig
     {
         Unspawn();
     }
-    return MppEntityCollisionAccepted;
+    return MppEntityCollisionAccept;
 }
 
 void MppItemEntity::Visit(SavepointVisitor& visitor)
