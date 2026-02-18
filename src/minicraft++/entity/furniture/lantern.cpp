@@ -3,13 +3,14 @@
 #include <minicraft++/item.hpp>
 #include <minicraft++/renderer.hpp>
 
-static constexpr int kRadius = 36;
-
 void MppLanternEntity::Render() const
 {
     MppFurnitureEntity::Render();
+    static constexpr int kColor = 553;
+    static constexpr int kRadius = 64;
+    static constexpr int kStrength = 5;
     auto [x, y] = GetCenter();
-    MppRendererDrawLight(500, x, y, kRadius, 3);
+    MppRendererDrawLight(kColor, x, y, kRadius, kStrength);
 }
 
 MppItemID MppLanternEntity::GetItemID() const

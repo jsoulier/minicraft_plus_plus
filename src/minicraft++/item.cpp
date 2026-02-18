@@ -13,6 +13,8 @@
 #include <minicraft++/entity/furniture/lantern.hpp>
 #include <minicraft++/entity/furniture/workbench.hpp>
 #include <minicraft++/entity/item.hpp>
+#include <minicraft++/entity/mob/minecart.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/projectile/arrow.hpp>
 #include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/inventory.hpp>
@@ -20,11 +22,6 @@
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/tile.hpp>
 
-static constexpr int kIronColor1 = 0;
-static constexpr int kIronColor2 = 222;
-static constexpr int kIronColor3 = 333;
-static constexpr int kIronColor4 = 444;
-static constexpr int kIronColor5 = 555;
 static constexpr int kStoneColor1 = 333;
 static constexpr int kStoneColor2 = 111;
 static constexpr int kStoneColor3 = 555;
@@ -38,6 +35,7 @@ static constexpr int kWoodColor5 = 540;
 
 using CreateFurnitureEntityFunction = std::shared_ptr<MppFurnitureEntity>(*)();
 using CreateProjectileEntityFunction = std::shared_ptr<MppProjectileEntity>(*)();
+using CreateMobEntityFunction = std::shared_ptr<MppMobEntity>(*)();
 
 static std::shared_ptr<MppFurnitureEntity> CreateWorkbenchEntity()
 {
@@ -69,6 +67,11 @@ static std::shared_ptr<MppProjectileEntity> CreateArrowEntity()
     return MppEntity::Create<MppArrowEntity>();
 }
 
+static std::shared_ptr<MppMobEntity> CreateMinecartEntity()
+{
+    return MppEntity::Create<MppMinecartEntity>();
+}
+
 struct MppItemRecipeData
 {
     MppItemID ID;
@@ -84,6 +87,7 @@ struct
     MppItemRecipeData ActionRecipe;
     CreateFurnitureEntityFunction CreateFurnitureEntity;
     CreateProjectileEntityFunction CreateProjectileEntity;
+    CreateMobEntityFunction CreateMobEntity;
     MppTileID TileID;
     int Color1;
     int Color2;
@@ -136,11 +140,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeHelmet,
         .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 0,
         .SpriteY = 13,
     },
@@ -149,11 +153,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeCuirass,
         .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 8}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 1,
         .SpriteY = 13,
     },
@@ -162,11 +166,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeLeggings,
         .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 7}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 2,
         .SpriteY = 13,
     },
@@ -175,11 +179,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeBoots,
         .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 3,
         .SpriteY = 13,
     },
@@ -187,11 +191,11 @@ static const kItems[MppItemIDCount] =
         .Name = "iron ore",
         .Type = MppItemTypeConsumable,
         .ActionType = MppItemActionTypeNone,
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 2,
         .SpriteY = 12,
     },
@@ -200,11 +204,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeConsumable,
         .ActionType = MppItemActionTypeNone,
         .Recipe = {MppItemIDFurnace, {{MppItemIDIronOre, 1}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 0,
         .SpriteY = 12,
     },
@@ -470,11 +474,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeSword,
         .ActionType = MppItemActionTypeDefault,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 3}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 4,
         .SpriteY = 13,
     },
@@ -483,11 +487,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypePickaxe,
         .ActionType = MppItemActionTypeDefault,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 5}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 5,
         .SpriteY = 13,
     },
@@ -496,11 +500,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeAxe,
         .ActionType = MppItemActionTypeDefault,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 6,
         .SpriteY = 13,
     },
@@ -509,11 +513,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeShovel,
         .ActionType = MppItemActionTypeDefault,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 3}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 7,
         .SpriteY = 13,
     },
@@ -522,11 +526,11 @@ static const kItems[MppItemIDCount] =
         .Type = MppItemTypeHoe,
         .ActionType = MppItemActionTypeDefault,
         .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 4}}},
-        .Color1 = kIronColor1,
-        .Color2 = kIronColor2,
-        .Color3 = kIronColor3,
-        .Color4 = kIronColor4,
-        .Color5 = kIronColor5,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
         .SpriteX = 8,
         .SpriteY = 13,
     },
@@ -580,6 +584,20 @@ static const kItems[MppItemIDCount] =
         .Color4 = 0,
         .Color5 = 0,
         .SpriteX = 5,
+        .SpriteY = 12,
+    },
+    {
+        .Name = "minecart",
+        .Type = MppItemTypeMob,
+        .ActionType = MppItemActionTypeNone,
+        .Recipe = {MppItemIDAnvil, {{MppItemIDIronBar, 5}}},
+        .CreateMobEntity = CreateMinecartEntity,
+        .Color1 = kMppColorIron1,
+        .Color2 = kMppColorIron2,
+        .Color3 = kMppColorIron3,
+        .Color4 = kMppColorIron4,
+        .Color5 = kMppColorIron5,
+        .SpriteX = 6,
         .SpriteY = 12,
     },
 };
@@ -694,6 +712,11 @@ std::shared_ptr<MppFurnitureEntity> MppItem::CreateFurnitureEntity() const
 std::shared_ptr<MppProjectileEntity> MppItem::CreateProjectileEntity() const
 {
     return kItems[ID].CreateProjectileEntity();
+}
+
+std::shared_ptr<MppMobEntity> MppItem::CreateMobEntity() const
+{
+    return kItems[ID].CreateMobEntity();
 }
 
 MppTileID MppItem::GetTileID() const

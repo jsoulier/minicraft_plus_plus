@@ -9,22 +9,31 @@
 
 class MppItem;
 
+enum MppHumanoidEntityLocomotionMode : uint8_t
+{
+    MppHumanoidEntityLocomotionModeDefault,
+    MppHumanoidEntityLocomotionModeHorse,
+    MppHumanoidEntityLocomotionModeMinecart,
+};
+
 class MppHumanoidEntity : public MppMobEntity
 {
 public:
+    MppHumanoidEntity();
     virtual void Visit(SavepointVisitor& visitor);
     virtual void Render() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
+    void OnMount(const std::shared_ptr<MppMobEntity>& vehicle) override;
+    void OnUnmount() override;
     void DoAction() override;
     void Equip(int index) override;
     int GetActionOffset() const override;
     void PickupEntity(const std::shared_ptr<MppEntity>& entity);
     void DropEntity();
     std::shared_ptr<MppEntity> GetEntity() const;
-    void SetRiding(bool riding);
 
 protected:
     void Render(const MppItem& item) const;
@@ -35,9 +44,11 @@ protected:
     int GetAnimationPose2Y() const override;
     int GetAnimationPose3X() const override;
     int GetAnimationPose3Y() const override;
+    int GetAnimationPose4X() const override;
+    int GetAnimationPose4Y() const override;
     int GetAnimationPose() const override;
 
 protected:
     std::shared_ptr<MppEntity> Entity;
-    bool Riding;
+    MppHumanoidEntityLocomotionMode LocomotionMode;
 };

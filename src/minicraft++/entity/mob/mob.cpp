@@ -56,6 +56,7 @@ void MppMobEntity::OnCreate()
     Animation.SetPose(0, GetAnimationPose1X(), GetAnimationPose1Y());
     Animation.SetPose(1, GetAnimationPose2X(), GetAnimationPose2Y());
     Animation.SetPose(2, GetAnimationPose3X(), GetAnimationPose3Y());
+    Animation.SetPose(3, GetAnimationPose4X(), GetAnimationPose4Y());
     RequestAnimationTick();
 }
 
@@ -407,11 +408,6 @@ std::shared_ptr<MppController> MppMobEntity::GetDefaultController()
     return nullptr;
 }
 
-void MppMobEntity::RequestAnimationTick()
-{
-    TickAnimation = true;
-}
-
 int MppMobEntity::GetMaxItems() const
 {
     return 0;
@@ -427,9 +423,29 @@ int MppMobEntity::GetAnimationTickRate() const
     return 10;
 }
 
+void MppMobEntity::RequestAnimationTick()
+{
+    TickAnimation = true;
+}
+
 float MppMobEntity::GetFov() const
 {
     return std::numbers::pi_v<float> / 4.0f * 3.0f;
+}
+
+int MppMobEntity::GetMaxHealth() const
+{
+    return 1;
+}
+
+int MppMobEntity::GetMaxHunger() const
+{
+    return 1;
+}
+
+int MppMobEntity::GetMaxEnergy() const
+{
+    return 1;
 }
 
 int MppMobEntity::GetAnimationPose() const
@@ -453,6 +469,16 @@ int MppMobEntity::GetAnimationPose3X() const
 }
 
 int MppMobEntity::GetAnimationPose3Y() const
+{
+    return 0;
+}
+
+int MppMobEntity::GetAnimationPose4X() const
+{
+    return 0;
+}
+
+int MppMobEntity::GetAnimationPose4Y() const
 {
     return 0;
 }

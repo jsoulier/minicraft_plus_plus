@@ -14,6 +14,7 @@ class MppSurfaceLevel : public MppLevel
 public:
     MppSurfaceLevel();
     void Generate() override;
+    int GetLightColor() const override;
 
 protected:
     MppTile GenerateTile(float x, float y) const override;

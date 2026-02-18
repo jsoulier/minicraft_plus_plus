@@ -1,5 +1,7 @@
 # Minicraft++
 
+![](doc/image1.png)
+
 ### Features
 
 TODO

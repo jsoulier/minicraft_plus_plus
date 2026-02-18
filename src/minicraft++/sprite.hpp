@@ -37,7 +37,7 @@ private:
 class MppSpriteAnimation
 {
 private:
-    static constexpr int kMaxPoses = 3;
+    static constexpr int kMaxPoses = 4;
 
 public:
     MppSpriteAnimation();

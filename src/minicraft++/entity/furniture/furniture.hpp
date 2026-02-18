@@ -18,13 +18,12 @@ public:
     virtual void Render() const override;
     virtual bool OnAction(std::shared_ptr<MppEntity>& instigator) override;
     virtual MppEntityCollision OnCollision(std::shared_ptr<MppEntity>& instigator, int dx, int dy) override;
+    bool Drop(const std::shared_ptr<MppEntity>& instigator) override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
     int GetSize() const override;
-    virtual MppItemID GetItemID() const = 0;
-    virtual bool IsEmpty() const;
 
 protected:
     virtual int GetSpriteX() const = 0;

@@ -1,4 +1,4 @@
 [ ] Add social preview
 [ ] Chair furniture entity
 [ ] TNT entity
-[ ] Fix armor sprites for riding
+[ ] Fix armor sprites for humanoid riding horse/minecart

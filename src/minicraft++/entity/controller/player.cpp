@@ -62,7 +62,7 @@ void MppPlayerController::Render() const
 {
     MppController::Render();
     static constexpr int kColor = 555;
-    static constexpr int kRadius = 64;
+    static constexpr int kRadius = 16;
     static constexpr int kStrength = 5;
     std::shared_ptr<MppMobEntity> player = Entity.lock();
     auto [x, y] = player->GetCenter();
@@ -194,5 +194,5 @@ bool MppPlayerController::ActionFilter(const std::shared_ptr<MppEntity>& entity)
 
 bool MppPlayerController::InteractionFilter(const std::shared_ptr<MppEntity>& entity) const
 {
-    return !entity->IsA<MppCreatureEntity>() && !entity->IsA<MppFurnitureEntity>();
+    return !entity->IsA<MppMobEntity>() && !entity->IsA<MppFurnitureEntity>();
 }

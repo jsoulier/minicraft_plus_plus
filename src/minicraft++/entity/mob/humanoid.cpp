@@ -3,18 +3,29 @@
 #include <memory>
 
 #include <minicraft++/assert.hpp>
+#include <minicraft++/entity/furniture/furniture.hpp>
+#include <minicraft++/entity/mob/horse.hpp>
+#include <minicraft++/entity/mob/humanoid.hpp>
+#include <minicraft++/entity/mob/minecart.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 #include <minicraft++/world.hpp>
-#include <minicraft++/entity/furniture/furniture.hpp>
-#include <minicraft++/entity/mob/humanoid.hpp>
+
+MppHumanoidEntity::MppHumanoidEntity()
+    : LocomotionMode{MppHumanoidEntityLocomotionModeDefault}
+{
+}
 
 void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
 {
     MppMobEntity::Visit(visitor);
     visitor(Entity);
-    visitor(Riding);
+    visitor(LocomotionMode);
+    if (visitor.IsReading() && Entity)
+    {
+        Entity->OnCreate();
+    }
 }
 
 void MppHumanoidEntity::Render() const
@@ -27,7 +38,9 @@ void MppHumanoidEntity::Render() const
     if (Entity)
     {
         Entity->SetX(X);
-        Entity->SetY(Y - Entity->GetPhysicsHeight());
+        int size = Entity->GetSize();
+        // Top of opaque sprite minus held entity's size, but trimming off top transparent portion
+        Entity->SetY(GetPhysicsY() - size + (size - Entity->GetPhysicsHeight()) / 2);
         Entity->Render();
     }
 }
@@ -52,6 +65,29 @@ int MppHumanoidEntity::GetPhysicsHeight() const
     return 14;
 }
 
+void MppHumanoidEntity::OnMount(const std::shared_ptr<MppMobEntity>& vehicle)
+{
+    if (vehicle->IsA<MppMinecartEntity>())
+    {
+        LocomotionMode = MppHumanoidEntityLocomotionModeMinecart;
+    }
+    else if (vehicle->IsA<MppHorseEntity>())
+    {
+        LocomotionMode = MppHumanoidEntityLocomotionModeHorse;
+    }
+    else
+    {
+        MppAssert(false);
+    }
+    RequestAnimationTick();
+}
+
+void MppHumanoidEntity::OnUnmount()
+{
+    LocomotionMode = MppHumanoidEntityLocomotionModeDefault;
+    RequestAnimationTick();
+}
+
 void MppHumanoidEntity::DoAction() 
 {
     if (GetEntity())
@@ -66,24 +102,37 @@ void MppHumanoidEntity::DoAction()
 
 void MppHumanoidEntity::Equip(int index)
 {
+    bool droppedEntity = false;
     if (Entity)
     {
-        std::shared_ptr<MppFurnitureEntity> furniture = Entity->Cast<MppFurnitureEntity>();
-        if (furniture)
+        if (Entity->IsEmpty())
         {
-            if (furniture->IsEmpty())
-            {
-                Inventory->Add(furniture->GetItemID());
-                Entity = nullptr;
-                RequestAnimationTick();
-            }
-            else
-            {
-                return;
-            }
+            Inventory->Add(Entity->GetItemID());
+            Entity = nullptr;
+            RequestAnimationTick();
+            droppedEntity = true;
+        }
+        else
+        {
+            return;
         }
     }
-    MppMobEntity::Equip(index);
+    // There's an annoying edge case when you place a furniture/mob back in your inventory.
+    // We want to unequip the furniture/mob and equip the newly selected item. But, we don't
+    // want to do the action if the new item is already equipped (because that'll unequip it).
+    bool doMobEquip = true;
+    for (int i = 0; i < MppInventorySlotCount; i++)
+    {
+        int slotIndex = Inventory->GetIndexFromSlot(MppInventorySlot(i));
+        if (slotIndex == index)
+        {
+            doMobEquip = false;
+        }
+    }
+    if (doMobEquip || !droppedEntity)
+    {
+        MppMobEntity::Equip(index);
+    }
     const MppItem& item = Inventory->Get(index);
     if (item.GetType() & MppItemTypeArmor)
     {
@@ -114,6 +163,12 @@ void MppHumanoidEntity::Equip(int index)
         Inventory->Remove(index);
         PickupEntity(entity);
     }
+    else if (item.GetType() == MppItemTypeMob)
+    {
+        std::shared_ptr<MppEntity> entity = item.CreateMobEntity();
+        Inventory->Remove(index);
+        PickupEntity(entity);
+    }
 }
 
 int MppHumanoidEntity::GetActionOffset() const
@@ -132,29 +187,17 @@ void MppHumanoidEntity::PickupEntity(const std::shared_ptr<MppEntity>& entity)
 void MppHumanoidEntity::DropEntity()
 {
     MppAssert(Entity);
-    int heldX = Entity->GetX();
-    int heldY = Entity->GetY();
-    Entity->SetX(X + GetFacingX() * GetSize());
-    Entity->SetY(Y + GetFacingY() * GetSize());
-    if (Entity->IsColliding())
+    if (Entity->Drop(Cast<MppEntity>()))
     {
-        Entity->SetX(heldX);
-        Entity->SetY(heldY);
-        return;
+        MppWorldAddEntity(Entity);
+        Entity = nullptr;
+        RequestAnimationTick();
     }
-    MppWorldAddEntity(Entity);
-    Entity = nullptr;
-    RequestAnimationTick();
 }
 
 std::shared_ptr<MppEntity> MppHumanoidEntity::GetEntity() const
 {
     return Entity;
-}
-
-void MppHumanoidEntity::SetRiding(bool riding)
-{
-    Riding = riding;
 }
 
 void MppHumanoidEntity::Render(const MppItem& item) const
@@ -205,18 +248,18 @@ int MppHumanoidEntity::GetMaxItems() const
 
 int MppHumanoidEntity::GetAnimationPose() const
 {
-    if (Riding)
-    {
-        return 2;
-    }
-    else if (Entity)
+    if (Entity)
     {
         return 1;
     }
-    else
+    switch (LocomotionMode)
     {
-        return 0;
+    case MppHumanoidEntityLocomotionModeHorse: return 2;
+    case MppHumanoidEntityLocomotionModeDefault: return 0;
+    case MppHumanoidEntityLocomotionModeMinecart: return 3;
     }
+    MppAssert(false);
+    return 0;
 }
 
 int MppHumanoidEntity::GetAnimationPose1X() const
@@ -247,4 +290,14 @@ int MppHumanoidEntity::GetAnimationPose3X() const
 int MppHumanoidEntity::GetAnimationPose3Y() const
 {
     return 6;
+}
+
+int MppHumanoidEntity::GetAnimationPose4X() const
+{
+    return 0;
+}
+
+int MppHumanoidEntity::GetAnimationPose4Y() const
+{
+    return 21;
 }

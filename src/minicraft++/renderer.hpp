@@ -16,6 +16,8 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerTopEntity1 = MppRendererLayerTopEntity,
     MppRendererLayerEntity2,
     MppRendererLayerTopEntity2,
+    MppRendererLayerEntity3,
+    MppRendererLayerTopEntity3,
 
     MppRendererLayerParticleEntity,
     MppRendererLayerDebugPhysics,

@@ -20,6 +20,12 @@ void MppSurfaceLevel::Generate()
     AddEntity(player);
 }
 
+int MppSurfaceLevel::GetLightColor() const
+{
+    // TODO: time of day
+    return 444;
+}
+
 MppTile MppSurfaceLevel::GenerateTile(float x, float y) const
 {
     float noise = Noise.GetNoise(x, y);

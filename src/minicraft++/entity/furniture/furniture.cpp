@@ -3,6 +3,8 @@
 #include <cstdint>
 
 #include <minicraft++/assert.hpp>
+#include <minicraft++/color.hpp>
+#include <minicraft++/console.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
@@ -51,22 +53,40 @@ MppEntityCollision MppFurnitureEntity::OnCollision(std::shared_ptr<MppEntity>& i
     {
         int x = X;
         int y = Y;
-        switch (Move(dx, dy))
+        Move(dx, dy);
+        // If still colliding with instigator, instigator is inside the furniture
+        if (IsColliding(instigator))
         {
-        case MppEntityCollisionAccept:
-        case MppEntityCollisionTeleport:
-            // If still colliding with instigator, instigator is inside the furniture
-            if (IsColliding(instigator))
-            {
-                X = x;
-                Y = y;
-            }
-            return MppEntityCollisionAccept;
-        case MppEntityCollisionReject:
-            return MppEntityCollisionReject;
+            X = x;
+            Y = y;
         }
     }
-    return MppEntityCollisionReject;
+    return MppEntityCollisionAccept;
+}
+
+bool MppFurnitureEntity::Drop(const std::shared_ptr<MppEntity>& instigator)
+{
+    std::shared_ptr<MppHumanoidEntity> humanoid = instigator->Cast<MppHumanoidEntity>();
+    MppAssert(humanoid);
+    int x = X;
+    int y = Y;
+    X = humanoid->GetX() + humanoid->GetFacingX() * humanoid->GetSize();
+    Y = humanoid->GetY() + humanoid->GetFacingY() * humanoid->GetSize();
+    if (MppConsole::CVarAction.GetBool())
+    {
+        int px = GetPhysicsX();
+        int py = GetPhysicsY();
+        int pw = GetPhysicsWidth();
+        int ph = GetPhysicsHeight();
+        MppRendererDrawRect(kMppColorDebugAction, px, py, pw, ph, MppRendererLayerDebugAction);
+    }
+    if (IsColliding())
+    {
+        X = x;
+        Y = y;
+        return false;
+    }
+    return true;
 }
 
 int MppFurnitureEntity::GetPhysicsOffsetX() const
@@ -92,9 +112,4 @@ int MppFurnitureEntity::GetPhysicsHeight() const
 int MppFurnitureEntity::GetSize() const
 {
     return 16;
-}
-
-bool MppFurnitureEntity::IsEmpty() const
-{
-    return true;
 }

@@ -13,11 +13,12 @@ class MppFurnitureEntity;
 class MppInventory;
 class MppItemEntity;
 class MppProjectileEntity;
+class MppMobEntity;
 enum MppRendererLayer : uint8_t;
 struct MppItemRecipeData;
 enum MppTileID : uint16_t;
 
-enum MppItemID
+enum MppItemID : uint16_t
 {
     MppItemIDInvalid,
     MppItemIDWood,
@@ -57,6 +58,7 @@ enum MppItemID
     MppItemIDLantern,
     MppItemIDArrow,
     MppItemIDIronRails,
+    MppItemIDMinecart,
     MppItemIDCount,
 };
 
@@ -75,6 +77,7 @@ enum MppItemType
     MppItemTypeFurniture = 512,
     MppItemTypeConsumable = 1024,
     MppItemTypeHands = 2048,
+    MppItemTypeMob = 4096,
     MppItemTypeHeld =
         MppItemTypeHands |
         MppItemTypePickaxe |
@@ -136,6 +139,7 @@ public:
     std::shared_ptr<MppItemEntity> CreateItemEntity() const;
     std::shared_ptr<MppFurnitureEntity> CreateFurnitureEntity() const;
     std::shared_ptr<MppProjectileEntity> CreateProjectileEntity() const;
+    std::shared_ptr<MppMobEntity> CreateMobEntity() const;
     MppTileID GetTileID() const;
     MppItemRecipe GetRecipe() const;
     MppItemRecipe GetActionRecipe() const;

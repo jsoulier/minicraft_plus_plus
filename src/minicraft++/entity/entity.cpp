@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <minicraft++/assert.hpp>
 #include <minicraft++/color.hpp>
@@ -163,6 +164,21 @@ MppEntityReference MppEntity::GetReference()
     return MppEntityReference(shared_from_this());
 }
 
+bool MppEntity::IsEmpty() const
+{
+    return true;
+}
+
+MppItemID MppEntity::GetItemID() const
+{
+    return MppItemIDInvalid;
+}
+
+bool MppEntity::Drop(const std::shared_ptr<MppEntity>& instigator)
+{
+    return false;
+}
+
 bool MppEntity::IsColliding()
 {
     return MoveTest(0, 0) != MppEntityCollisionAccept;
@@ -304,6 +320,24 @@ MppEntityCollision MppEntity::Move(int dx, int dy)
 }
 
 MppEntityCollision MppEntity::MoveTest(int dx, int dy)
+{
+    // Collisions can be infinitely recursive so we do some detection
+    static std::vector<SavepointID> recursiveIDs;
+    if (std::find(recursiveIDs.begin(), recursiveIDs.end(), GetID()) != recursiveIDs.end())
+    {
+        return MppEntityCollisionAccept;
+    }
+    recursiveIDs.push_back(GetID());
+    MppEntityCollision collision = MoveTestImpl(dx, dy);
+    int count = std::erase_if(recursiveIDs, [this](SavepointID id)
+    {
+        return id == GetID();
+    });
+    MppAssert(count == 1);
+    return collision;
+}
+
+MppEntityCollision MppEntity::MoveTestImpl(int dx, int dy)
 {
     std::shared_ptr<MppEntity> self = Cast<MppEntity>();
     int entityX = X;

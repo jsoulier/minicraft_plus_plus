@@ -11,6 +11,7 @@
 #include <minicraft++/log.hpp>
 
 class MppEntity;
+enum MppItemID : uint16_t;
 
 class MppEntityReference
 {
@@ -57,6 +58,9 @@ public:
     virtual bool CanBeSaved() const;
     MppEntityReference GetReference();
     virtual void OnSetLevel(int level) {}
+    virtual bool IsEmpty() const;
+    virtual MppItemID GetItemID() const;
+    virtual bool Drop(const std::shared_ptr<MppEntity>& instigator);
     bool IsColliding();
     void Unspawn();
     bool IsSpawned() const;
@@ -105,6 +109,7 @@ protected:
     virtual int GetPhysicsOffsetY() const = 0;
     MppEntityCollision Move(int dx, int dy);
     MppEntityCollision MoveTest(int dx, int dy);
+    MppEntityCollision MoveTestImpl(int dx, int dy);
 
     int X;
     int Y;

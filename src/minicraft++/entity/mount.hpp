@@ -10,7 +10,6 @@
 
 class MppController;
 class MppEntity;
-class MppHumanoidEntity;
 class MppMobEntity;
 
 class MppMountEntityProxy final
@@ -38,11 +37,11 @@ public:
     void OnInputHeldDown() override;
     void OnInputHeldLeft() override;
     void OnInputHeldRight() override;
+    std::shared_ptr<MppMobEntity> GetRider();
 
 private:
     std::shared_ptr<MppMobEntity> GetVehicle();
     std::shared_ptr<MppInputHandler> GetInputHandler();
-    std::shared_ptr<MppHumanoidEntity> GetRiderAsHumanoid();
 
 private:
     MppEntityReference Vehicle;

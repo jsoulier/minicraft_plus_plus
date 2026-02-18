@@ -30,10 +30,11 @@ std::string_view MppTileIDGetName(MppTileID id);
 enum MppTilePhysicsType
 {
     // Physics MUST be disjoint. e.g. Cannot have Ground and Wall at the same time
-    MppTilePhysicsTypeGround = 0x01,
-    MppTilePhysicsTypeWall   = 0x02,
-    MppTilePhysicsTypeLiquid = 0x04,
-    MppTilePhysicsTypeStairs = 0x08,
+    MppTilePhysicsTypeGround = 1,
+    MppTilePhysicsTypeWall   = 2,
+    MppTilePhysicsTypeLiquid = 4,
+    MppTilePhysicsTypeStairs = 8,
+    MppTilePhysicsTypeRails  = 16,
 };
 
 enum MppTileLayer
@@ -56,7 +57,7 @@ public:
     void Render(int x, int y) const;
     bool OnAction(std::shared_ptr<MppEntity>& instigator, int x, int y);
     bool OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y);
-    MppEntityCollision OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y);
+    MppEntityCollision OnCollision(const std::shared_ptr<MppEntity>& instigator, int x, int y);
     MppTileID GetID(MppTileLayer layer) const;
     MppTileID GetID() const;
     MppTilePhysicsType GetPhysicsType() const;

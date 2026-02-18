@@ -12,7 +12,7 @@
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/util.hpp>
 
-static constexpr int kInvalidSlot = std::numeric_limits<int>::max();
+static constexpr int kInvalidIndex = std::numeric_limits<int>::max();
 
 MppInventory::MppInventory()
     : MaxItems{0}
@@ -128,9 +128,9 @@ MppItem MppInventory::Remove(int index, int count)
         {
             if (slot == index)
             {
-                slot = kInvalidSlot;
+                slot = kInvalidIndex;
             }
-            else if (slot > index && slot != kInvalidSlot)
+            else if (slot > index && slot != kInvalidIndex)
             {
                 slot--;
                 MppAssert(slot >= 0);
@@ -168,7 +168,7 @@ MppItem MppInventory::RemoveByID(MppItemID id, int count)
 const MppItem& MppInventory::GetBySlot(MppInventorySlot slot) const
 {
     int slotIndex = Slots[slot];
-    if (slotIndex != kInvalidSlot)
+    if (slotIndex != kInvalidIndex)
     {
         return Items[slotIndex];
     }
@@ -197,6 +197,11 @@ MppInventorySlot MppInventory::GetSlotFromIndex(int index)
     return MppInventorySlotNone;
 }
 
+int MppInventory::GetIndexFromSlot(MppInventorySlot slot)
+{
+    return Slots[slot];
+}
+
 void MppInventory::SetSlot(MppInventorySlot slot, int index)
 {
     MppAssert(index < Items.size());
@@ -205,8 +210,8 @@ void MppInventory::SetSlot(MppInventorySlot slot, int index)
 
 void MppInventory::ResetSlot(MppInventorySlot slot)
 {
-    MppAssert(Slots[slot] != kInvalidSlot);
-    Slots[slot] = kInvalidSlot;
+    MppAssert(Slots[slot] != kInvalidIndex);
+    Slots[slot] = kInvalidIndex;
 }
 
 void MppInventory::SetMaxItems(int max)
@@ -282,7 +287,7 @@ void MppInventory::Clear()
     Items.clear();
     Top = 0;
     Index = 0;
-    Slots.fill(kInvalidSlot);
+    Slots.fill(kInvalidIndex);
 }
 
 void MppInventory::ClearItems()

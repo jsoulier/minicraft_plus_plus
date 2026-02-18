@@ -12,7 +12,6 @@ class MppSpiderEntity final : public MppMobEntity
 
 public:
     MppSpiderEntity();
-    void Render() const override;
     
 protected:
     std::shared_ptr<MppController> GetDefaultController();

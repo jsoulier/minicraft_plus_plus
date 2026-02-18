@@ -10,6 +10,7 @@
 #include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/entity.hpp>
+#include <minicraft++/entity/mob/minecart.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/particle/hit.hpp>
 #include <minicraft++/entity/particle/particle.hpp>
@@ -238,7 +239,7 @@ static constexpr kTiles[MppTileIDCount] =
         .Color3 = 210,
         .Color4 = 0,
         .Color5 = 0,
-        .PhysicsType = MppTilePhysicsTypeGround,
+        .PhysicsType = MppTilePhysicsTypeRails,
         .PhysicsOffsetX = 0,
         .PhysicsOffsetY = 0,
         .PhysicsWidth = MppTile::kSize,
@@ -586,9 +587,14 @@ bool MppTile::OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y
     return false;
 }
 
-MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, int x, int y)
+MppEntityCollision MppTile::OnCollision(const std::shared_ptr<MppEntity>& instigator, int x, int y)
 {
     MppTileID id = GetID();
+    std::shared_ptr<MppMinecartEntity> minecart = instigator->Cast<MppMinecartEntity>();
+    if (minecart && GetPhysicsType() != MppTilePhysicsTypeRails)
+    {
+        return MppEntityCollisionReject;
+    }
     if (GetPhysicsType() == MppTilePhysicsTypeStairs)
     {
         // TODO: If a held entity is placed. Pretty dangerous edge case, should fix properly
@@ -627,12 +633,12 @@ MppEntityCollision MppTile::OnCollision(std::shared_ptr<MppEntity>& instigator, 
                 break;
             }
         }
-        MppWorldSetEntityLevel(instigator, level);
         if (i >= 4)
         {
             MppLog("No valid positions found for entity using stairs");
             return MppEntityCollisionReject;
         }
+        MppWorldSetEntityLevel(instigator, level);
         return MppEntityCollisionTeleport;
     }
     else if (GetPhysicsType() == MppTilePhysicsTypeWall)

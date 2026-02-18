@@ -23,6 +23,8 @@ public:
     virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
     void OnSetLevel(int level) override;
+    virtual void OnMount(const std::shared_ptr<MppMobEntity>& vehicle) {}
+    virtual void OnUnmount() {}
     virtual void DoAction();
     virtual void Equip(int index);
     void Push(int dx, int dy, bool useSpeed);
@@ -42,16 +44,16 @@ public:
     std::shared_ptr<MppController> GetController();
     std::shared_ptr<MppInventory> GetInventory();
     virtual std::shared_ptr<MppController> GetDefaultController();
-    void RequestAnimationTick();
 
 protected:
     virtual int GetMaxItems() const;
     virtual int GetMoveTickRate() const;
     virtual int GetAnimationTickRate() const;
+    void RequestAnimationTick();
     virtual float GetFov() const;
-    virtual int GetMaxHealth() const = 0;
-    virtual int GetMaxHunger() const = 0;
-    virtual int GetMaxEnergy() const = 0;
+    virtual int GetMaxHealth() const;
+    virtual int GetMaxHunger() const;
+    virtual int GetMaxEnergy() const;
     virtual int GetColor1() const = 0;
     virtual int GetColor2() const = 0;
     virtual int GetColor3() const = 0;
@@ -64,6 +66,8 @@ protected:
     virtual int GetAnimationPose2Y() const;
     virtual int GetAnimationPose3X() const;
     virtual int GetAnimationPose3Y() const;
+    virtual int GetAnimationPose4X() const;
+    virtual int GetAnimationPose4Y() const;
 
 protected:
     std::shared_ptr<MppInventory> Inventory;

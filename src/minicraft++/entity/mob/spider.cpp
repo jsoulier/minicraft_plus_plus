@@ -13,11 +13,6 @@ MppSpiderEntity::MppSpiderEntity()
 {
 }
 
-void MppSpiderEntity::Render() const
-{
-    MppMobEntity::Render();
-}
-
 int MppSpiderEntity::GetAnimationPose1X() const
 {
     return 12;

@@ -6,7 +6,6 @@
 #include <minicraft++/assert.hpp>
 #include <minicraft++/entity/controller/player.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
-#include <minicraft++/entity/mob/humanoid.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/mount.hpp>
 #include <minicraft++/renderer.hpp>
@@ -35,12 +34,7 @@ void MppMountEntityProxy::Possess(const std::shared_ptr<MppMobEntity>& vehicle, 
     {
         MppInputAddHandler(std::dynamic_pointer_cast<MppInputHandler>(shared_from_this()));
     }
-    std::shared_ptr<MppHumanoidEntity> humanoid = GetRiderAsHumanoid();
-    if (humanoid)
-    {
-        humanoid->SetRiding(true);
-    }
-    Rider->RequestAnimationTick();
+    Rider->OnMount(vehicle);
 }
 
 void MppMountEntityProxy::Unpossess()
@@ -51,17 +45,15 @@ void MppMountEntityProxy::Unpossess()
     {
         MppInputRemoveHandler(this);
     }
-    std::shared_ptr<MppHumanoidEntity> humanoid = GetRiderAsHumanoid();
-    if (humanoid)
-    {
-        humanoid->SetRiding(false);
-    }
-    Rider->RequestAnimationTick();
+    Rider->OnUnmount();
     std::shared_ptr<MppMobEntity> vehicle = GetVehicle();
     std::shared_ptr<MppController> controller = vehicle->GetController();
     MppAssert(controller);
     controller->Possess(Rider);
-    VehicleController->Possess(vehicle);
+    if (VehicleController)
+    {
+        VehicleController->Possess(vehicle);
+    }
     std::shared_ptr<MppEntity> rider = Rider->Cast<MppEntity>();
     MppWorldAddEntity(rider);
     Vehicle = MppEntityReference{};
@@ -91,8 +83,8 @@ void MppMountEntityProxy::Update(uint64_t ticks)
     int offsetY = 0;
     if (vehicle->GetFacingX())
     {
-        offsetX = -vehicle->GetFacingX() * 4;
-        offsetY = -2;
+        offsetX = -vehicle->GetFacingX() * 2;
+        offsetY = -4;
     }
     else if (vehicle->GetFacingY() == -1)
     {
@@ -199,6 +191,11 @@ void MppMountEntityProxy::OnInputHeldRight()
     }
 }
 
+std::shared_ptr<MppMobEntity> MppMountEntityProxy::GetRider()
+{
+    return Rider;
+}
+
 std::shared_ptr<MppMobEntity> MppMountEntityProxy::GetVehicle()
 {
     return Vehicle.GetEntity()->Cast<MppMobEntity>();
@@ -207,9 +204,4 @@ std::shared_ptr<MppMobEntity> MppMountEntityProxy::GetVehicle()
 std::shared_ptr<MppInputHandler> MppMountEntityProxy::GetInputHandler() 
 {
     return std::dynamic_pointer_cast<MppInputHandler>(GetVehicle()->GetController());
-}
-
-std::shared_ptr<MppHumanoidEntity> MppMountEntityProxy::GetRiderAsHumanoid()
-{
-    return Rider->Cast<MppHumanoidEntity>();
 }

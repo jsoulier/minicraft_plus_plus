@@ -40,6 +40,7 @@ public:
     MppItem RemoveByID(MppItemID id, int count);
     const MppItem& GetBySlot(MppInventorySlot slot) const;
     MppInventorySlot GetSlotFromIndex(int index);
+    int GetIndexFromSlot(MppInventorySlot slot);
     void SetSlot(MppInventorySlot slot, int index);
     void ResetSlot(MppInventorySlot slot);
     void SetMaxItems(int max);
