@@ -14,12 +14,12 @@ MppItemID MppAnvilEntity::GetItemID() const
     return MppItemIDAnvil;
 }
 
-int MppAnvilEntity::GetSpriteX() const
+int MppAnvilEntity::GetAnimationPose1X() const
 {
     return 3;
 }
 
-int MppAnvilEntity::GetSpriteY() const
+int MppAnvilEntity::GetAnimationPose1Y() const
 {
     return 17;
 }

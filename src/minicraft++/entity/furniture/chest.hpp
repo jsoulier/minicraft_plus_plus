@@ -29,8 +29,8 @@ public:
     void OnInputLoseFocus() override;
 
 protected:
-    int GetSpriteX() const override;
-    int GetSpriteY() const override;
+    int GetAnimationPose1X() const override;
+    int GetAnimationPose1Y() const override;
     int GetColor1() const override;
     int GetColor2() const override;
     int GetColor3() const override;

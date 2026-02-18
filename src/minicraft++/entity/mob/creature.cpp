@@ -4,7 +4,6 @@
 #include <cstdint>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/controller/creature.hpp>
 #include <minicraft++/entity/mob/creature.hpp>

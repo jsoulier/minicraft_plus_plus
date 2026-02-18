@@ -12,10 +12,6 @@ class MppPlayerEntity final : public MppHumanoidEntity
 
 public:
     MppPlayerEntity();
-    void OnAdd() override;
-    void Visit(SavepointVisitor& visitor) override;
-    void Update(uint64_t ticks) override;
-    void Render() const override;
 
 protected:
     std::shared_ptr<MppController> GetDefaultController();

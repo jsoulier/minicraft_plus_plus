@@ -8,6 +8,7 @@
 #include <minicraft++/assert.hpp>
 #include <minicraft++/color.hpp>
 #include <minicraft++/entity/furniture/anvil.hpp>
+#include <minicraft++/entity/furniture/campfire.hpp>
 #include <minicraft++/entity/furniture/chest.hpp>
 #include <minicraft++/entity/furniture/furnace.hpp>
 #include <minicraft++/entity/furniture/lantern.hpp>
@@ -60,6 +61,11 @@ static std::shared_ptr<MppFurnitureEntity> CreateAnvilEntity()
 static std::shared_ptr<MppFurnitureEntity> CreateLanternEntity()
 {
     return MppEntity::Create<MppLanternEntity>();
+}
+
+static std::shared_ptr<MppFurnitureEntity> CreateCampfireEntity()
+{
+    return MppEntity::Create<MppCampfireEntity>();
 }
 
 static std::shared_ptr<MppProjectileEntity> CreateArrowEntity()
@@ -599,6 +605,19 @@ static const kItems[MppItemIDCount] =
         .Color5 = kMppColorIron5,
         .SpriteX = 6,
         .SpriteY = 12,
+    },
+    {
+        .Name = "campfire",
+        .Type = MppItemTypeFurniture,
+        .ActionType = MppItemActionTypeNone,
+        .CreateFurnitureEntity = CreateCampfireEntity,
+        .Color1 = kMppColorCampfire1,
+        .Color2 = kMppColorCampfire2,
+        .Color3 = kMppColorCampfire3,
+        .Color4 = kMppColorCampfire4,
+        .Color5 = kMppColorCampfire5,
+        .SpriteX = 5,
+        .SpriteY = 14,
     },
 };
 

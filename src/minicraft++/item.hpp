@@ -59,6 +59,7 @@ enum MppItemID : uint16_t
     MppItemIDArrow,
     MppItemIDIronRails,
     MppItemIDMinecart,
+    MppItemIDCampfire,
     MppItemIDCount,
 };
 

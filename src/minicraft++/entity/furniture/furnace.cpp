@@ -25,12 +25,12 @@ MppItemID MppFurnaceEntity::GetItemID() const
     return MppItemIDFurnace;
 }
 
-int MppFurnaceEntity::GetSpriteX() const
+int MppFurnaceEntity::GetAnimationPose1X() const
 {
     return 1;
 }
 
-int MppFurnaceEntity::GetSpriteY() const
+int MppFurnaceEntity::GetAnimationPose1Y() const
 {
     return 17;
 }

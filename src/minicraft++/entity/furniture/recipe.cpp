@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/color.hpp>
 #include <minicraft++/input.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/item.hpp>

@@ -32,6 +32,7 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/controller/player.cpp
     src/minicraft++/entity/entity.cpp
     src/minicraft++/entity/furniture/anvil.cpp
+    src/minicraft++/entity/furniture/campfire.cpp
     src/minicraft++/entity/furniture/chest.cpp
     src/minicraft++/entity/furniture/furnace.cpp
     src/minicraft++/entity/furniture/furniture.cpp

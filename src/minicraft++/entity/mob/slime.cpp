@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include <minicraft++/color.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
 #include <minicraft++/entity/controller/melee.hpp>

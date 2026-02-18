@@ -7,7 +7,6 @@
 #include <vector>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/controller/melee.hpp>
 #include <minicraft++/entity/mob/mob.hpp>

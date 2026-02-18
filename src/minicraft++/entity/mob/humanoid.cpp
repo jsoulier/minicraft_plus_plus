@@ -28,6 +28,15 @@ void MppHumanoidEntity::Visit(SavepointVisitor& visitor)
     }
 }
 
+void MppHumanoidEntity::Update(uint64_t ticks)
+{
+    MppMobEntity::Update(ticks);
+    if (Entity)
+    {
+        Entity->Update(ticks);
+    }
+}
+
 void MppHumanoidEntity::Render() const
 {
     MppMobEntity::Render();

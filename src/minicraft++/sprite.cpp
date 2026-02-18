@@ -1,5 +1,6 @@
 #include <SDL3/SDL.h>
 
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -145,8 +146,9 @@ bool MppSprite::IsValid() const
 
 MppSpriteAnimation::MppSpriteAnimation()
     : Poses{}
+    , MaxPoses{0}
     , TickRate{0}
-    , Tick{false}
+    , TickOrPose{0}
     , X{0}
     , Y{0}
     , Mod{MppRendererModNone}
@@ -155,24 +157,24 @@ MppSpriteAnimation::MppSpriteAnimation()
 
 void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
 {
-    MppAssert(pose < kMaxPoses);
+    MppAssert(pose < MaxPoses);
     MppAssert(dx || dy);
     if (ticks % TickRate == 0)
     {
-        Tick = !Tick;
+        TickOrPose = !TickOrPose;
     }
     X = Poses[pose][0];
     Y = Poses[pose][1];
     bool mod = false;
     if (dy)
     {
-        mod = Tick;
+        mod = TickOrPose;
         X += dy < 0;
     }
     else
     {
         mod = dx < 0;
-        X += 2 + Tick;
+        X += 2 + TickOrPose;
     }
     if (mod)
     {
@@ -184,9 +186,15 @@ void MppSpriteAnimation::Update(int pose, int dx, int dy, uint64_t ticks)
     }
 }
 
-void MppSpriteAnimation::Update(int pose, int dx, int dy)
+void MppSpriteAnimation::Update(uint64_t ticks)
 {
-    Update(pose, dx, dy, TickRate);
+    if (ticks % TickRate == 0)
+    {
+        TickOrPose = (TickOrPose + 1) % MaxPoses;
+        X = Poses[TickOrPose][0];
+        Y = Poses[TickOrPose][1];
+        Mod = MppRendererModNone;
+    }
 }
 
 void MppSpriteAnimation::SetPose(int pose, int x, int y)
@@ -194,7 +202,10 @@ void MppSpriteAnimation::SetPose(int pose, int x, int y)
     MppAssert(pose < kMaxPoses);
     Poses[pose][0] = x;
     Poses[pose][1] = y;
-    Update(0, 0, 1);
+    MaxPoses = std::max(MaxPoses, pose + 1);
+    X = Poses[0][0];
+    Y = Poses[0][1];
+    Mod = MppRendererModNone;
 }
 
 void MppSpriteAnimation::SetTickRate(int rate)

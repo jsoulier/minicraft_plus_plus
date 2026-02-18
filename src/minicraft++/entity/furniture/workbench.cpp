@@ -14,12 +14,12 @@ MppItemID MppWorkbenchEntity::GetItemID() const
     return MppItemIDWorkbench;
 }
 
-int MppWorkbenchEntity::GetSpriteX() const
+int MppWorkbenchEntity::GetAnimationPose1X() const
 {
     return 0;
 }
 
-int MppWorkbenchEntity::GetSpriteY() const
+int MppWorkbenchEntity::GetAnimationPose1Y() const
 {
     return 17;
 }

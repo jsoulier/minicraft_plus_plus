@@ -21,6 +21,7 @@ class MppHumanoidEntity : public MppMobEntity
 public:
     MppHumanoidEntity();
     virtual void Visit(SavepointVisitor& visitor);
+    virtual void Update(uint64_t ticks) override;
     virtual void Render() const override;
     int GetPhysicsOffsetX() const override;
     int GetPhysicsOffsetY() const override;

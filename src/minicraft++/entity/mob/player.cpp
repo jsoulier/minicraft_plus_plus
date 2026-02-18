@@ -3,7 +3,6 @@
 #include <cmath>
 #include <cstdint>
 
-#include <minicraft++/color.hpp>
 #include <minicraft++/entity/controller/player.hpp>
 #include <minicraft++/entity/entity.hpp>
 #include <minicraft++/entity/mob/player.hpp>
@@ -19,26 +18,6 @@
 MppPlayerEntity::MppPlayerEntity()
     : MppHumanoidEntity()
 {
-}
-
-void MppPlayerEntity::OnAdd()
-{
-    MppHumanoidEntity::OnAdd();
-}
-
-void MppPlayerEntity::Visit(SavepointVisitor& visitor)
-{
-    MppHumanoidEntity::Visit(visitor);
-}
-
-void MppPlayerEntity::Update(uint64_t ticks)
-{
-    MppMobEntity::Update(ticks);
-}
-
-void MppPlayerEntity::Render() const
-{
-    MppHumanoidEntity::Render();
 }
 
 int MppPlayerEntity::GetMoveTickRate() const

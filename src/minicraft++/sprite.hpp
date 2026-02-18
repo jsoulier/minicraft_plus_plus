@@ -42,7 +42,7 @@ private:
 public:
     MppSpriteAnimation();
     void Update(int pose, int dx, int dy, uint64_t ticks);
-    void Update(int pose, int dx, int dy);
+    void Update(uint64_t ticks);
     void SetPose(int pose, int x, int y);
     void SetTickRate(int rate);
     int GetX() const;
@@ -51,8 +51,9 @@ public:
 
 private:
     int Poses[kMaxPoses][2];
+    int MaxPoses;
     int TickRate;
-    bool Tick;
+    int TickOrPose;
     int X;
     int Y;
     MppRendererMod Mod;

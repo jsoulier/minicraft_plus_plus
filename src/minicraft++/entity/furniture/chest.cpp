@@ -119,12 +119,12 @@ bool MppChestEntity::IsEmpty() const
     return Inventory->IsEmpty();
 }
 
-int MppChestEntity::GetSpriteX() const
+int MppChestEntity::GetAnimationPose1X() const
 {
     return 2;
 }
 
-int MppChestEntity::GetSpriteY() const
+int MppChestEntity::GetAnimationPose1Y() const
 {
     return 17;
 }

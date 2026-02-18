@@ -18,12 +18,12 @@ MppItemID MppLanternEntity::GetItemID() const
     return MppItemIDLantern;
 }
 
-int MppLanternEntity::GetSpriteX() const
+int MppLanternEntity::GetAnimationPose1X() const
 {
     return 4;
 }
 
-int MppLanternEntity::GetSpriteY() const
+int MppLanternEntity::GetAnimationPose1Y() const
 {
     return 17;
 }
