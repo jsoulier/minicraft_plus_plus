@@ -11,7 +11,7 @@ class MppParticleEntity : public MppEntity
 public:
     MppParticleEntity();
     void OnAdd() override;
-    void Render() const override;
+    virtual void Render() const override;
     void Update(uint64_t ticks) override;
     int GetPhysicsOffsetX() const;
     int GetPhysicsOffsetY() const;
@@ -21,6 +21,7 @@ public:
     bool CanBeSaved() const override;
 
 protected:
+    virtual int GetMoveTickRate() const;
     virtual int GetVelocityX() const;
     virtual int GetVelocityY() const;
     virtual int GetMaxLifetime() const = 0;

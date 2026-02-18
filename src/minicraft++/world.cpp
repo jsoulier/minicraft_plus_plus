@@ -53,7 +53,7 @@ static const std::filesystem::path kSavePath = kPrefPath / "minicraft++.savepoin
 static constexpr uint64_t kSaveRate = 1000;
 
 static std::array<std::shared_ptr<MppLevel>, LevelIDCount> levels;
-static std::vector<std::pair<std::weak_ptr<MppEntity>, int>> requests;
+static std::vector<std::pair<std::shared_ptr<MppEntity>, int>> requests;
 static std::shared_ptr<MppLevelSaveData> saveData;
 static SaveHeader saveHeader;
 static uint64_t saveTicks;
@@ -118,14 +118,12 @@ void MppWorldUpdate(uint64_t ticks)
     currLevel = nextLevel;
     std::unordered_set<std::shared_ptr<MppEntity>> entities;
     levels[currLevel]->Update(ticks);
-    for (auto& [weakEntity, levelRequest] : requests)
+    for (auto& [entity, levelRequest] : requests)
     {
-        std::shared_ptr<MppEntity> entity = weakEntity.lock();
-        if (!entity)
+        if (entity->IsSpawned())
         {
-            continue;
+            levels[currLevel]->RemoveEntity(entity);
         }
-        levels[currLevel]->RemoveEntity(entity);
         levels[levelRequest]->AddEntity(entity);
         entity->OnSetLevel(levelRequest);
     }
@@ -224,7 +222,7 @@ void MppWorldSetTile(const MppTile& tile, int x, int y)
 
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity, int level)
 {
-    levels[level]->AddEntity(entity);
+    requests.emplace_back(entity, level);
 }
 
 void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity)

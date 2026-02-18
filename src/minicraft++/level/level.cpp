@@ -173,8 +173,8 @@ void MppLevel::AddEntity(std::shared_ptr<MppEntity>& entity)
     if (entity->CanBeSaved())
     {
         SaveData->Handle.Write(entity, Level);
+        SaveData->References[entity->GetID()] = entity;
     }
-    SaveData->References[entity->GetID()] = entity;
 }
 
 void MppLevel::RemoveEntity(std::shared_ptr<MppEntity>& entity)

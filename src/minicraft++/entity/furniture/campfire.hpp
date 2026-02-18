@@ -2,6 +2,8 @@
 
 #include <savepoint/savepoint.hpp>
 
+#include <cstdint>
+
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/item.hpp>
 

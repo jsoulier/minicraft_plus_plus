@@ -40,21 +40,21 @@ add_executable(minicraft++ WIN32
     src/minicraft++/entity/furniture/recipe.cpp
     src/minicraft++/entity/furniture/workbench.cpp
     src/minicraft++/entity/item.cpp
-    src/minicraft++/level/level.cpp
-    src/minicraft++/level/surface.cpp
-    src/minicraft++/level/underground.cpp
     src/minicraft++/entity/mob/cow.cpp
     src/minicraft++/entity/mob/creature.cpp
     src/minicraft++/entity/mob/horse.cpp
     src/minicraft++/entity/mob/humanoid.cpp
     src/minicraft++/entity/mob/minecart.cpp
+    src/minicraft++/entity/mob/boat.cpp
+    src/minicraft++/entity/mob/vehicle.cpp
     src/minicraft++/entity/mob/mob.cpp
     src/minicraft++/entity/mob/player.cpp
     src/minicraft++/entity/mob/sheep.cpp
     src/minicraft++/entity/mob/slime.cpp
     src/minicraft++/entity/mob/spider.cpp
     src/minicraft++/entity/mob/zombie.cpp
-    src/minicraft++/entity/mount.cpp
+    src/minicraft++/entity/mob/mount.cpp
+    src/minicraft++/entity/particle/emitter.cpp
     src/minicraft++/entity/particle/hit.cpp
     src/minicraft++/entity/particle/particle.cpp
     src/minicraft++/entity/projectile/arrow.cpp
@@ -63,6 +63,9 @@ add_executable(minicraft++ WIN32
     src/minicraft++/inventory.cpp
     src/minicraft++/item.cpp
     src/minicraft++/level.cpp
+    src/minicraft++/level/level.cpp
+    src/minicraft++/level/surface.cpp
+    src/minicraft++/level/underground.cpp
     src/minicraft++/main.cpp
     src/minicraft++/menu.cpp
     src/minicraft++/random.cpp

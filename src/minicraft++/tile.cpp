@@ -10,7 +10,7 @@
 #include <minicraft++/color.hpp>
 #include <minicraft++/console.hpp>
 #include <minicraft++/entity/entity.hpp>
-#include <minicraft++/entity/mob/minecart.hpp>
+#include <minicraft++/entity/mob/vehicle.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/particle/hit.hpp>
 #include <minicraft++/entity/particle/particle.hpp>
@@ -247,6 +247,25 @@ static constexpr kTiles[MppTileIDCount] =
         .ChildTile = MppTileIDInvalid,
         .ItemType = MppItemTypeEquipment,
     },
+    {
+        .Name = "water",
+        .SpriteType = TileSpriteType1x1,
+        .SpriteX = 0,
+        .SpriteY = 0,
+        .TopSpriteY = 0,
+        .Color1 = 5,
+        .Color2 = 3,
+        .Color3 = 4,
+        .Color4 = kDirtColor,
+        .Color5 = 0,
+        .PhysicsType = MppTilePhysicsTypeLiquid,
+        .PhysicsOffsetX = 0,
+        .PhysicsOffsetY = 0,
+        .PhysicsWidth = MppTile::kSize,
+        .PhysicsHeight = MppTile::kSize,
+        .ChildTile = MppTileIDInvalid,
+        .ItemType = MppItemTypeNone,
+    },
 };
 
 std::string_view MppTileIDGetName(MppTileID id)
@@ -411,7 +430,7 @@ void MppTile::Render(int x, int y) const
         }
         if (color)
         {
-            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
+            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugTilePhysics);
         }
     }
     MppTileID bottomID = GetID(MppTileLayerBottom);
@@ -590,8 +609,8 @@ bool MppTile::OnInteraction(std::shared_ptr<MppEntity>& instigator, int x, int y
 MppEntityCollision MppTile::OnCollision(const std::shared_ptr<MppEntity>& instigator, int x, int y)
 {
     MppTileID id = GetID();
-    std::shared_ptr<MppMinecartEntity> minecart = instigator->Cast<MppMinecartEntity>();
-    if (minecart && GetPhysicsType() != MppTilePhysicsTypeRails)
+    std::shared_ptr<MppVehicleEntity> vehicle = instigator->Cast<MppVehicleEntity>();
+    if (vehicle && vehicle->GetPhysicsType() != GetPhysicsType())
     {
         return MppEntityCollisionReject;
     }

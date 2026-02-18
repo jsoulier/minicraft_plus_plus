@@ -20,7 +20,8 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerTopEntity3,
 
     MppRendererLayerParticleEntity,
-    MppRendererLayerDebugPhysics,
+    MppRendererLayerDebugTilePhysics,
+    MppRendererLayerDebugEntityPhysics,
     MppRendererLayerDebugNavigation,
     MppRendererLayerDebugFov,
     MppRendererLayerDebugAction,
@@ -69,6 +70,7 @@ void MppRendererMove(int x, int y, int size);
 void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererMod mod, MppRendererLayer layer);
 void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRendererLayer layer);
 void MppRendererDrawLine(int color, int x1, int y1, int x2, int y2, MppRendererLayer layer);
+void MppRendererDrawPoint(int color, int x, int y, MppRendererLayer layer);
 void MppRendererDrawLight(int color, int x, int y, int radius, int strength);
 int MppRendererGetTileX1();
 int MppRendererGetTileY1();

@@ -22,12 +22,13 @@ enum MppTileID : uint16_t
     MppTileIDStairsUp,
     MppTileIDStone,
     MppTileIDIronRails,
+    MppTileIDWater,
     MppTileIDCount,
 };
 
 std::string_view MppTileIDGetName(MppTileID id);
 
-enum MppTilePhysicsType
+enum MppTilePhysicsType : uint8_t
 {
     // Physics MUST be disjoint. e.g. Cannot have Ground and Wall at the same time
     MppTilePhysicsTypeGround = 1,

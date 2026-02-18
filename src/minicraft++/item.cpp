@@ -14,6 +14,7 @@
 #include <minicraft++/entity/furniture/lantern.hpp>
 #include <minicraft++/entity/furniture/workbench.hpp>
 #include <minicraft++/entity/item.hpp>
+#include <minicraft++/entity/mob/boat.hpp>
 #include <minicraft++/entity/mob/minecart.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/projectile/arrow.hpp>
@@ -76,6 +77,11 @@ static std::shared_ptr<MppProjectileEntity> CreateArrowEntity()
 static std::shared_ptr<MppMobEntity> CreateMinecartEntity()
 {
     return MppEntity::Create<MppMinecartEntity>();
+}
+
+static std::shared_ptr<MppMobEntity> CreateBoatEntity()
+{
+    return MppEntity::Create<MppBoatEntity>();
 }
 
 struct MppItemRecipeData
@@ -604,6 +610,20 @@ static const kItems[MppItemIDCount] =
         .Color4 = kMppColorIron4,
         .Color5 = kMppColorIron5,
         .SpriteX = 6,
+        .SpriteY = 12,
+    },
+    {
+        .Name = "boat",
+        .Type = MppItemTypeMob,
+        .ActionType = MppItemActionTypeNone,
+        .Recipe = {MppItemIDWorkbench, {{MppItemIDWood, 5}}},
+        .CreateMobEntity = CreateBoatEntity,
+        .Color1 = kMppColorBoat1,
+        .Color2 = kMppColorBoat2,
+        .Color3 = kMppColorBoat3,
+        .Color4 = kMppColorBoat4,
+        .Color5 = kMppColorBoat5,
+        .SpriteX = 7,
         .SpriteY = 12,
     },
     {

@@ -14,7 +14,6 @@
 #include <minicraft++/entity/entity.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
-#include <minicraft++/entity/mob/player.hpp>
 #include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/log.hpp>
 #include <minicraft++/renderer.hpp>
@@ -111,11 +110,7 @@ void MppEntity::Render() const
         int y = GetPhysicsY();
         int w = GetPhysicsWidth();
         int h = GetPhysicsHeight();
-        if (IsA<MppPlayerEntity>())
-        {
-            color = kMppColorDebugPlayerEntityPhysics;
-        }
-        else if (IsA<MppMobEntity>())
+        if (IsA<MppMobEntity>())
         {
             color = kMppColorDebugMobEntityPhysics;
         }
@@ -129,7 +124,7 @@ void MppEntity::Render() const
         }
         if (color)
         {
-            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugPhysics);
+            MppRendererDrawRect(color, x, y, w, h, MppRendererLayerDebugEntityPhysics);
         }
     }
 }

@@ -41,12 +41,20 @@ void MppParticleEntity::Render() const
 void MppParticleEntity::Update(uint64_t ticks)
 {
     MppEntity::Update(ticks);
-    Move(GetVelocityX(), GetVelocityY());
+    if (ticks % GetMoveTickRate() == 0)
+    {
+        Move(GetVelocityX(), GetVelocityY());
+    }
     Lifetime--;
     if (Lifetime <= 0)
     {
         Unspawn();
     }
+}
+
+int MppParticleEntity::GetMoveTickRate() const
+{
+    return 1;
 }
 
 int MppParticleEntity::GetVelocityX() const

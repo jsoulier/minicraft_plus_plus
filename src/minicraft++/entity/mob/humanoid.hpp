@@ -13,7 +13,7 @@ enum MppHumanoidEntityLocomotionMode : uint8_t
 {
     MppHumanoidEntityLocomotionModeDefault,
     MppHumanoidEntityLocomotionModeHorse,
-    MppHumanoidEntityLocomotionModeMinecart,
+    MppHumanoidEntityLocomotionModeVehicle,
 };
 
 class MppHumanoidEntity : public MppMobEntity

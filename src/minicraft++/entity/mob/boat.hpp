@@ -7,12 +7,11 @@
 
 #include <minicraft++/entity/mob/vehicle.hpp>
 
-class MppMinecartEntity final : public MppVehicleEntity
+class MppBoatEntity final : public MppVehicleEntity
 {
-    SAVEPOINT_POLY(MppMinecartEntity)
+    SAVEPOINT_POLY(MppBoatEntity)
 
 public:
-    void Render() const override;
     MppItemID GetItemID() const override;
 
 protected:
@@ -28,5 +27,6 @@ protected:
     int GetPhysicsOffsetY() const override;
     int GetPhysicsWidth() const override;
     int GetPhysicsHeight() const override;
+    int GetMoveTickRate() const override;
     int GetSpeed() const override;
 };

@@ -264,10 +264,6 @@ void MppMobEntity::DoAction()
         EntityT entity = projectile->Cast<MppEntity>();
         MppWorldAddEntity(entity);
     }
-    else
-    {
-        MppAssert(false);
-    }
 }
 
 void MppMobEntity::Equip(int index)

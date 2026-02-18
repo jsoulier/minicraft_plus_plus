@@ -47,6 +47,13 @@ struct Line
     int Y2;
 };
 
+struct Point
+{
+    int Color;
+    int X;
+    int Y;
+};
+
 struct Light
 {
     int Color;
@@ -59,6 +66,7 @@ struct Light
 static void DrawSprite(Sprite& sprite, MppRendererLayer layer);
 static void DrawQuad(Quad& quad, MppRendererLayer layer);
 static void DrawLine(Line& line, MppRendererLayer layer);
+static void DrawPoint(Point& point, MppRendererLayer layer);
 
 struct Commands
 {
@@ -77,14 +85,20 @@ struct Commands
         {
             DrawLine(line, MppRendererLayer(layer));
         }
+        for (Point& point : Points)
+        {
+            DrawPoint(point, MppRendererLayer(layer));
+        }
         Sprites.clear();
         Quads.clear();
         Lines.clear();
+        Points.clear();
     }
 
     std::vector<Sprite> Sprites;
     std::vector<Quad> Quads;
     std::vector<Line> Lines;
+    std::vector<Point> Points;
 };
 
 static constexpr int kWidth = 256;
@@ -317,6 +331,16 @@ static void DrawLine(Line& line, MppRendererLayer layer)
     SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
+static void DrawPoint(Point& point, MppRendererLayer layer)
+{
+    Move(point.X, point.Y, layer);
+    int x = point.X;
+    int y = point.Y;
+    SDL_Color color = MppColorGet(point.Color);
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderPoint(renderer, x, y);
+}
+
 static void DrawLight(Light light)
 {
     int size = light.Radius * 2 + 1;
@@ -415,6 +439,11 @@ void MppRendererDrawRect(int color, int x, int y, int width, int height, MppRend
 void MppRendererDrawLine(int color, int x1, int y1, int x2, int y2, MppRendererLayer layer)
 {
     layers[layerIndices[layer]].Lines.emplace_back(color, x1, y1, x2, y2);
+}
+
+void MppRendererDrawPoint(int color, int x, int y, MppRendererLayer layer)
+{
+    layers[layerIndices[layer]].Points.emplace_back(color, x, y);
 }
 
 void MppRendererDrawLight(int color, int x, int y, int radius, int strength)

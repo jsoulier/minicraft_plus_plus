@@ -8,7 +8,7 @@ void MppCampfireEntity::Render() const
     MppFurnitureEntity::Render();
     static constexpr int kColor = 553;
     static constexpr int kRadius = 32;
-    static constexpr int kStrength = 5;
+    static constexpr int kStrength = 4;
     auto [x, y] = GetCenter();
     MppRendererDrawLight(kColor, x, y, kRadius, kStrength);
 }

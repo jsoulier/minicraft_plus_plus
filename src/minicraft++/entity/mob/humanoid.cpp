@@ -6,7 +6,7 @@
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/horse.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
-#include <minicraft++/entity/mob/minecart.hpp>
+#include <minicraft++/entity/mob/vehicle.hpp>
 #include <minicraft++/inventory.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
@@ -76,9 +76,9 @@ int MppHumanoidEntity::GetPhysicsHeight() const
 
 void MppHumanoidEntity::OnMount(const std::shared_ptr<MppMobEntity>& vehicle)
 {
-    if (vehicle->IsA<MppMinecartEntity>())
+    if (vehicle->IsA<MppVehicleEntity>())
     {
-        LocomotionMode = MppHumanoidEntityLocomotionModeMinecart;
+        LocomotionMode = MppHumanoidEntityLocomotionModeVehicle;
     }
     else if (vehicle->IsA<MppHorseEntity>())
     {
@@ -265,7 +265,7 @@ int MppHumanoidEntity::GetAnimationPose() const
     {
     case MppHumanoidEntityLocomotionModeHorse: return 2;
     case MppHumanoidEntityLocomotionModeDefault: return 0;
-    case MppHumanoidEntityLocomotionModeMinecart: return 3;
+    case MppHumanoidEntityLocomotionModeVehicle: return 3;
     }
     MppAssert(false);
     return 0;

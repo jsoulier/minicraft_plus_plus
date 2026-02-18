@@ -7,11 +7,11 @@
 #include <minicraft++/entity/controller/player.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
-#include <minicraft++/entity/mount.hpp>
+#include <minicraft++/entity/mob/mount.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/world.hpp>
 
-void MppMountEntityProxy::OnAdd()
+void MppMobEntityMount::OnAdd()
 {
     if (Rider)
     {
@@ -19,7 +19,7 @@ void MppMountEntityProxy::OnAdd()
     }
 }
 
-void MppMountEntityProxy::Possess(const std::shared_ptr<MppMobEntity>& vehicle, const std::shared_ptr<MppEntity>& instigator)
+void MppMobEntityMount::Possess(const std::shared_ptr<MppMobEntity>& vehicle, const std::shared_ptr<MppEntity>& instigator)
 {
     Vehicle = MppEntityReference{vehicle};
     VehicleController = vehicle->GetController();
@@ -37,7 +37,7 @@ void MppMountEntityProxy::Possess(const std::shared_ptr<MppMobEntity>& vehicle, 
     Rider->OnMount(vehicle);
 }
 
-void MppMountEntityProxy::Unpossess()
+void MppMobEntityMount::Unpossess()
 {
     MppAssert(Rider);
     MppAssert(!Rider->GetController());
@@ -61,7 +61,7 @@ void MppMountEntityProxy::Unpossess()
     Rider = nullptr;
 }
 
-void MppMountEntityProxy::Visit(SavepointVisitor& visitor)
+void MppMobEntityMount::Visit(SavepointVisitor& visitor)
 {
     visitor(Vehicle);
     visitor(VehicleController);
@@ -72,7 +72,7 @@ void MppMountEntityProxy::Visit(SavepointVisitor& visitor)
     }
 }
 
-void MppMountEntityProxy::Update(uint64_t ticks)
+void MppMobEntityMount::Update(uint64_t ticks)
 {
     if (!Rider)
     {
@@ -104,7 +104,7 @@ void MppMountEntityProxy::Update(uint64_t ticks)
     Rider->Update(ticks);
 }
 
-void MppMountEntityProxy::Render() const
+void MppMobEntityMount::Render() const
 {
     if (Rider)
     {
@@ -114,7 +114,7 @@ void MppMountEntityProxy::Render() const
     }
 }
 
-void MppMountEntityProxy::DoAction()
+void MppMobEntityMount::DoAction()
 {
     if (Rider)
     {
@@ -122,12 +122,12 @@ void MppMountEntityProxy::DoAction()
     }
 }
 
-void MppMountEntityProxy::OnInputRender() const
+void MppMobEntityMount::OnInputRender() const
 {
     // No-op. All registered input handlers are rendered
 }
 
-void MppMountEntityProxy::OnInputAction()
+void MppMobEntityMount::OnInputAction()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> controller = GetInputHandler())
@@ -136,7 +136,7 @@ void MppMountEntityProxy::OnInputAction()
     }
 }
 
-void MppMountEntityProxy::OnInputInteract()
+void MppMobEntityMount::OnInputInteract()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> handler = GetInputHandler())
@@ -145,17 +145,17 @@ void MppMountEntityProxy::OnInputInteract()
     }
 }
 
-void MppMountEntityProxy::OnInputDismount()
+void MppMobEntityMount::OnInputDismount()
 {
     Unpossess();
 }
 
-void MppMountEntityProxy::OnInputExit()
+void MppMobEntityMount::OnInputExit()
 {
     // No-op. Must be manually dismounted 
 }
 
-void MppMountEntityProxy::OnInputHeldUp()
+void MppMobEntityMount::OnInputHeldUp()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> handler = GetInputHandler())
@@ -164,7 +164,7 @@ void MppMountEntityProxy::OnInputHeldUp()
     }
 }
 
-void MppMountEntityProxy::OnInputHeldDown()
+void MppMobEntityMount::OnInputHeldDown()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> handler = GetInputHandler())
@@ -173,7 +173,7 @@ void MppMountEntityProxy::OnInputHeldDown()
     }
 }
 
-void MppMountEntityProxy::OnInputHeldLeft()
+void MppMobEntityMount::OnInputHeldLeft()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> handler = GetInputHandler())
@@ -182,7 +182,7 @@ void MppMountEntityProxy::OnInputHeldLeft()
     }
 }
 
-void MppMountEntityProxy::OnInputHeldRight()
+void MppMobEntityMount::OnInputHeldRight()
 {
     MppAssert(Rider);
     if (std::shared_ptr<MppInputHandler> handler = GetInputHandler())
@@ -191,17 +191,17 @@ void MppMountEntityProxy::OnInputHeldRight()
     }
 }
 
-std::shared_ptr<MppMobEntity> MppMountEntityProxy::GetRider()
+std::shared_ptr<MppMobEntity> MppMobEntityMount::GetRider()
 {
     return Rider;
 }
 
-std::shared_ptr<MppMobEntity> MppMountEntityProxy::GetVehicle()
+std::shared_ptr<MppMobEntity> MppMobEntityMount::GetVehicle()
 {
     return Vehicle.GetEntity()->Cast<MppMobEntity>();
 }
 
-std::shared_ptr<MppInputHandler> MppMountEntityProxy::GetInputHandler() 
+std::shared_ptr<MppInputHandler> MppMobEntityMount::GetInputHandler() 
 {
     return std::dynamic_pointer_cast<MppInputHandler>(GetVehicle()->GetController());
 }

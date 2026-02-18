@@ -59,6 +59,7 @@ enum MppItemID : uint16_t
     MppItemIDArrow,
     MppItemIDIronRails,
     MppItemIDMinecart,
+    MppItemIDBoat,
     MppItemIDCampfire,
     MppItemIDCount,
 };
@@ -79,22 +80,9 @@ enum MppItemType
     MppItemTypeConsumable = 1024,
     MppItemTypeHands = 2048,
     MppItemTypeMob = 4096,
-    MppItemTypeHeld =
-        MppItemTypeHands |
-        MppItemTypePickaxe |
-        MppItemTypeAxe |
-        MppItemTypeShovel |
-        MppItemTypeSword |
-        MppItemTypeHoe,
-    MppItemTypeArmor =
-        MppItemTypeHelmet |
-        MppItemTypeCuirass |
-        MppItemTypeLeggings |
-        MppItemTypeBoots,
-    MppItemTypeEquipment =
-        MppItemTypeHands |
-        MppItemTypeHeld |
-        MppItemTypeArmor,
+    MppItemTypeHeld = MppItemTypeHands | MppItemTypePickaxe | MppItemTypeAxe | MppItemTypeShovel | MppItemTypeSword | MppItemTypeHoe,
+    MppItemTypeArmor = MppItemTypeHelmet | MppItemTypeCuirass | MppItemTypeLeggings | MppItemTypeBoots,
+    MppItemTypeEquipment = MppItemTypeHands | MppItemTypeHeld | MppItemTypeArmor,
 };
 
 enum MppItemActionType

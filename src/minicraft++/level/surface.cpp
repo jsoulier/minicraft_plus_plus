@@ -10,7 +10,7 @@
 
 MppSurfaceLevel::MppSurfaceLevel()
 {
-    Noise.SetFrequency(0.1f);
+    Noise.SetFrequency(0.05f);
 }
 
 void MppSurfaceLevel::Generate() 
@@ -41,12 +41,12 @@ MppTile MppSurfaceLevel::GenerateTile(float x, float y) const
     {
         return MppTile{MppTileIDDirt};
     }
-    else if (noise > -0.6f)
+    else if (noise > -0.4f)
     {
         return MppTile{MppTileIDDirt, MppTileIDStoneWall};
     }
     else
     {
-        return MppTile{MppTileIDSand};
+        return MppTile{MppTileIDWater};
     }
 }

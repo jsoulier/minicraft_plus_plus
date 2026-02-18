@@ -7,7 +7,7 @@
 
 #include <minicraft++/entity/mob/creature.hpp>
 
-class MppMountEntityProxy;
+class MppMobEntityMount;
 
 class MppHorseEntity final : public MppCreatureEntity
 {
@@ -41,5 +41,5 @@ protected:
     int GetMoveTickRate() const override;
 
 private:
-    std::shared_ptr<MppMountEntityProxy> Mount;
+    std::shared_ptr<MppMobEntityMount> Mount;
 };

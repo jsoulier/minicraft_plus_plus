@@ -8,11 +8,11 @@
 #include <minicraft++/entity/mob/creature.hpp>
 #include <minicraft++/entity/mob/horse.hpp>
 #include <minicraft++/entity/mob/mob.hpp>
-#include <minicraft++/entity/mount.hpp>
+#include <minicraft++/entity/mob/mount.hpp>
 
 MppHorseEntity::MppHorseEntity()
     : MppCreatureEntity()
-    , Mount{std::make_shared<MppMountEntityProxy>()}
+    , Mount{std::make_shared<MppMobEntityMount>()}
 {
 }
 
