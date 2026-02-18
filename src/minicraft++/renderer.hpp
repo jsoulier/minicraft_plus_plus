@@ -39,7 +39,7 @@ enum MppRendererLayer : uint8_t
     MppRendererLayerTopMenu5,
 
     MppRendererLayerCount,
-    MppRendererLayerMenuBegin = MppRendererLayerMenu,
+    MppRendererLayerLightEnd = MppRendererLayerParticleEntity,
 };
 
 enum MppRendererMod : uint8_t

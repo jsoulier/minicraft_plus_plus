@@ -12,6 +12,7 @@ class MppFurnaceEntity final : public MppRecipeEntity
 
 public:
     MppFurnaceEntity();
+    void Render() const override;
     MppItemID GetItemID() const override;
     
 protected:

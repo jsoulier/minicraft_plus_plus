@@ -70,8 +70,8 @@ bool MppFurnitureEntity::Drop(const std::shared_ptr<MppEntity>& instigator)
     MppAssert(humanoid);
     int x = X;
     int y = Y;
-    X = humanoid->GetX() + humanoid->GetFacingX() * humanoid->GetSize();
-    Y = humanoid->GetY() + humanoid->GetFacingY() * humanoid->GetSize();
+    X = humanoid->GetX() + humanoid->GetFacingX() * (humanoid->GetPhysicsWidth() + 1);
+    Y = humanoid->GetY() + humanoid->GetFacingY() * (humanoid->GetPhysicsHeight() + 1);
     if (MppConsole::CVarAction.GetBool())
     {
         int px = GetPhysicsX();

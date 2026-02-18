@@ -371,7 +371,7 @@ void MppRendererSubmit(int inLightColor)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     SDL_RenderClear(renderer);
-    for (int layer = 0; layer < MppRendererLayerMenuBegin; layer++)
+    for (int layer = 0; layer < MppRendererLayerLightEnd; layer++)
     {
         layers[layer].Draw(MppRendererLayer(layer));
     }
@@ -388,7 +388,7 @@ void MppRendererSubmit(int inLightColor)
     SDL_SetRenderTarget(renderer, nullptr);
     SDL_RenderTexture(renderer, lightTexture, nullptr, nullptr);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-    for (int layer = MppRendererLayerMenuBegin; layer < MppRendererLayerCount; layer++)
+    for (int layer = MppRendererLayerLightEnd; layer < MppRendererLayerCount; layer++)
     {
         layers[layer].Draw(MppRendererLayer(layer));
     }
