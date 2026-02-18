@@ -103,6 +103,9 @@ struct Commands
 
 static constexpr int kWidth = 256;
 static constexpr int kHeight = 144;
+static constexpr int kStatusBarHeight = 16;
+static constexpr int kWorldWidth = kWidth;
+static constexpr int kWorldHeight = kHeight - kStatusBarHeight;
 static const std::filesystem::path kBasePath = SDL_GetBasePath();
 static const std::filesystem::path kSpritesheet = kBasePath / "spritesheet.png";
 
@@ -194,10 +197,11 @@ void MppRendererQuit()
 
 void MppRendererMove(int x, int y, int size)
 {
-    // TODO: clamp to the world
     MppAssert(size > 0);
-    worldX = x - kWidth / 2 + size / 2;
-    worldY = y - kHeight / 2 + size / 2;
+    worldX = x - kWorldWidth / 2 + size / 2;
+    worldY = y - kWorldHeight / 2 + size / 2;
+    worldX = std::clamp(worldX, 0, MppWorldGetSize() * MppTile::kSize - kWorldWidth);
+    worldY = std::clamp(worldY, 0, MppWorldGetSize() * MppTile::kSize - kWorldHeight);
 }
 
 static void Move(int& x, int& y, MppRendererLayer layer)
@@ -445,8 +449,8 @@ void MppRendererSubmit(int inLightColor)
     int max = MppWorldGetSize() - 1;
     tileX1 = std::clamp(MppWorldGetTileIndex(worldX) - 1, min, max);
     tileY1 = std::clamp(MppWorldGetTileIndex(worldY) - 1, min, max);
-    tileX2 = std::clamp(MppWorldGetTileIndex(worldX + kWidth) + 1, min, max);
-    tileY2 = std::clamp(MppWorldGetTileIndex(worldY + kHeight) + 1, min, max);
+    tileX2 = std::clamp(MppWorldGetTileIndex(worldX + kWorldWidth) + 1, min, max);
+    tileY2 = std::clamp(MppWorldGetTileIndex(worldY + kWorldHeight) + 1, min, max);
 }
 
 void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererMod mod, MppRendererLayer layer)

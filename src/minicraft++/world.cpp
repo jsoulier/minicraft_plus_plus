@@ -116,7 +116,11 @@ void MppWorldQuit()
 
 void MppWorldUpdate(uint64_t ticks)
 {
-    currLevel = nextLevel;
+    if (nextLevel != currLevel)
+    {
+        MppWorldSave(ticks, true);
+        currLevel = nextLevel;
+    }
     std::unordered_set<std::shared_ptr<MppEntity>> entities;
     levels[currLevel]->Update(ticks);
     for (auto& [entity, levelRequest] : requests)

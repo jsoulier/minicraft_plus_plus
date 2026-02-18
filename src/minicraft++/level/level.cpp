@@ -75,6 +75,10 @@ void MppLevel::Update(uint64_t ticks)
     {
         Tiles[x][y].Update(x, y, ticks);
     }
+    SaveTileX1 = std::min(SaveTileX1, MppRendererGetTileX1());
+    SaveTileY1 = std::min(SaveTileY1, MppRendererGetTileY1());
+    SaveTileX2 = std::max(SaveTileX2, MppRendererGetTileX2());
+    SaveTileY2 = std::max(SaveTileY2, MppRendererGetTileY2());
 }
 
 void MppLevel::Render() const
@@ -92,10 +96,6 @@ void MppLevel::Render() const
 
 void MppLevel::Save()
 {
-    SaveTileX1 = std::min(SaveTileX1, MppRendererGetTileX1());
-    SaveTileY1 = std::min(SaveTileY1, MppRendererGetTileY1());
-    SaveTileX2 = std::max(SaveTileX2, MppRendererGetTileX2());
-    SaveTileY2 = std::max(SaveTileY2, MppRendererGetTileY2());
     if (SaveData->Status == SavepointStatus::New)
     {
         SaveTileX1 = 0;
