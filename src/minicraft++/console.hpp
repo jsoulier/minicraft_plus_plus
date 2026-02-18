@@ -54,6 +54,7 @@ private:
     void HandleTile(const std::vector<std::string>& tokens);
     void HandleKill(const std::vector<std::string>& tokens);
     void HandleKillAll(const std::vector<std::string>& tokens);
+    void HandleTeleport(const std::vector<std::string>& tokens);
     void HandleCVar(const std::vector<std::string>& tokens);
     std::shared_ptr<MppMobEntity> GetPlayer() const;
     std::string GetEntityName(std::string name) const;

@@ -260,7 +260,7 @@ void MppMobEntity::DoAction()
     {
         std::shared_ptr<MppProjectileEntity> projectile = held.CreateProjectileEntity();
         MppAssert(projectile);
-        projectile->Setup(self, FacingX, FacingY);
+        projectile->Setup(Cast<MppMobEntity>());
         EntityT entity = projectile->Cast<MppEntity>();
         MppWorldAddEntity(entity);
     }

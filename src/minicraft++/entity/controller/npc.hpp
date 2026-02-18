@@ -12,6 +12,7 @@ class MppNPCController : public MppController
 public:
     virtual void Visit(SavepointVisitor& visitor) override;
     virtual void Update(uint64_t ticks) override;
+    virtual void OnSetLevel(int level) override;
 
 protected:
     bool TryNavigateRandom();

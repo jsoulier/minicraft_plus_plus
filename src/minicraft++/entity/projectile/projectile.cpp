@@ -5,6 +5,7 @@
 
 #include <minicraft++/assert.hpp>
 #include <minicraft++/entity/entity.hpp>
+#include <minicraft++/entity/mob/mob.hpp>
 #include <minicraft++/entity/projectile/projectile.hpp>
 #include <minicraft++/renderer.hpp>
 #include <minicraft++/sprite.hpp>
@@ -31,7 +32,7 @@ void MppProjectileEntity::Update(uint64_t ticks)
     if (ticks % GetMoveTickRate() == 0)
     {
         // TODO: can potentially collide with source for a slow projectile and prematurely die
-        if (!Move(VelocityX * GetSpeed(), VelocityY * GetSpeed()))
+        if (Move(VelocityX * GetSpeed(), VelocityY * GetSpeed()) == MppEntityCollisionReject)
         {
             OnCollision();
         }
@@ -98,7 +99,6 @@ int MppProjectileEntity::GetPhysicsHeight() const
 
 void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int facingX, int facingY)
 {
-    static constexpr int kOffset = 8;
     Source = source->GetReference();
     MppAssert(!(facingX && facingY));
     X = 0;
@@ -106,10 +106,15 @@ void MppProjectileEntity::Setup(const std::shared_ptr<MppEntity>& source, int fa
     // TODO: positioning looks correct but I'm not 100% it's calculated the right way
     auto [thisX, thisY] = GetCenter();
     auto [x, y] = source->GetCenter();
-    X = x - thisX + facingX * kOffset;
-    Y = y - thisY + facingY * kOffset;
+    X = x - thisX + facingX * (source->GetPhysicsWidth() + 1);
+    Y = y - thisY + facingY * (source->GetPhysicsHeight() + 1);
     VelocityX = facingX;
     VelocityY = facingY;
+}
+
+void MppProjectileEntity::Setup(const std::shared_ptr<MppMobEntity>& source)
+{
+    Setup(source, source->GetFacingX(), source->GetFacingY());
 }
 
 void MppProjectileEntity::OnCollision()

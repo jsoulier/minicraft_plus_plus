@@ -344,10 +344,10 @@ MppEntityCollision MppEntity::MoveTestImpl(int dx, int dy)
     int y = GetPhysicsY();
     int w = GetPhysicsWidth();
     int h = GetPhysicsHeight();
-    int tileX1 = x / MppTile::kSize;
-    int tileY1 = y / MppTile::kSize;
-    int tileX2 = (x + w) / MppTile::kSize;
-    int tileY2 = (y + h) / MppTile::kSize;
+    int tileX1 = MppWorldGetTileIndex(x);
+    int tileY1 = MppWorldGetTileIndex(y);
+    int tileX2 = MppWorldGetTileIndex(x + w);
+    int tileY2 = MppWorldGetTileIndex(y + h);
     MppEntityCollision collision = MppEntityCollisionAccept;
     for (int tileX = tileX1; tileX <= tileX2; tileX++)
     for (int tileY = tileY1; tileY <= tileY2; tileY++)

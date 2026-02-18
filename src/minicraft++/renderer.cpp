@@ -361,7 +361,30 @@ static void DrawLight(Light light)
             float dx = light.Radius - x;
             float dy = light.Radius - y;
             float distance = std::sqrt(dx * dx + dy * dy);
-            if (distance <= light.Radius)
+            float radius = light.Radius;
+            if (distance > radius)
+            {
+                continue;
+            }
+            float ditherRadius = radius * 0.5f;
+            if (distance <= ditherRadius)
+            {
+                SDL_WriteSurfacePixel(surface, x, y, 255, 255, 255, 255);
+                continue;
+            }
+            float ratio = (distance - ditherRadius) / (radius - ditherRadius);
+            ratio = std::clamp(ratio, 0.0f, 1.0f);
+            float density = 1.0f - ratio;
+            density *= density;
+            static constexpr int kBayer[4][4] =
+            {
+                { 0, 8, 2,10},
+                {12, 4,14, 6},
+                { 3,11, 1, 9},
+                {15, 7,13, 5}
+            };
+            float threshold = kBayer[y % 4][x % 4] / 16.0f;
+            if (density > threshold)
             {
                 SDL_WriteSurfacePixel(surface, x, y, 255, 255, 255, 255);
             }
@@ -420,10 +443,10 @@ void MppRendererSubmit(int inLightColor)
     SDL_RenderPresent(renderer);
     int min = 0;
     int max = MppWorldGetSize() - 1;
-    tileX1 = std::clamp(worldX / MppTile::kSize - 1, min, max);
-    tileY1 = std::clamp(worldY / MppTile::kSize - 1, min, max);
-    tileX2 = std::clamp((worldX + kWidth) / MppTile::kSize + 1, min, max);
-    tileY2 = std::clamp((worldY + kHeight) / MppTile::kSize + 1, min, max);
+    tileX1 = std::clamp(MppWorldGetTileIndex(worldX) - 1, min, max);
+    tileY1 = std::clamp(MppWorldGetTileIndex(worldY) - 1, min, max);
+    tileX2 = std::clamp(MppWorldGetTileIndex(worldX + kWidth) + 1, min, max);
+    tileY2 = std::clamp(MppWorldGetTileIndex(worldY + kHeight) + 1, min, max);
 }
 
 void MppRendererDraw(MppSprite sprite, int x, int y, MppRendererMod mod, MppRendererLayer layer)

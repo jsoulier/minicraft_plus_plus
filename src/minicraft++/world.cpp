@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -230,7 +231,7 @@ void MppWorldAddEntity(std::shared_ptr<MppEntity>& entity)
     MppWorldAddEntity(entity, currLevel);
 }
 
-void MppWorldSetEntityLevel(const std::shared_ptr<MppEntity>& entity, int level)
+void MppWorldSetLevel(const std::shared_ptr<MppEntity>& entity, int level)
 {
     requests.emplace_back(entity, level);
 }
@@ -263,4 +264,9 @@ int MppWorldGetLightColor()
 uint64_t MppWorldGetTicks()
 {
     return saveHeader.Ticks;
+}
+
+int MppWorldGetTileIndex(float position)
+{
+    return std::floor(position / MppTile::kSize);
 }

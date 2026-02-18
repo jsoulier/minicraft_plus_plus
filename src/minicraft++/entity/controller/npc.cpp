@@ -66,6 +66,12 @@ void MppNPCController::Update(uint64_t ticks)
     }
 }
 
+void MppNPCController::OnSetLevel(int level)
+{
+    MppController::OnSetLevel(level);
+    CancelNavigation();
+}
+
 bool MppNPCController::TryNavigateRandom()
 {
     std::shared_ptr<MppMobEntity> entity = Entity.lock();
@@ -81,8 +87,8 @@ bool MppNPCController::TryNavigateRandom()
     case 3: dy = 1; break;
     }
     int distance = MppRandomGetInt(1, GetMaxNavigateRandomDistance());
-    int tx = entity->GetX() / MppTile::kSize;
-    int ty = entity->GetY() / MppTile::kSize;
+    int tx = MppWorldGetTileIndex(entity->GetX());
+    int ty = MppWorldGetTileIndex(entity->GetY());
     for (int i = 0; i < distance; i++)
     {
         tx += dx;
@@ -108,10 +114,10 @@ bool MppNPCController::TryNavigateLine(const std::shared_ptr<MppEntity>& target)
     int y1 = entity->GetY() + MppTile::kSize / 2;
     int x2 = target->GetX() + MppTile::kSize / 2;
     int y2 = target->GetY() + MppTile::kSize / 2;
-    int tx = x1 / MppTile::kSize;
-    int ty = y1 / MppTile::kSize;
-    int tx2 = x2 / MppTile::kSize;
-    int ty2 = y2 / MppTile::kSize;
+    int tx = MppWorldGetTileIndex(x1);
+    int ty = MppWorldGetTileIndex(y1);
+    int tx2 = MppWorldGetTileIndex(x2);
+    int ty2 = MppWorldGetTileIndex(y2);
     int dx = std::abs(tx2 - tx);
     int dy = std::abs(ty2 - ty);
     int sx = (tx < tx2) ? 1 : -1;

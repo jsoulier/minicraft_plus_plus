@@ -7,6 +7,8 @@
 
 #include <minicraft++/entity/entity.hpp>
 
+class MppMobEntity;
+
 class MppProjectileEntity : public MppEntity
 {
 public:
@@ -20,6 +22,7 @@ public:
     int GetPhysicsWidth() const;
     int GetPhysicsHeight() const;
     void Setup(const std::shared_ptr<MppEntity>& source, int facingX, int facingY);
+    void Setup(const std::shared_ptr<MppMobEntity>& source);
 
 protected:
     virtual void OnCollision();

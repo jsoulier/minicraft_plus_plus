@@ -4,7 +4,6 @@
 #include <memory>
 
 #include <minicraft++/assert.hpp>
-#include <minicraft++/color.hpp>
 #include <minicraft++/entity/furniture/furniture.hpp>
 #include <minicraft++/entity/mob/humanoid.hpp>
 #include <minicraft++/entity/mob/mount.hpp>

@@ -158,14 +158,15 @@ void MppConsole::OnInputLoseFocus()
 
 void MppConsole::HandleGive(const std::vector<std::string>& tokens)
 {
-    std::shared_ptr<MppMobEntity> player = GetPlayer();
-    if (!player)
-    {
-        return;
-    }
     if (tokens.size() < 2 || tokens.size() > 3)
     {
         MppLog("Expected give <item_name>");
+        return;
+    }
+    std::shared_ptr<MppMobEntity> player = GetPlayer();
+    if (!player)
+    {
+        MppLog("Missing player");
         return;
     }
     MppItem item;
@@ -270,7 +271,7 @@ void MppConsole::HandleTile(const std::vector<std::string>& tokens)
     }
     catch (const std::exception& e)
     {
-        MppLog("Invalid position: %s, %s", tokens[2].data(), tokens[3].data());
+        MppLog("Invalid position: %s, %s", tokens[1].data(), tokens[2].data());
     }
 }
 
@@ -297,6 +298,37 @@ void MppConsole::HandleKillAll(const std::vector<std::string>& tokens)
     for (std::shared_ptr<MppEntity>& entity : entities)
     {
         entity->Unspawn();
+    }
+}
+
+void MppConsole::HandleTeleport(const std::vector<std::string>& tokens)
+{
+    if (tokens.size() < 3 || tokens.size() > 4)
+    {
+        MppLog("Expected teleport <x> <y> <level>");
+        return;
+    }
+    std::shared_ptr<MppMobEntity> player = GetPlayer();
+    if (!player)
+    {
+        MppLog("Missing player");
+        return;
+    }
+    try
+    {
+        int x = std::stoi(tokens[1]);
+        int y = std::stoi(tokens[2]);
+        player->SetX(x);
+        player->SetY(y);
+        if (tokens.size() >= 4)
+        {
+            int level = std::stoi(tokens[3]);
+            MppWorldSetLevel(player, level);
+        }
+    }
+    catch (const std::exception& e)
+    {
+        MppLog("Invalid position: %s, %s", tokens[1].data(), tokens[2].data());
     }
 }
 
@@ -356,6 +388,10 @@ void MppConsole::Handle()
     {
         HandleKillAll(tokens);
     }
+    else if (tokens[0] == "teleport")
+    {
+        HandleTeleport(tokens);
+    }
     else if (tokens[0] == "cvar")
     {
         HandleCVar(tokens);
@@ -371,6 +407,10 @@ std::shared_ptr<MppMobEntity> MppConsole::GetPlayer() const
     for (std::shared_ptr<MppEntity>& entity : MppWorldGetEntities())
     {
         std::shared_ptr<MppMobEntity> mob = entity->Cast<MppMobEntity>();
+        if (!mob)
+        {
+            continue;
+        }
         std::shared_ptr<MppController> controller = mob->GetController();
         if (controller && controller->IsA<MppPlayerController>())
         {

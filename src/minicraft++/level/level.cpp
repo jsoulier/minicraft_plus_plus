@@ -70,8 +70,8 @@ void MppLevel::Update(uint64_t ticks)
         }
     }
     Entities = std::move(entities);
-    for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
-    for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
+    for (int x = MppRendererGetTileX1(); x <= MppRendererGetTileX2(); x++)
+    for (int y = MppRendererGetTileY1(); y <= MppRendererGetTileY2(); y++)
     {
         Tiles[x][y].Update(x, y, ticks);
     }
@@ -83,8 +83,8 @@ void MppLevel::Render() const
     {
         entity->Render();
     }
-    for (int x = MppRendererGetTileX1(); x < MppRendererGetTileX2(); x++)
-    for (int y = MppRendererGetTileY1(); y < MppRendererGetTileY2(); y++)
+    for (int x = MppRendererGetTileX1(); x <= MppRendererGetTileX2(); x++)
+    for (int y = MppRendererGetTileY1(); y <= MppRendererGetTileY2(); y++)
     {
         Tiles[x][y].Render(x, y);
     }
@@ -105,8 +105,8 @@ void MppLevel::Save()
     }
     uint32_t tiles = 0;
     uint32_t entities = 0;
-    for (int x = SaveTileX1; x < SaveTileX2; x++)
-    for (int y = SaveTileY1; y < SaveTileY2; y++)
+    for (int x = SaveTileX1; x <= SaveTileX2; x++)
+    for (int y = SaveTileY1; y <= SaveTileY2; y++)
     {
         SaveData->Handle.Write(Tiles[x][y], x, y, Level);
         tiles++;
