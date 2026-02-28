@@ -1,0 +1,24 @@
+[ ] Minimap
+    [ ] Visual sensor
+    [ ] Robot equivalent of a heartbeat sensor
+    [ ] Sound sensor for far away targets
+[ ] Weapons
+    [ ] Machine gun
+    [ ] Railgun
+    [ ] Artillery
+    [ ] Missile launcher
+    [ ] Charge attack
+[ ] Defense
+    [ ] Armor
+    [ ] Flares
+    [ ] Flak
+[ ] Upgrades
+    [ ] Temporary invisibility
+    [ ] Health upgrade
+    [ ] Regeneration upgrade
+
+General
+    Upgrades
+    - You can add as many upgrades as you want
+    - All upgrades add weight
+    - If you add enough upgrades, you can't move or move very slowly

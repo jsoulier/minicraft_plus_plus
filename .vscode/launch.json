@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "minicraft",
+            "name": "gdbots",
             "type": "godot",
             "request": "launch",
             "project": "",
