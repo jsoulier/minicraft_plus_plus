@@ -5,8 +5,13 @@
 [ext_resource type="Script" uid="uid://cg016dbe7gs1x" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_dko2i"]
 [ext_resource type="Script" uid="uid://dy165g28ogdq5" path="res://scripts/ai/face_target.gd" id="3_wnyw1"]
 [ext_resource type="Script" uid="uid://y2ogtl03nmyt" path="res://scripts/ai/update_awareness.gd" id="4_dko2i"]
+[ext_resource type="Script" uid="uid://bc67yatofx4o7" path="res://scripts/ai/is_facing_target.gd" id="6_igwfk"]
+[ext_resource type="Script" uid="uid://ccn28es2d2lik" path="res://scripts/ai/shoot.gd" id="7_igwfk"]
 
 [node name="AI" unique_id=767409558 instance=ExtResource("1_nrbrr")]
+move_speed = 5.0
+rotate_speed = 0.5
+max_health = 100.0
 
 [node name="BeehaveTree" type="Node" parent="." index="3" unique_id=1603247235 node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("2_wnyw1")
@@ -24,4 +29,12 @@ metadata/_custom_type_script = "uid://cv74jjdrwevpr"
 
 [node name="FaceTarget" type="Node" parent="BeehaveTree/SequenceComposite" index="1" unique_id=2037891598]
 script = ExtResource("3_wnyw1")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="IsFacingTarget" type="Node" parent="BeehaveTree/SequenceComposite" index="2" unique_id=1575609989]
+script = ExtResource("6_igwfk")
+metadata/_custom_type_script = "uid://cbnbvj8prv63i"
+
+[node name="Shoot" type="Node" parent="BeehaveTree/SequenceComposite" index="3" unique_id=807128486]
+script = ExtResource("7_igwfk")
 metadata/_custom_type_script = "uid://cv74jjdrwevpr"

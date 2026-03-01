@@ -30,16 +30,30 @@ func on_damage(damage: float, impulse: Vector3) -> void:
 		return
 	_set_material(self)
 
+func shoot() -> void:
+	for child in get_children():
+		if not child is Weapon:
+			continue
+		child.fire()
+
+func get_facing() -> Vector3:
+	return -global_basis.z
+
+func get_angle_to_target_facing() -> float:
+	return get_facing().angle_to(_target_direction)
+
+func is_facing_target() -> bool:
+	return get_angle_to_target_facing() < 0.01
+
+func set_target_facing(target_direction: Vector3) -> void:
+	_target_direction = target_direction
+
 func _physics_process(delta: float) -> void:
 	velocity = _velocity + _total_impulse
 	_velocity = Vector3.ZERO
 	_total_impulse = Vector3.ZERO
 	move_and_slide()
-	var current_direction = -global_basis.z
-	var delta_rotation = current_direction.angle_to(_target_direction)
-	if delta_rotation > 0.001:
-		var cross = current_direction.cross(_target_direction)
+	var delta_rotation = get_angle_to_target_facing()
+	if not is_facing_target():
+		var cross = get_facing().cross(_target_direction)
 		rotate_y(signf(cross.y) * min(delta_rotation, rotate_speed * delta))
-
-func face_target(target_direction: Vector3) -> void:
-	_target_direction = target_direction

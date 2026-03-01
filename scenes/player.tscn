@@ -4,6 +4,9 @@
 [ext_resource type="Script" uid="uid://dlb68xwnkn5ic" path="res://scripts/player.gd" id="2_g2els"]
 
 [node name="Player" unique_id=767409558 instance=ExtResource("1_3vyb7")]
+move_speed = 5.0
+rotate_speed = 0.5
+max_health = 100.0
 
 [node name="Controller" type="Node" parent="." index="2" unique_id=1463393927]
 script = ExtResource("2_g2els")
