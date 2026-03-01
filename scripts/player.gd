@@ -32,19 +32,16 @@ func _process(_delta: float) -> void:
 				continue
 			child.fire()
 	
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var movement_vector_2d = Input.get_vector("left", "right", "up", "down")
 	var movement_vector = Vector3(movement_vector_2d.x, 0.0, movement_vector_2d.y).normalized()
-	_player.velocity = _player.basis * movement_vector * _player.move_speed
-	_player.move_and_slide()
+	_player._velocity = _player.basis * movement_vector * _player.move_speed
 	var target_direction = (_camera_raycast.get_collision_point() - _player.global_position).normalized()
-	var current_direction = -_player.global_basis.z
-	var delta_rotation = current_direction.angle_to(target_direction)
-	if delta_rotation > 0.001:
-		var cross = current_direction.cross(target_direction)
-		_player.rotate_y(signf(cross.y) * min(delta_rotation, _player.rotate_speed * delta))
+	_player.face_target(target_direction)
 	var target_camera_position = _player.global_position + _camera.global_basis * camera_offset 
 	_camera.global_position = lerp(_camera.global_position, target_camera_position, camera_smoothing)
 	var raycast_length = (_camera_raycast.get_collision_point() - _player.global_position).length()
 	_player_crosshair.position = _camera.unproject_position(_player.global_position - _player.global_basis.z * raycast_length)
 	_camera_crosshair.position = _camera.unproject_position(_camera.global_position - _camera.global_basis.z)
+	_player_crosshair.position -= _player_crosshair.size / 2.0
+	_camera_crosshair.position -= _camera_crosshair.size / 2.0

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://njlrv0n01epg"]
 
 [ext_resource type="PackedScene" uid="uid://snxuid018l35" path="res://scenes/player.tscn" id="1_2q6dc"]
-[ext_resource type="PackedScene" uid="uid://32e5xdk4cui3" path="res://scenes/dummy.tscn" id="2_w7c3h"]
+[ext_resource type="PackedScene" uid="uid://bynvkk75dw8ya" path="res://scenes/ai.tscn" id="3_w8frs"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_rd3vj"]
 
@@ -47,9 +47,6 @@ transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.707
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=913890390]
 environment = SubResource("Environment_mx8sn")
 
-[node name="Bot" parent="." unique_id=2120237449 instance=ExtResource("2_w7c3h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -10)
-
 [node name="Wall1" type="StaticBody3D" parent="." unique_id=2007075456]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 100, -40, 0)
 collision_layer = 4
@@ -93,3 +90,6 @@ mesh = SubResource("BoxMesh_w7c3h")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4" unique_id=1579775383]
 shape = SubResource("BoxShape3D_w8frs")
+
+[node name="AI" parent="." unique_id=1935641488 instance=ExtResource("3_w8frs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.5, -5)

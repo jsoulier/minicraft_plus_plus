@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bynvkk75dw8ya"]
+
+[ext_resource type="PackedScene" uid="uid://7qqqx8683wjj" path="res://scenes/bot.tscn" id="1_nrbrr"]
+[ext_resource type="Script" uid="uid://bb0t2ovl7wifo" path="res://addons/beehave/nodes/beehave_tree.gd" id="2_wnyw1"]
+[ext_resource type="Script" uid="uid://cg016dbe7gs1x" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_dko2i"]
+[ext_resource type="Script" uid="uid://dy165g28ogdq5" path="res://scripts/ai/face_target.gd" id="3_wnyw1"]
+[ext_resource type="Script" uid="uid://y2ogtl03nmyt" path="res://scripts/ai/update_awareness.gd" id="4_dko2i"]
+
+[node name="AI" unique_id=767409558 instance=ExtResource("1_nrbrr")]
+
+[node name="BeehaveTree" type="Node" parent="." index="3" unique_id=1603247235 node_paths=PackedStringArray("blackboard", "actor")]
+script = ExtResource("2_wnyw1")
+blackboard = NodePath("@Node@77395")
+actor = NodePath("..")
+metadata/_custom_type_script = "uid://bb0t2ovl7wifo"
+
+[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0" unique_id=360044683]
+script = ExtResource("3_dko2i")
+metadata/_custom_type_script = "uid://cg016dbe7gs1x"
+
+[node name="UpdateAwareness" type="Node" parent="BeehaveTree/SequenceComposite" index="0" unique_id=1186755374]
+script = ExtResource("4_dko2i")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="FaceTarget" type="Node" parent="BeehaveTree/SequenceComposite" index="1" unique_id=2037891598]
+script = ExtResource("3_wnyw1")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
