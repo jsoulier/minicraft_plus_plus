@@ -2,7 +2,7 @@ extends Node
 
 @export var mouse_sensitivity: float = 0.001
 @export var camera_offset: Vector3 = Vector3.ZERO
-@export var crosshair_length: float = 10.0
+@export var camera_smoothing: float = 0.1
 
 @onready var _player: CharacterBody3D = $".."
 @onready var _camera: Camera3D = $"../Camera3D"
@@ -24,7 +24,7 @@ func _input(event: InputEvent) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	elif event.is_action_pressed(&"unfocus"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		
+
 func _process(_delta: float) -> void:
 	if Input.is_action_pressed(&"shoot"):
 		for child in _player.get_children():
@@ -43,7 +43,8 @@ func _physics_process(delta: float) -> void:
 	if delta_rotation > 0.001:
 		var cross = current_direction.cross(target_direction)
 		_player.rotate_y(signf(cross.y) * min(delta_rotation, _player.rotate_speed * delta))
-	_camera.global_position = _player.global_position + _camera.global_basis * camera_offset
+	var target_camera_position = _player.global_position + _camera.global_basis * camera_offset 
+	_camera.global_position = lerp(_camera.global_position, target_camera_position, camera_smoothing)
 	var raycast_length = (_camera_raycast.get_collision_point() - _player.global_position).length()
 	_player_crosshair.position = _camera.unproject_position(_player.global_position - _player.global_basis.z * raycast_length)
 	_camera_crosshair.position = _camera.unproject_position(_camera.global_position - _camera.global_basis.z)

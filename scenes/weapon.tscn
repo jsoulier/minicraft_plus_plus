@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cnw7f2m54t8q6"]
 
 [ext_resource type="Script" uid="uid://di35j0ac1slkp" path="res://scripts/weapon.gd" id="1_xasec"]
+[ext_resource type="Material" uid="uid://3sd80c0i5twu" path="res://resources/bot_shader_material.tres" id="2_uxn4k"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_xasec"]
 
@@ -10,6 +11,7 @@ script = ExtResource("1_xasec")
 [node name="Barrel" type="MeshInstance3D" parent="." unique_id=988123671]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_xasec")
+surface_material_override/0 = ExtResource("2_uxn4k")
 
 [node name="Muzzle" type="Node3D" parent="." unique_id=697861062]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)

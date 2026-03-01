@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://7qqqx8683wjj"]
 
 [ext_resource type="Script" uid="uid://diydu84bpew0n" path="res://scripts/bot.gd" id="1_cwism"]
+[ext_resource type="Material" uid="uid://3sd80c0i5twu" path="res://resources/bot_shader_material.tres" id="2_hhacj"]
 [ext_resource type="PackedScene" uid="uid://bjh5u3foek7ko" path="res://scenes/machine_gun.tscn" id="2_qpkb6"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_cwism"]
@@ -10,9 +11,13 @@
 [node name="Bot" type="CharacterBody3D" unique_id=767409558]
 collision_mask = 0
 script = ExtResource("1_cwism")
+move_speed = null
+rotate_speed = null
+max_health = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2144843617]
 mesh = SubResource("BoxMesh_cwism")
+surface_material_override/0 = ExtResource("2_hhacj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=915930210]
 shape = SubResource("BoxShape3D_qpkb6")
