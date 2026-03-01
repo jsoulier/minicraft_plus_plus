@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://0jq5klfhl2fw"]
+
+[ext_resource type="Script" uid="uid://cmdlitukrwjdp" path="res://scripts/bullet.gd" id="1_mkf8s"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_mkf8s"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y25gk"]
+
+[node name="Bullet" type="CharacterBody3D" unique_id=1347494488]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+top_level = true
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_mkf8s")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2040279116]
+mesh = SubResource("BoxMesh_mkf8s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1884021906]
+shape = SubResource("BoxShape3D_y25gk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=200704405]
+light_color = Color(1, 0, 0, 1)
