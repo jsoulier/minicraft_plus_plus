@@ -28,8 +28,10 @@ grow_vertical = 2
 layout_mode = 0
 offset_right = 10.0
 offset_bottom = 10.0
+color = Color(0, 1, 0, 1)
 
 [node name="PlayerCrosshair" type="ColorRect" parent="Control" index="1" unique_id=2067853932]
 layout_mode = 0
 offset_right = 10.0
 offset_bottom = 10.0
+color = Color(1, 0, 0, 1)

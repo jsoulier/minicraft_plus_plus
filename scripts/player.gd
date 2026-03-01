@@ -30,22 +30,20 @@ func _process(_delta: float) -> void:
 		for child in _player.get_children():
 			if not child is Weapon:
 				continue
-			var weapon: Weapon = child
-			weapon.fire()
+			child.fire()
 	
 func _physics_process(delta: float) -> void:
 	var movement_vector_2d = Input.get_vector("left", "right", "up", "down")
 	var movement_vector = Vector3(movement_vector_2d.x, 0.0, movement_vector_2d.y).normalized()
 	_player.velocity = _player.basis * movement_vector * _player.move_speed
 	_player.move_and_slide()
-	var rotate_speed = _player.rotate_speed * delta
 	var target_direction = (_camera_raycast.get_collision_point() - _player.global_position).normalized()
-	var target_rotation = atan2(target_direction.z, target_direction.x)
-	var current_direction = _player.global_basis.z
-	var current_rotation = atan2(current_direction.z, current_direction.x)
-	var delta_rotation = wrapf(target_rotation - current_rotation, -PI, PI)
-	_player.rotation.y += clamp(delta_rotation, -rotate_speed, rotate_speed)
+	var current_direction = -_player.global_basis.z
+	var delta_rotation = current_direction.angle_to(target_direction)
+	if delta_rotation > 0.001:
+		var cross = current_direction.cross(target_direction)
+		_player.rotate_y(signf(cross.y) * min(delta_rotation, _player.rotate_speed * delta))
 	_camera.global_position = _player.global_position + _camera.global_basis * camera_offset
-	_player_crosshair.position = _camera.unproject_position(_camera_raycast.get_collision_point())
+	var raycast_length = (_camera_raycast.get_collision_point() - _player.global_position).length()
+	_player_crosshair.position = _camera.unproject_position(_player.global_position - _player.global_basis.z * raycast_length)
 	_camera_crosshair.position = _camera.unproject_position(_camera.global_position - _camera.global_basis.z)
-	
