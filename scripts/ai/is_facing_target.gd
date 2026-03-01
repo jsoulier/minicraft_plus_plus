@@ -1,4 +1,4 @@
-@tool class_name IsFacingTarget extends ConditionLeaf
+@tool extends ConditionLeaf
 
 func tick(actor: Node, _blackboard: Blackboard) -> int:
 	var bot: Bot = actor

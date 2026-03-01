@@ -32,7 +32,7 @@ func _process(_delta: float) -> void:
 func _physics_process(_delta: float) -> void:
 	var movement_vector_2d = Input.get_vector("left", "right", "up", "down")
 	var movement_vector = Vector3(movement_vector_2d.x, 0.0, movement_vector_2d.y).normalized()
-	_player._velocity = _player.basis * movement_vector * _player.move_speed
+	_player.set_movement_vector(_camera.basis * movement_vector)
 	var target_direction = (_camera_raycast.get_collision_point() - _player.global_position).normalized()
 	_player.set_target_facing(target_direction)
 	var target_camera_position = _player.global_position + _camera.global_basis * camera_offset 

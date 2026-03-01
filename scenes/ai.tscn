@@ -4,37 +4,74 @@
 [ext_resource type="Script" uid="uid://bb0t2ovl7wifo" path="res://addons/beehave/nodes/beehave_tree.gd" id="2_wnyw1"]
 [ext_resource type="Script" uid="uid://cg016dbe7gs1x" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_dko2i"]
 [ext_resource type="Script" uid="uid://dy165g28ogdq5" path="res://scripts/ai/face_target.gd" id="3_wnyw1"]
+[ext_resource type="Script" uid="uid://8hn4kne15ac5" path="res://addons/beehave/nodes/composites/selector.gd" id="4_2xj5s"]
 [ext_resource type="Script" uid="uid://y2ogtl03nmyt" path="res://scripts/ai/update_awareness.gd" id="4_dko2i"]
+[ext_resource type="Script" uid="uid://dp0wymwu0tjif" path="res://scripts/ai/init.gd" id="5_2xj5s"]
 [ext_resource type="Script" uid="uid://bc67yatofx4o7" path="res://scripts/ai/is_facing_target.gd" id="6_igwfk"]
 [ext_resource type="Script" uid="uid://ccn28es2d2lik" path="res://scripts/ai/shoot.gd" id="7_igwfk"]
+[ext_resource type="Script" uid="uid://b0pgkesnw1m3v" path="res://scripts/ai/has_known_actors.gd" id="8_c31we"]
+[ext_resource type="Script" uid="uid://bobyckr5n16c3" path="res://scripts/ai/pick_investigate_location.gd" id="12_c31we"]
+[ext_resource type="Script" uid="uid://db57qhybbwt1w" path="res://scripts/ai/has_investigate_locations.gd" id="12_f1c4s"]
+[ext_resource type="Script" uid="uid://bn6t13oqk5mh7" path="res://scripts/ai/move_to_investigate_location.gd" id="13_f1c4s"]
 
 [node name="AI" unique_id=767409558 instance=ExtResource("1_nrbrr")]
-move_speed = 5.0
-rotate_speed = 0.5
-max_health = 100.0
 
 [node name="BeehaveTree" type="Node" parent="." index="3" unique_id=1603247235 node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("2_wnyw1")
-blackboard = NodePath("@Node@77395")
+blackboard = NodePath("@Node@185356")
 actor = NodePath("..")
 metadata/_custom_type_script = "uid://bb0t2ovl7wifo"
 
-[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0" unique_id=360044683]
+[node name="Root" type="Node" parent="BeehaveTree" index="0" unique_id=1105336991]
 script = ExtResource("3_dko2i")
 metadata/_custom_type_script = "uid://cg016dbe7gs1x"
 
-[node name="UpdateAwareness" type="Node" parent="BeehaveTree/SequenceComposite" index="0" unique_id=1186755374]
+[node name="Init" type="Node" parent="BeehaveTree/Root" index="0" unique_id=1377487004]
+script = ExtResource("5_2xj5s")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="UpdateAwareness" type="Node" parent="BeehaveTree/Root" index="1" unique_id=42244683]
 script = ExtResource("4_dko2i")
 metadata/_custom_type_script = "uid://cv74jjdrwevpr"
 
-[node name="FaceTarget" type="Node" parent="BeehaveTree/SequenceComposite" index="1" unique_id=2037891598]
+[node name="Behavior" type="Node" parent="BeehaveTree/Root" index="2" unique_id=1437013366]
+script = ExtResource("4_2xj5s")
+metadata/_custom_type_script = "uid://8hn4kne15ac5"
+
+[node name="Attack" type="Node" parent="BeehaveTree/Root/Behavior" index="0" unique_id=360044683]
+script = ExtResource("3_dko2i")
+metadata/_custom_type_script = "uid://cg016dbe7gs1x"
+
+[node name="HasKnownActors" type="Node" parent="BeehaveTree/Root/Behavior/Attack" index="0" unique_id=730755028]
+script = ExtResource("8_c31we")
+metadata/_custom_type_script = "uid://cbnbvj8prv63i"
+
+[node name="FaceTarget" type="Node" parent="BeehaveTree/Root/Behavior/Attack" index="1" unique_id=2037891598]
 script = ExtResource("3_wnyw1")
 metadata/_custom_type_script = "uid://cv74jjdrwevpr"
 
-[node name="IsFacingTarget" type="Node" parent="BeehaveTree/SequenceComposite" index="2" unique_id=1575609989]
+[node name="IsFacingTarget" type="Node" parent="BeehaveTree/Root/Behavior/Attack" index="2" unique_id=1575609989]
 script = ExtResource("6_igwfk")
 metadata/_custom_type_script = "uid://cbnbvj8prv63i"
 
-[node name="Shoot" type="Node" parent="BeehaveTree/SequenceComposite" index="3" unique_id=807128486]
+[node name="Shoot" type="Node" parent="BeehaveTree/Root/Behavior/Attack" index="3" unique_id=807128486]
 script = ExtResource("7_igwfk")
 metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="Investigate" type="Node" parent="BeehaveTree/Root/Behavior" index="1" unique_id=282586151]
+script = ExtResource("3_dko2i")
+metadata/_custom_type_script = "uid://cg016dbe7gs1x"
+
+[node name="HasInvestigateLocations" type="Node" parent="BeehaveTree/Root/Behavior/Investigate" index="0" unique_id=1105727447]
+script = ExtResource("12_f1c4s")
+metadata/_custom_type_script = "uid://cbnbvj8prv63i"
+
+[node name="PickInvestigateLocation" type="Node" parent="BeehaveTree/Root/Behavior/Investigate" index="1" unique_id=382913917]
+script = ExtResource("12_c31we")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="MoveToInvestigateLocation" type="Node" parent="BeehaveTree/Root/Behavior/Investigate" index="2" unique_id=1986879805]
+script = ExtResource("13_f1c4s")
+metadata/_custom_type_script = "uid://cv74jjdrwevpr"
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="4" unique_id=1579168794]
