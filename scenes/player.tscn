@@ -10,8 +10,11 @@ script = ExtResource("2_g2els")
 camera_offset = Vector3(3, 0, 3)
 
 [node name="Camera3D" type="Camera3D" parent="." index="3" unique_id=1740625032]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
 top_level = true
+
+[node name="RayCast3D" type="RayCast3D" parent="Camera3D" index="0" unique_id=1689196275]
+target_position = Vector3(0, 0, -1000)
+collision_mask = 5
 
 [node name="Control" type="Control" parent="." index="4" unique_id=1570811846]
 layout_mode = 3
