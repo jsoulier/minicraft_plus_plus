@@ -1,7 +1,7 @@
 @tool class_name UpdateAwareness extends ActionLeaf
 
 func tick(actor: Node, blackboard: Blackboard) -> int:
-	var _bot: Bot = actor
+	var bot: Bot = actor
 	blackboard.set_value("known_actors", [])
 	var actors: Array[Bot] = []
 	var level = actor.get_parent()
@@ -9,6 +9,9 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		if child == self:
 			continue
 		if not child is Bot:
+			continue
+		var other_bot: Bot = child
+		if not bot.has_line_of_sight(other_bot):
 			continue
 		actors.append(child)
 	blackboard.set_value("known_actors", actors)

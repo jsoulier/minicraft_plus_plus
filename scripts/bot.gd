@@ -1,5 +1,8 @@
 class_name Bot extends CharacterBody3D
 
+static var BOT_PHYSICS_LAYER = 1 << 0
+static var WORLD_PHYSICS_LAYER = 1 << 2
+
 @export var move_speed: float = 5.0
 @export var rotate_speed: float = 0.5
 @export var max_health: float = 100
@@ -57,3 +60,13 @@ func _physics_process(delta: float) -> void:
 	if not is_facing_target():
 		var cross = get_facing().cross(_target_direction)
 		rotate_y(signf(cross.y) * min(delta_rotation, rotate_speed * delta))
+
+func has_line_of_sight(bot: Bot) -> bool:
+	var parameters: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
+	parameters.from = global_position
+	parameters.to = bot.global_position
+	parameters.exclude = [self]
+	parameters.collision_mask = BOT_PHYSICS_LAYER | WORLD_PHYSICS_LAYER
+	var space_state = get_world_3d().direct_space_state
+	var result = space_state.intersect_ray(parameters)
+	return result and result.collider == bot
