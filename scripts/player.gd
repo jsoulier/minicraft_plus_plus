@@ -2,9 +2,12 @@ extends Node
 
 @export var rotate_speed: float = 0.001
 @export var camera_offset: Vector3 = Vector3.ZERO
+@export var crosshair_length: float = 10000.0
 
 @onready var _player: CharacterBody3D = $".."
 @onready var _camera: Camera3D = $"../Camera3D"
+@onready var _player_crosshair: ColorRect = $"../Control/PlayerCrosshair"
+@onready var _camera_crosshair: ColorRect = $"../Control/CameraCrosshair"
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
@@ -20,21 +23,18 @@ func _input(event: InputEvent) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	elif event.is_action_pressed(&"unfocus"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+func _get_screen_position(node: Node3D) -> Vector2:
+	return _camera.unproject_position(node.global_position + -node.global_basis.z * crosshair_length)
 
-func get_movement_vector(_bot: Bot) -> Vector2:
-	return Input.get_vector("left", "right", "up", "down")
-
-func _physics_process(_delta: float) -> void:
-	var player_quat = _player.global_basis.get_rotation_quaternion()
-	var camera_quat = _camera.global_basis.get_rotation_quaternion()
-	var angle_to_camera = player_quat.angle_to(camera_quat)
-	if angle_to_camera > 0.01:
-		var frame_rotate_speed = _player.rotate_speed
-		var alpha = min(frame_rotate_speed / angle_to_camera, 1.0)
-		player_quat = player_quat.slerp(camera_quat, alpha)
-		_player.global_transform.basis = Basis(player_quat)
+func _physics_process(delta: float) -> void:
 	var movement_vector_2d = Input.get_vector("left", "right", "up", "down")
 	var movement_vector = Vector3(movement_vector_2d.x, 0.0, movement_vector_2d.y).normalized()
 	_player.velocity = _player.basis * movement_vector * _player.move_speed
+	var frame_rotate_speed = _player.rotate_speed * delta
+	var delta_angle = wrapf(_camera.rotation.y - _player.rotation.y, -PI, PI)
+	_player.rotation.y += clamp(delta_angle, -frame_rotate_speed, frame_rotate_speed)
 	_player.move_and_slide()
 	_camera.global_position = _player.global_position + _player.global_basis * camera_offset
+	_player_crosshair.position = _get_screen_position(_player)
+	_camera_crosshair.position = _get_screen_position(_camera)

@@ -5,10 +5,28 @@
 
 [node name="Player" unique_id=767409558 instance=ExtResource("1_3vyb7")]
 
-[node name="Camera3D" type="Camera3D" parent="." index="2" unique_id=1740625032]
+[node name="Controller" type="Node" parent="." index="2" unique_id=1463393927]
+script = ExtResource("2_g2els")
+camera_offset = Vector3(3, 0, 3)
+
+[node name="Camera3D" type="Camera3D" parent="." index="3" unique_id=1740625032]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
 top_level = true
 
-[node name="Controller" type="Node" parent="." index="3" unique_id=1463393927]
-script = ExtResource("2_g2els")
-camera_offset = Vector3(0, 1.5, 3)
+[node name="Control" type="Control" parent="." index="4" unique_id=1570811846]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CameraCrosshair" type="ColorRect" parent="Control" index="0" unique_id=1307689849]
+layout_mode = 0
+offset_right = 10.0
+offset_bottom = 10.0
+
+[node name="PlayerCrosshair" type="ColorRect" parent="Control" index="1" unique_id=2067853932]
+layout_mode = 0
+offset_right = 10.0
+offset_bottom = 10.0
