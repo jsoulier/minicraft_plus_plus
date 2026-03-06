@@ -1,0 +1,165 @@
+[gd_scene format=3 uid="uid://d1oyqpkmfhw05"]
+
+[ext_resource type="PackedScene" uid="uid://ct3du0qkiw3iv" path="res://actors/characters/character.tscn" id="1_u6pd6"]
+[ext_resource type="Texture2D" uid="uid://cismrm5wjtw7y" path="res://resources/spritesheet.png" id="2_1yrrb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o214a"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(0, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wfquy"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(16, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h1hym"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(96, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2n6o"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(112, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3spli"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(64, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6yetg"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(80, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4surd"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(32, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g6fvs"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(48, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8sh05"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(0, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2i0g8"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(16, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1yrrb"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(96, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4e2i"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(112, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ffeov"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(64, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u25kt"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(80, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qb3dp"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(32, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1saeo"]
+atlas = ExtResource("2_1yrrb")
+region = Rect2(48, 256, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b4e2i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o214a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wfquy")
+}],
+"loop": true,
+"name": &"hold_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h1hym")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2n6o")
+}],
+"loop": true,
+"name": &"hold_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3spli")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6yetg")
+}],
+"loop": true,
+"name": &"hold_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4surd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g6fvs")
+}],
+"loop": true,
+"name": &"hold_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8sh05")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2i0g8")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1yrrb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4e2i")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ffeov")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u25kt")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qb3dp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1saeo")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[node name="Humanoid" unique_id=1793791467 instance=ExtResource("1_u6pd6")]
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1173043481]
+sprite_frames = SubResource("SpriteFrames_b4e2i")
+animation = &"walk_right"

@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://qrim4dosf3n5"]
+
+[ext_resource type="PackedScene" uid="uid://d1oyqpkmfhw05" path="res://actors/characters/humanoid.tscn" id="1_2eejo"]
+
+[node name="Human" unique_id=1793791467 instance=ExtResource("1_2eejo")]
